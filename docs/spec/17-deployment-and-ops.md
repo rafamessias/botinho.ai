@@ -6,26 +6,20 @@ Document deployment target, monitoring, and operational procedures.
 
 ## Status
 
-`partial` — Vercel deployment configured; Firebase App Hosting planned; no CI/CD or tests.
+`partial` — no CI/CD or automated tests; deploy via Firebase App Hosting or self-hosted Node.
 
 ## Source of truth
 
-- [vercel.json](../../vercel.json)
 - [readme.md](../../readme.md)
-- [app/instrumentation-client.ts](../../app/instrumentation-client.ts)
 - [app/layout.tsx](../../app/layout.tsx)
 
 ## Deployment platform
 
-**Primary: Vercel**
+**Primary: Firebase App Hosting** on Google Cloud (per ADR 0001), or any Node.js host running `next start`.
 
-- Connect GitHub repo → auto-deploy on push to main
-- Multi-region: `iad1`, `sfo1`, `lhr1`
-- `.vercel` directory gitignored
+**Not used:** Vercel — the app is not deployed on Vercel. Background jobs use **Google Cloud Scheduler** calling `/api/cron/*` routes (see [22-scheduled-jobs.md](22-scheduled-jobs.md)), not Vercel Cron.
 
-**Planned: Firebase App Hosting** (per ADR 0001)
-
-### Not configured
+### Not configured in repo
 
 - Docker / docker-compose
 - Kubernetes manifests
@@ -52,7 +46,8 @@ No automated gate before deploy in repository.
 | Firebase AI Logic (Gemini) | AI suggestions, auto-reply text, URL summaries |
 | Stripe | Billing |
 | Email provider | **Not connected** — sign-up/invite emails fail silently in prod |
-| Messaging provider | **Not connected** — WhatsApp send/receive |
+| Messaging provider | WhatsApp worker + Redis (see readme) |
+| Google Cloud Scheduler | **Not in repo** — configure per environment for `/api/cron/*` |
 
 ## Environment setup checklist
 
@@ -62,11 +57,11 @@ No automated gate before deploy in repository.
 4. Configure Stripe keys and webhook endpoint
 5. Set `AUTH_SECRET`, Google OAuth credentials
 6. Set `SUPPORT_EMAIL` for contact form delivery (when email provider connected)
-7. *(Future)* Configure messaging + email provider
+7. Set `CRON_SECRET` and create Cloud Scheduler jobs — [22-scheduled-jobs.md](22-scheduled-jobs.md)
+8. Configure WhatsApp: `REDIS_URL`, `WORKER_INTERNAL_TOKEN`, worker deployment
 
 ## Monitoring
 
-- Client instrumentation: [app/instrumentation-client.ts](../../app/instrumentation-client.ts)
 - Server errors logged via `console.error` in server actions and API routes
 - No Sentry/Datadog integration in repo
 
@@ -77,4 +72,5 @@ No automated gate before deploy in repository.
 
 ## Open questions
 
-- Migration timeline to Firebase App Hosting.
+- App Hosting secrets rollout for all production env vars.
+- Cloud Scheduler job provisioning automation (Terraform / gcloud script in CI).

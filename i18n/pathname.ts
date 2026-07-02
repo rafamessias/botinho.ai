@@ -35,8 +35,11 @@ export function localizePathname(pathname: string, locale: string): string {
 
 const PUBLIC_PATHS = new Set([
     '/',
+    '/terms',
+    '/privacy',
     '/sign-in',
     '/sign-up',
+    '/register',
     '/reset-password',
     '/reset-password/new',
     '/sign-up/confirm',
@@ -52,5 +55,10 @@ export function isPublicPathname(pathname: string): boolean {
     const normalized =
         basePath.endsWith('/') && basePath.length > 1 ? basePath.slice(0, -1) : basePath;
 
-    return PUBLIC_PATHS.has(normalized);
+    if (PUBLIC_PATHS.has(normalized)) {
+        return true;
+    }
+
+    // Public hosted survey pages: /s/{token}
+    return normalized.startsWith('/s/');
 }

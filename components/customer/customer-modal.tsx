@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslations } from "next-intl"
 import { useDropzone } from "react-dropzone"
 import * as XLSX from "xlsx"
-import { Upload, X } from "lucide-react"
+import { Upload, X, Download } from "lucide-react"
 import { toast } from "sonner"
 
 import {
@@ -18,31 +18,21 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { Form } from "@/components/ui/form"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { cn } from "@/lib/utils"
-import type { Customer, CustomerStatus } from "@/lib/types/customer"
+import { CustomerFormFields } from "@/components/customer/customer-form-fields"
+import { downloadCustomerImportTemplate } from "@/lib/customer/customer-import-template"
+import type { Customer, CustomerImportMergeStrategy, CustomerStatus } from "@/lib/types/customer"
 
 const statusOptions = ["active", "inactive", "prospect"] as const satisfies CustomerStatus[]
 
 const useCustomerSchema = (messages: {
     nameRequired: string
-    emailRequired: string
+    invalidEmail: string
+    phoneRequired: string
 }) =>
     z.object({
         name: z
@@ -50,18 +40,26 @@ const useCustomerSchema = (messages: {
             .trim()
             .min(1, messages.nameRequired),
         email: z
-            .string({ required_error: messages.emailRequired })
-            .trim()
-            .min(1, messages.emailRequired)
-            .email(messages.emailRequired),
-        phone: z
             .string()
             .trim()
-            .optional(),
+            .refine((value) => value === "" || z.string().email().safeParse(value).success, {
+                message: messages.invalidEmail,
+            })
+            .transform((value) => (value === "" ? undefined : value)),
+        phone: z
+            .string({ required_error: messages.phoneRequired })
+            .trim()
+            .min(1, messages.phoneRequired),
         company: z
             .string()
             .trim()
             .optional(),
+        description: z
+            .string()
+            .trim()
+            .max(1000)
+            .optional(),
+        tags: z.array(z.string()).max(20).default([]),
         status: z.enum(statusOptions),
     })
 
@@ -70,8 +68,8 @@ export type CustomerFormValues = z.infer<CustomerSchema>
 
 type ExcelCustomerRow = {
     name: string
-    email: string
-    phone?: string
+    email?: string
+    phone: string
     company?: string
     status: CustomerStatus
 }
@@ -83,7 +81,11 @@ type CustomerModalProps = {
     onSubmit: (values: CustomerFormValues) => Promise<void> | void
     initialCustomer?: Customer | null
     isSubmitting?: boolean
-    onBulkImport?: (customers: Omit<Customer, "id" | "createdAt" | "updatedAt">[]) => Promise<void> | void
+    onBulkImport?: (
+        customers: Omit<Customer, "id" | "createdAt" | "updatedAt">[],
+        mergeStrategy: CustomerImportMergeStrategy,
+    ) => Promise<void> | void
+    tagSuggestions?: string[]
 }
 
 export const CustomerModal = ({
@@ -94,16 +96,19 @@ export const CustomerModal = ({
     initialCustomer,
     isSubmitting = false,
     onBulkImport,
+    tagSuggestions = [],
 }: CustomerModalProps) => {
     const t = useTranslations("Customer")
     const [activeTab, setActiveTab] = useState<"single" | "bulk">("single")
     const [excelData, setExcelData] = useState<ExcelCustomerRow[]>([])
     const [parseErrors, setParseErrors] = useState<string[]>([])
     const [isBulkSubmitting, setIsBulkSubmitting] = useState(false)
+    const [mergeStrategy, setMergeStrategy] = useState<CustomerImportMergeStrategy>("merge")
 
     const schema = useCustomerSchema({
         nameRequired: t("form.validation.nameRequired"),
-        emailRequired: t("form.validation.emailRequired"),
+        invalidEmail: t("form.validation.invalidEmail"),
+        phoneRequired: t("form.validation.phoneRequired"),
     })
 
     const form = useForm<CustomerFormValues>({
@@ -113,6 +118,8 @@ export const CustomerModal = ({
             email: initialCustomer?.email ?? "",
             phone: initialCustomer?.phone ?? "",
             company: initialCustomer?.company ?? "",
+            description: initialCustomer?.description ?? "",
+            tags: initialCustomer?.tags ?? [],
             status: initialCustomer?.status ?? "active",
         },
     })
@@ -131,6 +138,8 @@ export const CustomerModal = ({
             email: initialCustomer?.email ?? "",
             phone: initialCustomer?.phone ?? "",
             company: initialCustomer?.company ?? "",
+            description: initialCustomer?.description ?? "",
+            tags: initialCustomer?.tags ?? [],
             status: initialCustomer?.status ?? "active",
         })
     }, [form, initialCustomer, isOpen, mode])
@@ -140,6 +149,7 @@ export const CustomerModal = ({
             setActiveTab("single")
             setExcelData([])
             setParseErrors([])
+            setMergeStrategy("merge")
         }
     }, [isOpen])
 
@@ -162,18 +172,22 @@ export const CustomerModal = ({
                     const rowNum = index + 2 // +2 because Excel is 1-indexed and we skip header
                     const name = row.name || row.Name || row.NAME
                     const email = row.email || row.Email || row.EMAIL
+                    const phone = row.phone || row.Phone || row.PHONE
 
                     if (!name) {
                         errors.push(`Row ${rowNum}: Missing name`)
                         return
                     }
 
-                    if (!email) {
-                        errors.push(`Row ${rowNum}: Missing email address`)
+                    if (!phone) {
+                        errors.push(`Row ${rowNum}: Missing phone number`)
                         return
                     }
 
-                    if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    if (
+                        email &&
+                        (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                    ) {
                         errors.push(`Row ${rowNum}: Invalid email format: ${email}`)
                         return
                     }
@@ -188,8 +202,8 @@ export const CustomerModal = ({
 
                     customers.push({
                         name: String(name).trim(),
-                        email: String(email).trim(),
-                        phone: row.phone || row.Phone || row.PHONE ? String(row.phone || row.Phone || row.PHONE).trim() : undefined,
+                        email: email ? String(email).trim() : undefined,
+                        phone: String(phone).trim(),
                         company: row.company || row.Company || row.COMPANY ? String(row.company || row.Company || row.COMPANY).trim() : undefined,
                         status: statusValue as CustomerStatus,
                     })
@@ -260,10 +274,11 @@ export const CustomerModal = ({
                 email: row.email,
                 phone: row.phone,
                 company: row.company,
+                tags: [],
                 status: row.status,
             }))
 
-            await onBulkImport(customersToImport)
+            await onBulkImport(customersToImport, mergeStrategy)
 
             setExcelData([])
             setParseErrors([])
@@ -292,9 +307,11 @@ export const CustomerModal = ({
         const normalizedValues: CustomerFormValues = {
             ...values,
             name: values.name.trim(),
-            email: values.email.trim(),
-            phone: values.phone?.trim() ? values.phone.trim() : undefined,
+            email: values.email?.trim() ? values.email.trim() : undefined,
+            phone: values.phone.trim(),
             company: values.company?.trim() ? values.company.trim() : undefined,
+            description: values.description?.trim() ? values.description.trim() : undefined,
+            tags: values.tags,
         }
 
         await onSubmit(normalizedValues)
@@ -307,7 +324,7 @@ export const CustomerModal = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="max-w-lg space-y-6 p-6">
+            <DialogContent className="max-h-[90vh] max-w-lg space-y-6 overflow-y-auto p-6">
                 <DialogHeader className="space-y-1">
                     <DialogTitle>{dialogTitle}</DialogTitle>
                     <DialogDescription>{dialogDescription}</DialogDescription>
@@ -336,10 +353,77 @@ export const CustomerModal = ({
                                 </div>
 
                                 <p className="text-center text-xs text-muted-foreground">{t("import.formatInfo")}</p>
+                                <div className="flex justify-center">
+                                    <Button
+                                        type="button"
+                                        variant="link"
+                                        size="sm"
+                                        className="h-auto p-0 text-xs"
+                                        onClick={downloadCustomerImportTemplate}
+                                    >
+                                        <Download className="mr-1 size-3.5" />
+                                        {t("import.downloadTemplate")}
+                                    </Button>
+                                </div>
                             </div>
 
                             {excelData.length > 0 && (
-                                <div className="space-y-2 rounded-lg border bg-muted/50 p-4">
+                                <div className="space-y-3 rounded-lg border bg-muted/50 p-4">
+                                    <div className="space-y-2">
+                                        <Label>{t("import.duplicateStrategy.label")}</Label>
+                                        <p className="text-xs text-muted-foreground">
+                                            {t("import.duplicateStrategy.description")}
+                                        </p>
+                                        <RadioGroup
+                                            value={mergeStrategy}
+                                            onValueChange={(value) =>
+                                                setMergeStrategy(value as CustomerImportMergeStrategy)
+                                            }
+                                            disabled={isBulkSubmitting}
+                                            className="gap-3"
+                                        >
+                                            <div className="flex items-start gap-2">
+                                                <RadioGroupItem
+                                                    value="merge"
+                                                    id="customer-import-merge"
+                                                    className="mt-0.5"
+                                                />
+                                                <Label htmlFor="customer-import-merge" className="font-normal">
+                                                    <span className="block text-sm">{t("import.duplicateStrategy.merge")}</span>
+                                                    <span className="block text-xs text-muted-foreground">
+                                                        {t("import.duplicateStrategy.mergeDescription")}
+                                                    </span>
+                                                </Label>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <RadioGroupItem
+                                                    value="overwrite"
+                                                    id="customer-import-overwrite"
+                                                    className="mt-0.5"
+                                                />
+                                                <Label htmlFor="customer-import-overwrite" className="font-normal">
+                                                    <span className="block text-sm">{t("import.duplicateStrategy.overwrite")}</span>
+                                                    <span className="block text-xs text-muted-foreground">
+                                                        {t("import.duplicateStrategy.overwriteDescription")}
+                                                    </span>
+                                                </Label>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <RadioGroupItem
+                                                    value="skip"
+                                                    id="customer-import-skip"
+                                                    className="mt-0.5"
+                                                />
+                                                <Label htmlFor="customer-import-skip" className="font-normal">
+                                                    <span className="block text-sm">{t("import.duplicateStrategy.skip")}</span>
+                                                    <span className="block text-xs text-muted-foreground">
+                                                        {t("import.duplicateStrategy.skipDescription")}
+                                                    </span>
+                                                </Label>
+                                            </div>
+                                        </RadioGroup>
+                                    </div>
+
                                     <div className="flex items-center justify-between">
                                         <p className="text-sm font-medium">{t("import.preview", { count: excelData.length })}</p>
                                         <Button
@@ -395,115 +479,11 @@ export const CustomerModal = ({
                                     className="grid gap-5"
                                     onSubmit={form.handleSubmit(handleSubmit)}
                                 >
-                                    <FormField
-                                        control={form.control}
-                                        name="name"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.name.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.name.placeholder")}
-                                                        autoComplete="name"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="email"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.email.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.email.placeholder")}
-                                                        type="email"
-                                                        autoComplete="email"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="phone"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.phone.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.phone.placeholder")}
-                                                        type="tel"
-                                                        autoComplete="tel"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="company"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.company.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.company.placeholder")}
-                                                        autoComplete="organization"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="status"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.status.label")}</FormLabel>
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    value={field.value}
-                                                    defaultValue={field.value}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger aria-label={t("form.fields.status.label")}>
-                                                            <SelectValue placeholder={t("form.fields.status.placeholder")} />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {statusOptions.map((option) => (
-                                                            <SelectItem key={option} value={option}>
-                                                                {t(`table.badges.${option}`)}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
+                                    <CustomerFormFields
+                                        form={form}
+                                        t={t}
+                                        tagSuggestions={tagSuggestions}
+                                        disabled={isSubmitting}
                                     />
 
                                     <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -536,115 +516,11 @@ export const CustomerModal = ({
                             className="grid gap-5"
                             onSubmit={form.handleSubmit(handleSubmit)}
                         >
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.name.label")}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.name.placeholder")}
-                                                autoComplete="name"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.email.label")}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.email.placeholder")}
-                                                type="email"
-                                                autoComplete="email"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="phone"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.phone.label")}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.phone.placeholder")}
-                                                type="tel"
-                                                autoComplete="tel"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="company"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.company.label")}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.company.placeholder")}
-                                                autoComplete="organization"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="status"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.status.label")}</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            value={field.value}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger aria-label={t("form.fields.status.label")}>
-                                                    <SelectValue placeholder={t("form.fields.status.placeholder")} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {statusOptions.map((option) => (
-                                                    <SelectItem key={option} value={option}>
-                                                        {t(`table.badges.${option}`)}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                            <CustomerFormFields
+                                form={form}
+                                t={t}
+                                tagSuggestions={tagSuggestions}
+                                disabled={isSubmitting}
                             />
 
                             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">

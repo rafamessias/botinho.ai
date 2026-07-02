@@ -6,14 +6,16 @@ Document conversation management, message lifecycle, real-time updates, and agen
 
 ## Status
 
-`partial` — Firestore CRUD and realtime listeners work; no external message delivery or inbound webhooks.
+`partial` — Firestore CRUD, realtime listeners, and WhatsApp webhook delivery work when the linked session is `connected`. Re-pair required when session drops.
 
 ## Source of truth
 
 - [components/inbox/inbox-page.tsx](../../components/inbox/inbox-page.tsx)
 - [components/server-actions/inbox.ts](../../components/server-actions/inbox.ts)
+- [lib/messaging/messaging-service.ts](../../lib/messaging/messaging-service.ts)
 - [lib/firebase/services/inbox-service.ts](../../lib/firebase/services/inbox-service.ts)
 - [hooks/use-inbox-realtime.ts](../../hooks/use-inbox-realtime.ts)
+- [app/api/webhooks/whatsapp/inbound/route.ts](../../app/api/webhooks/whatsapp/inbound/route.ts)
 
 ## Data model hierarchy
 
@@ -23,31 +25,21 @@ InboxCustomer (1) ──→ (N) InboxConversation ──→ (N) InboxMessage
 
 All records scoped under `companies/{companyId}/`.
 
+Inbound events (retry queue): `companies/{companyId}/inboundEvents/{eventId}`
+
 ## UI features (inbox-page.tsx)
 
 | Feature | Implementation |
 |---------|----------------|
 | Conversation list | `getInboxConversationsAction` |
 | Conversation detail + messages | `getInboxConversationDetailAction` |
-| Send message | `sendInboxMessageAction` |
+| Send message | `sendInboxMessageAction` → `sendOutbound` |
 | Mark read | `markInboxConversationReadAction` |
 | Update metadata | `updateInboxConversationMetadataAction` |
 | AI suggestions | `getSuggestedResponsesAction` (Gemini) |
+| Live agent panel | [context-panel.tsx](../../components/inbox/context-panel.tsx) |
 | Real-time updates | Firestore `onSnapshot` via `useInboxRealtime` |
-
-## Conversation fields
-
-| Field | Purpose |
-|-------|---------|
-| subject | Optional thread title |
-| lastMessagePreview | List display |
-| lastMessageSentAt | Sort key |
-| unreadCount | Badge count |
-| priority | low / medium / high |
-| satisfactionScore | Optional 1–5 |
-| tags | String array |
-| assignedToId | Agent user id |
-| isArchived | Archive flag |
+| WhatsApp repair banner | When no connected session or re-pair required |
 
 ## Message fields
 
@@ -56,7 +48,6 @@ All records scoped under `companies/{companyId}/`.
 | senderType | customer / agent / bot / system |
 | senderUserId | Agent uid when senderType=agent |
 | content | Message text |
-| attachments | JSON (optional) |
 | status | pending / sent / delivered / read / failed |
 | sentAt | Timestamp |
 
@@ -66,49 +57,53 @@ All records scoped under `companies/{companyId}/`.
 sequenceDiagram
   participant UI as inbox-page
   participant SA as sendInboxMessageAction
+  participant MS as messaging-service
+  participant WA as whatsapp-worker
   participant FS as Firestore
 
   UI->>SA: { conversationId, content }
-  SA->>SA: resolveCompanyContext (canPost)
-  SA->>FS: createInboxMessage (agent)
-  SA->>FS: update conversation preview + unread
-  Note over SA: No external provider call
+  SA->>MS: sendOutbound
+  MS->>FS: createInboxMessage
+  MS->>WA: SendText (if WhatsApp channel)
+  WA-->>MS: message id / error
+  MS->>FS: update message status
   SA-->>UI: success
 ```
 
-## Inbound messages
+## Inbound message flow
 
-[`recordInboundMessage`](../../lib/firebase/services/inbox-service.ts) upserts customer by phone, finds/creates conversation, creates customer message.
+```mermaid
+sequenceDiagram
+  participant WA as whatsapp-worker
+  participant WH as /api/webhooks/whatsapp/inbound
+  participant MS as messaging-service
+  participant FS as Firestore
+  participant UI as inbox-page
 
-**Not wired:** No HTTP webhook calls this function yet. Will be connected when messaging provider is chosen.
+  WA->>WH: POST inbound payload
+  WH->>MS: processInboundFromWebhook
+  MS->>FS: upsert inboundEvent + createInboxMessage
+  MS->>MS: maybeAutoReply
+  FS-->>UI: onSnapshot realtime
+```
 
-## AI suggestions
+Cron fallback: [app/api/cron/process-inbound-events/route.ts](../../app/api/cron/process-inbound-events/route.ts) retries pending events every 2 min.
 
-Gemini-powered via `generateSuggestedResponses`. See [10-ai-training.md](10-ai-training.md).
+## Auto-reply
 
-Falls back to static Portuguese/English strings when AI unavailable.
+When an AI agent has `autoReply: true`, is linked to the session, and the conversation is unassigned:
 
-## Real-time updates
+1. `generateAutoReplyText` (Gemini)
+2. `sendOutbound` via WhatsApp worker
 
-[`useInboxRealtime`](../../hooks/use-inbox-realtime.ts):
+Blocked when: survey active, conversation assigned, agent disabled, or session not connected.
 
-1. Subscribes to `companies/{companyId}/conversations` ordered by `lastMessageSentAt`
-2. When a conversation is selected, subscribes to its `messages` subcollection
-3. Skips initial snapshot to avoid duplicate fetches; subsequent changes trigger refetch callbacks
+## WhatsApp session truth
 
-Replaces the prior custom WebSocket backend.
+`getInboxConnectionsAction` and `getWhatsAppSessionsAction` route through `WhatsAppOrchestrator.listSessions` → `enrichAndPersist` so UI reflects live worker status, not stale Firestore.
 
-## Search and filters
+## Related specs
 
-Server-side search in `listInboxConversations` filters by customer name/phone/email, tags, and message preview.
-
-## Edge cases
-
-- Agent messages are stored with `status: sent` but never leave Firestore without a messaging provider.
-- `canPost` or `isAdmin` required for send (via resolveCompanyContext).
-- Customer uniqueness: one InboxCustomer per phone per company (service-layer check).
-- Firestore client listeners require user to be authenticated in the app.
-
-## Open questions
-
-- Inbound webhook shape depends on chosen messaging provider.
+- [09-whatsapp-integration.md](09-whatsapp-integration.md)
+- [23-whatsapp-inbound-reliability.md](23-whatsapp-inbound-reliability.md)
+- [22-scheduled-jobs.md](22-scheduled-jobs.md)

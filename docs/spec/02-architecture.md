@@ -6,7 +6,7 @@ Describe system layers, major components, and how data flows between the Next.js
 
 ## Status
 
-`implemented` — Firebase + Gemini stack is in production code. Messaging provider is not integrated.
+`implemented` — Firebase + Gemini stack is in production code. WhatsApp uses a linked-device worker; email provider is not integrated.
 
 ## Source of truth
 
@@ -27,8 +27,10 @@ Describe system layers, major components, and how data flows between the Next.js
 | AI | Firebase AI Logic (Gemini 2.0 flash / pro) |
 | Payments | Stripe |
 | Email | Stub in `lib/email/` — provider TBD |
+| WhatsApp | Go whatsmeow worker + Redis registry ([09-whatsapp-integration.md](09-whatsapp-integration.md)) |
 | i18n | next-intl |
-| Deployment | Vercel (primary); Firebase App Hosting planned |
+| Deployment | Firebase App Hosting on Google Cloud (or self-hosted Node) |
+| Background jobs | Google Cloud Scheduler → `/api/cron/*` (see [22-scheduled-jobs.md](22-scheduled-jobs.md)) |
 
 ## Layer diagram
 
@@ -59,6 +61,8 @@ flowchart TB
     Gemini[Gemini via Firebase AI Logic]
     Stripe[Stripe]
     EmailStub[Email stub - provider TBD]
+    Redis[(Redis)]
+    WAWorker[WhatsApp worker whatsmeow]
   end
 
   Client --> SA
@@ -71,8 +75,12 @@ flowchart TB
   SA --> AI
   SA --> EmailStub
   SA --> Stripe
+  SA --> WAWorker
   API --> FirestoreAdmin
   API --> Stripe
+  API --> WAWorker
+  WAWorker --> Redis
+  WAWorker -->|inbound webhook| API
   FirestoreAdmin --> Firestore
   FirestoreClient --> Firestore
   Auth --> FirebaseAuth
@@ -83,7 +91,7 @@ flowchart TB
 
 ### Server actions as primary API
 
-Most mutations and queries go through **server actions** in `components/server-actions/`. Only three HTTP routes exist under `app/api/`.
+Most mutations and queries go through **server actions** in `components/server-actions/`. HTTP routes under `app/api/` cover auth, Stripe webhooks, WhatsApp inbound, and cron jobs (see [08-api-routes.md](08-api-routes.md)).
 
 **Rationale:** Colocation with UI, type-safe calls from client components, Next.js-native pattern.
 
@@ -116,15 +124,22 @@ AI features use Firebase AI Logic via [`lib/firebase/ai/server-ai.ts`](../../lib
 
 Usage is metered per company in `companies/{id}/usage/{YYYY-MM}`.
 
-### Messaging not integrated
+### WhatsApp linked-device worker
 
-WhatsApp and transactional email have **no production provider**. Inbox messages are stored in Firestore only. Email sends log to console in development.
+WhatsApp uses a **Go whatsmeow worker** ([services/whatsapp-worker/](../../services/whatsapp-worker/)) with **Redis** for session/worker registry:
+
+- Settings UI pairs business phones via QR code
+- Inbound: worker POSTs to `/api/webhooks/whatsapp/inbound`
+- Outbound: `sendOutbound` → orchestrator → worker `SendText`
+- Sessions can drop on websocket EOF; user must re-pair (see [23-whatsapp-inbound-reliability.md](23-whatsapp-inbound-reliability.md))
+
+Transactional email has **no production provider**. Email sends log to console in development.
 
 ### Build configuration
 
 [`next.config.mjs`](../../next.config.mjs):
 
-- Plugins: `next-intl`, `botid`
+- Plugins: `next-intl`
 - `eslint.ignoreDuringBuilds: true`
 - `typescript.ignoreBuildErrors: true`
 - `images.unoptimized: true`

@@ -43,3 +43,9 @@ function createAdminApp(): App {
 export const adminApp = createAdminApp()
 export const adminAuth: Auth = getAuth(adminApp)
 export const adminDb: Firestore = getFirestore(adminApp)
+
+try {
+  adminDb.settings({ ignoreUndefinedProperties: true })
+} catch {
+  // Firestore is already initialized (e.g. Next.js HMR re-evaluating this module).
+}

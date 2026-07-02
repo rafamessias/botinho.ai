@@ -1,6 +1,6 @@
 # botinho.ai Specification Index
 
-**Last updated:** 2026-06-19 — reflects current Firebase + Gemini stack  
+**Last updated:** 2026-06-27 — Firebase App Hosting + Google Cloud Scheduler; Vercel removed  
 **Scope:** Document current behavior only (including gaps and legacy code)
 
 > **Remaining roadmap:** Messaging provider and production email → [future/00-roadmap.md](future/00-roadmap.md)
@@ -13,7 +13,7 @@
 | **Server action** | Next.js `"use server"` function in `components/server-actions/`; primary mutation API |
 | **Firebase Auth** | Identity provider (email/password, Google); uid is the primary user key |
 | **NextAuth session** | JWT cookie bridge over Firebase Auth for App Router session management |
-| **Messaging provider** | External API for WhatsApp + transactional email — **not chosen yet** |
+| **Messaging provider** | WhatsApp via linked-device worker (whatsmeow); production email still TBD |
 
 ## Status legend
 
@@ -36,17 +36,24 @@
 | 06 | [Data model](06-data-model.md) | `implemented` | Firestore collections and types |
 | 07 | [Server actions](07-server-actions.md) | `implemented` | Full action catalog by domain |
 | 08 | [API routes](08-api-routes.md) | `implemented` | HTTP endpoints and webhooks |
-| 09 | [WhatsApp integration](09-whatsapp-integration.md) | `stub` | No provider connected yet |
+| 09 | [WhatsApp integration](09-whatsapp-integration.md) | `partial` | whatsmeow worker + QR pairing; re-pair on disconnect |
 | 10 | [AI training](10-ai-training.md) | `implemented` | Firestore CRUD + Gemini inference |
-| 11 | [Inbox and messaging](11-inbox-and-messaging.md) | `partial` | Firestore CRUD + realtime; no outbound/inbound provider |
+| 11 | [Inbox and messaging](11-inbox-and-messaging.md) | `partial` | Firestore CRUD + realtime + WhatsApp webhook when session connected |
 | 12 | [Subscription and billing](12-subscription-and-billing.md) | `implemented` | Stripe + Firestore subscriptions |
 | 13 | [Email system](13-email-system.md) | `stub` | Dev console fallback; provider TBD |
 | 14 | [i18n](14-i18n.md) | `implemented` | Locales, routing, messages |
 | 15 | [UI and design system](15-ui-and-design-system.md) | `implemented` | shadcn, Tailwind, components |
 | 16 | [Environment and config](16-environment-and-config.md) | — | Env vars, config files |
-| 17 | [Deployment and ops](17-deployment-and-ops.md) | `partial` | Vercel; no CI/tests |
+| 17 | [Deployment and ops](17-deployment-and-ops.md) | `partial` | No CI/tests |
 | 18 | [Known gaps and legacy](18-known-gaps-and-legacy.md) | — | Technical debt inventory |
 | 19 | [Company and members](19-company-and-members.md) | `implemented` | Single-company policy, invites, workspace sync |
+| 20 | [Customer interaction, surveys & live agents](20-customer-interaction-surveys-and-live-agents.md) | `partial` | Surveys, agent config, live-agent context panel |
+| 21 | [Campaigns](21-campaigns.md) | `implemented` | Outbound campaigns, tag audience, throttled delivery, metrics |
+| 22 | [Scheduled jobs](22-scheduled-jobs.md) | `implemented` | Cloud Scheduler cron routes (messaging retries, campaigns) |
+| 23 | [WhatsApp inbound reliability](23-whatsapp-inbound-reliability.md) | `partial` | Linked-device pipeline, session states, observability |
+| 24 | [WhatsApp session store persistence](24-whatsapp-session-store-persistence.md) | `partial` | Phase 1: SQLite snapshot + Firestore waStores + local/GCS |
+| 27 | [Onboarding](27-onboarding.md) | `implemented` | Post-signup 4-step wizard for new account owners |
+| 28 | [Schedule reservations](28-schedule-reservations.md) | `implemented` | Appointments, agenda role, Botinho booking tools |
 
 ## Roadmap specs (not yet implemented)
 
@@ -85,17 +92,21 @@ flowchart TB
   subgraph api [HTTP API]
     AuthRoute["/api/auth"]
     StripeWH["/api/stripe/webhook"]
+    CronRoutes["/api/cron/*"]
+    WhatsAppWH["/api/webhooks/whatsapp"]
   end
 
   subgraph firebase [Firebase / Google Cloud]
     FirebaseAuth[Firebase Authentication]
     Firestore[(Cloud Firestore)]
     Gemini[Firebase AI Logic - Gemini]
+    AppHosting[Firebase App Hosting]
+    Scheduler[Cloud Scheduler]
   end
 
   subgraph external [External Services]
     Stripe[Stripe]
-    Messaging[Messaging provider TBD]
+    WhatsAppWorker[WhatsApp worker]
   end
 
   Pages --> SA
@@ -105,8 +116,11 @@ flowchart TB
   SA --> FirebaseAuth
   SA --> Gemini
   SA --> Stripe
-  SA -.->|stub| Messaging
+  SA --> WhatsAppWorker
   api --> Firestore
   api --> Stripe
+  api --> WhatsAppWorker
+  Scheduler --> CronRoutes
+  CronRoutes --> AppHosting
   FirebaseAuth --> SA
 ```

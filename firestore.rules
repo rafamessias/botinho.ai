@@ -35,6 +35,18 @@ service cloud.firestore {
         allow read, write: if false;
       }
 
+      match /channelUsage/{docId} {
+        allow read, write: if false;
+      }
+
+      match /inboundEvents/{docId} {
+        allow read, write: if false;
+      }
+
+      match /messageDedupe/{docId} {
+        allow read, write: if false;
+      }
+
       match /knowledge/{docId} {
         allow read, write: if false;
       }
@@ -47,7 +59,39 @@ service cloud.firestore {
         allow read, write: if false;
       }
 
+      match /surveys/{docId} {
+        allow read, write: if false;
+      }
+
+      match /surveyResponses/{docId} {
+        allow read, write: if false;
+      }
+
+      match /campaigns/{docId} {
+        allow read, write: if false;
+      }
+
+      match /campaignDeliveries/{docId} {
+        allow read, write: if false;
+      }
+
       match /customers/{docId} {
+        allow read, write: if false;
+      }
+
+      match /tickets/{ticketId} {
+        allow read, write: if false;
+
+        match /comments/{docId} {
+          allow read, write: if false;
+        }
+
+        match /activities/{docId} {
+          allow read, write: if false;
+        }
+      }
+
+      match /ticketCounters/{docId} {
         allow read, write: if false;
       }
 
@@ -68,6 +112,10 @@ service cloud.firestore {
     }
 
     match /pendingSignups/{docId} {
+      allow read, write: if false;
+    }
+
+    match /systemProperties/{docId} {
       allow read, write: if false;
     }
 

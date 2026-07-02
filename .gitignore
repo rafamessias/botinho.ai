@@ -2,9 +2,9 @@
 
 # dependencies
 /node_modules
-/ws-server/node_modules
-/ws-server/lib/generated
-/.wwebjs_auth
+
+# Go worker
+/services/whatsapp-worker/bin/
 
 # next.js
 /.next/
@@ -21,9 +21,6 @@ yarn-error.log*
 
 # env files
 .env
-
-# vercel
-.vercel
 
 # typescript
 *.tsbuildinfo

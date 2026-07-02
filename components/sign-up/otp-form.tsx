@@ -178,7 +178,7 @@ export function OTPForm() {
                         </div>
 
                         {errors.otp && (
-                            <p className="text-sm text-red-500 text-center">{errors.otp.message}</p>
+                            <p className="text-sm text-destructive text-center">{errors.otp.message}</p>
                         )}
 
                         <Button

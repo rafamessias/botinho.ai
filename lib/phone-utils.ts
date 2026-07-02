@@ -86,6 +86,73 @@ export const extractPhoneDigits = (value: string): string => {
 }
 
 /**
+ * Normalize a phone number for database storage and WhatsApp lookups.
+ * Strips formatting characters and keeps digits only.
+ */
+export const normalizeStoredPhone = (value: string): string => {
+    return extractPhoneDigits(value.trim())
+}
+
+/**
+ * Format a digits-only stored phone for display (e.g. 5511981622360 → +55 (11) 98162-2360).
+ */
+export const formatStoredPhoneForDisplay = (value: string): string => {
+    const digits = normalizeStoredPhone(value)
+    if (!digits) return value
+
+    if (digits.startsWith("55") && digits.length >= 12) {
+        return `+55 ${formatPhoneNumber(digits.slice(2), "BR")}`
+    }
+
+    if (digits.startsWith("1") && digits.length === 11) {
+        return `+1 ${formatPhoneNumber(digits.slice(1), "US")}`
+    }
+
+    return `+${digits}`
+}
+
+const PHONE_MASK_CHAR = "•"
+
+/**
+ * Returns true when a display string is mostly a phone number (e.g. stored digits-only name).
+ */
+export const isPhoneLikeString = (value: string): boolean => {
+    const trimmed = value.trim()
+    if (!trimmed) return false
+
+    const digits = extractPhoneDigits(trimmed)
+    const compact = trimmed.replace(/\s/g, "")
+
+    return digits.length >= 8 && digits.length / compact.length >= 0.8
+}
+
+/**
+ * Mask a phone number for display, revealing only the last 4 digits.
+ * e.g. 5511971826688 → +55 (11) •••••-6688
+ */
+export const maskPhoneForDisplay = (value: string): string => {
+    const digits = normalizeStoredPhone(value)
+    if (!digits) return value
+    if (digits.length <= 4) return digits
+
+    const lastFour = digits.slice(-4)
+
+    if (digits.startsWith("55") && digits.length >= 12) {
+        const local = digits.slice(2)
+        const areaCode = local.slice(0, 2)
+        return `+55 (${areaCode}) ${PHONE_MASK_CHAR.repeat(5)}-${lastFour}`
+    }
+
+    if (digits.startsWith("1") && digits.length === 11) {
+        const local = digits.slice(1)
+        const areaCode = local.slice(0, 3)
+        return `+1 (${areaCode}) ${PHONE_MASK_CHAR.repeat(3)}-${lastFour}`
+    }
+
+    return `${PHONE_MASK_CHAR.repeat(digits.length - 4)}${lastFour}`
+}
+
+/**
  * Validates if a phone number has the minimum required digits
  * @param value - The phone number string to validate
  * @param minLength - Minimum number of digits required (default: 10)
@@ -130,11 +197,34 @@ export const parseInternationalNumber = (internationalNumber: string): { country
 }
 
 /**
- * Builds a complete international phone number from country and local number
- * @param countryCode - The country code
- * @param localNumber - The local phone number (digits only)
- * @returns Complete international number with + prefix
+ * Parses a phone number from storage (digits-only) or international (+prefix) format.
  */
+export const parseStoredPhoneNumber = (value: string): { countryCode: CountryCode; localNumber: string } | null => {
+    if (!value?.trim()) return null
+
+    const trimmed = value.trim()
+
+    if (trimmed.startsWith("+")) {
+        return parseInternationalNumber(trimmed)
+    }
+
+    const digits = normalizeStoredPhone(trimmed)
+    if (!digits) return null
+
+    for (const country of countries) {
+        const dialCodeDigits = country.dialCode.slice(1)
+
+        if (digits.startsWith(dialCodeDigits)) {
+            const localNumber = digits.slice(dialCodeDigits.length)
+            if (localNumber.length > 0) {
+                return { countryCode: country.code, localNumber }
+            }
+        }
+    }
+
+    return null
+}
+
 export const buildInternationalNumber = (countryCode: CountryCode, localNumber: string): string => {
     const country = countries.find(c => c.code === countryCode)
     if (!country) return localNumber

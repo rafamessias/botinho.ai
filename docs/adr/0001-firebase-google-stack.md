@@ -38,7 +38,7 @@ Zavu was integrated then removed (2026-06-19) pending a new provider evaluation.
 | Gemini inference | Server-only; flash for suggestions, pro for auto-reply |
 | URL knowledge | Summarize on write via Gemini flash |
 | Real-time inbox | Firestore `onSnapshot` listeners |
-| Deployment | Vercel (Firebase App Hosting planned) |
+| Deployment | Firebase App Hosting (or self-hosted Node) |
 
 ## Consequences
 

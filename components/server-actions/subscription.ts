@@ -8,12 +8,19 @@ import { getCustomerSubscription, updateCustomerSubscription } from "@/lib/custo
 import { getCurrentCompanyId } from "@/lib/firebase/get-current-company-id"
 import { getActivePlans, getPlanByType } from "@/lib/firebase/services/subscription-service"
 import { getAiUsageSnapshot } from "@/lib/firebase/services/ai-usage-service"
+import { getSyncedNumbersSnapshot } from "@/lib/firebase/services/synced-numbers-service"
+import { getMessageUsageMetrics, listChannelUsageForCompany } from "@/lib/messaging/message-usage-service"
 import { PlanType, SubscriptionStatus } from "@/lib/types/enums"
+import type { PlanCurrency } from "@/lib/plan-catalog"
 import { getServerAuthSession } from "@/lib/auth/server-session"
 
-export const createCheckoutSession = async (planId: PlanType, billingCycle: "monthly" | "yearly") => {
+export const createCheckoutSession = async (
+  planId: PlanType,
+  billingCycle: "monthly" | "yearly",
+  currency?: PlanCurrency,
+) => {
   try {
-    const result = await createStripeCheckoutSession({ planId, billingCycle })
+    const result = await createStripeCheckoutSession({ planId, billingCycle, currency })
     if (!result.success || !result.url) {
       throw new Error(result.error || "Failed to create checkout session")
     }
@@ -64,13 +71,17 @@ export const getSubscriptionData = async () => {
     }
 
     const aiUsage = await getAiUsageSnapshot(companyId)
+    const syncedNumbers = await getSyncedNumbersSnapshot(companyId)
+    const messageUsage = await getMessageUsageMetrics(companyId)
+    const channelUsage = await listChannelUsageForCompany(companyId)
 
     return {
       success: true,
       data: {
         subscription: subscriptionResult.data,
         usage: {
-          usage: [aiUsage],
+          usage: [aiUsage, syncedNumbers, ...messageUsage],
+          channelUsage,
         },
       },
     }

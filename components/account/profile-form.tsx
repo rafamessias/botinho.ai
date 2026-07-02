@@ -174,9 +174,9 @@ export function ProfileForm() {
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="space-y-4">
-                        <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
-                        <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
-                        <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+                        <div className="h-8 w-32 bg-muted rounded animate-pulse" />
+                        <div className="h-4 w-48 bg-muted rounded animate-pulse" />
+                        <div className="h-10 w-full bg-muted rounded animate-pulse" />
                     </div>
                 </CardContent>
             </Card>
@@ -203,7 +203,7 @@ export function ProfileForm() {
                                     {...form.register("firstName")}
                                 />
                                 {form.formState.errors.firstName && (
-                                    <p className="text-sm text-red-500">
+                                    <p className="text-sm text-destructive">
                                         {form.formState.errors.firstName.message}
                                     </p>
                                 )}
@@ -217,7 +217,7 @@ export function ProfileForm() {
                                     {...form.register("lastName")}
                                 />
                                 {form.formState.errors.lastName && (
-                                    <p className="text-sm text-red-500">
+                                    <p className="text-sm text-destructive">
                                         {form.formState.errors.lastName.message}
                                     </p>
                                 )}
@@ -235,7 +235,7 @@ export function ProfileForm() {
                                 }}
                             />
                             {form.formState.errors.phone && (
-                                <p className="text-sm text-red-500">
+                                <p className="text-sm text-destructive">
                                     {form.formState.errors.phone.message}
                                 </p>
                             )}
@@ -250,7 +250,7 @@ export function ProfileForm() {
                                     {...form.register("position")}
                                 />
                                 {form.formState.errors.position && (
-                                    <p className="text-sm text-red-500">
+                                    <p className="text-sm text-destructive">
                                         {form.formState.errors.position.message}
                                     </p>
                                 )}
@@ -264,7 +264,7 @@ export function ProfileForm() {
                                     {...form.register("companyName")}
                                 />
                                 {form.formState.errors.companyName && (
-                                    <p className="text-sm text-red-500">
+                                    <p className="text-sm text-destructive">
                                         {form.formState.errors.companyName.message}
                                     </p>
                                 )}
@@ -279,7 +279,7 @@ export function ProfileForm() {
                                 {...form.register("country")}
                             />
                             {form.formState.errors.country && (
-                                <p className="text-sm text-red-500">
+                                <p className="text-sm text-destructive">
                                     {form.formState.errors.country.message}
                                 </p>
                             )}

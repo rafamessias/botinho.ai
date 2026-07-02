@@ -4,9 +4,11 @@ import { adminDb } from "@/lib/firebase/admin"
 import { collections, companySubcollections } from "@/lib/firebase/collections"
 import { getUserProfile } from "@/lib/firebase/services/user-service"
 import { resolveActiveCompanyId } from "@/lib/user-workspace"
+import { requireOnboardingCompleted } from "@/lib/onboarding/require-onboarding-completed"
+import { ONBOARDING_REQUIRED_ERROR } from "@/lib/onboarding/onboarding-utils"
 import type { FirestoreCompanyMember } from "@/lib/firebase/types"
 
-export type AccessMode = "read" | "write" | "manage"
+export type AccessMode = "read" | "write" | "manage" | "agenda"
 
 export type BotinhoSessionResult = {
   ok: boolean
@@ -20,6 +22,7 @@ type MemberPermissionFields = {
   isOwner: boolean
   isAdmin: boolean
   canPost: boolean
+  canManageAgenda?: boolean
 }
 
 const canPostAsMember = (member: MemberPermissionFields) =>
@@ -27,9 +30,13 @@ const canPostAsMember = (member: MemberPermissionFields) =>
 
 const canManageAsMember = (member: MemberPermissionFields) => member.isOwner || member.isAdmin
 
+const canManageAgendaAsMember = (member: MemberPermissionFields) =>
+  member.isOwner || member.isAdmin || Boolean(member.canManageAgenda)
+
 const memberPassesMode = (member: MemberPermissionFields, mode: AccessMode): boolean => {
   if (mode === "read") return true
   if (mode === "write") return canPostAsMember(member)
+  if (mode === "agenda") return canManageAgendaAsMember(member)
   return canManageAsMember(member)
 }
 
@@ -87,7 +94,13 @@ export const assertCompanyMember = async (
   }
 
   if (!memberPassesMode(member, mode)) {
-    throw new Error(mode === "manage" ? "Requires admin permissions" : "Insufficient permissions")
+    const message =
+      mode === "manage"
+        ? "Requires admin permissions"
+        : mode === "agenda"
+          ? "Requires agenda permissions"
+          : "Insufficient permissions"
+    throw new Error(message)
   }
 
   return member
@@ -102,12 +115,18 @@ export type CompanyMembershipGuardOptions = {
   companyId?: string
   requireAdmin?: boolean
   requireCanPost?: boolean
+  requireCanManageAgenda?: boolean
 }
 
 export const resolveCompanyContext = async (options: CompanyMembershipGuardOptions = {}) => {
   const session = await getBotinhoSession()
   if (!session.ok || !session.uid) {
     throw new Error(session.error ?? "Not authenticated")
+  }
+
+  const onboardingCheck = await requireOnboardingCompleted(session.uid)
+  if (!onboardingCheck.ok) {
+    throw new Error(ONBOARDING_REQUIRED_ERROR)
   }
 
   const companyId = options.companyId ?? session.companyId
@@ -119,7 +138,9 @@ export const resolveCompanyContext = async (options: CompanyMembershipGuardOptio
     ? "manage"
     : options.requireCanPost
       ? "write"
-      : "read"
+      : options.requireCanManageAgenda
+        ? "agenda"
+        : "read"
 
   const membership = await assertCompanyMember(companyId, session.uid, mode)
 
@@ -132,6 +153,7 @@ export const resolveCompanyContext = async (options: CompanyMembershipGuardOptio
       canPost: membership.canPost,
       isOwner: membership.isOwner,
       canApprove: membership.canApprove,
+      canManageAgenda: Boolean(membership.canManageAgenda) || membership.isAdmin || membership.isOwner,
     },
   }
 }

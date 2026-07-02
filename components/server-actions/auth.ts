@@ -11,7 +11,7 @@ import { BillingInterval, PlanType, SubscriptionStatus } from "@/lib/types/enums
 import { createCheckoutSession } from "@/lib/stripe-service"
 import { adminAuth } from "@/lib/firebase/admin"
 import { sendTransactionalEmail } from "@/lib/email/send-transactional-email"
-import { getUserProfile } from "@/lib/firebase/services/user-service"
+import { getUserProfile, createUserProfile, completeUserOnboarding } from "@/lib/firebase/services/user-service"
 import { createCompanyForUser } from "@/lib/firebase/services/company-service"
 import {
   createFreeSubscriptionForCompany,
@@ -20,6 +20,7 @@ import {
 import { acceptCompanyInvite } from "@/lib/firebase/services/company-operations"
 import { adminDb } from "@/lib/firebase/admin"
 import { collections } from "@/lib/firebase/collections"
+import { resolveOnboardingStatus } from "@/lib/onboarding/onboarding-utils"
 
 export interface SignInFormData {
   email: string
@@ -161,17 +162,17 @@ export const validateUserCompanyAndSubscription = async (userEmail: string) => {
       return { success: false, error: "User not found", needsCheckout: false, checkoutUrl: null }
     }
 
+    if (resolveOnboardingStatus(profile) === "pending") {
+      return { success: true, needsCheckout: false, checkoutUrl: null, needsOnboarding: true }
+    }
+
     if (!profile.defaultCompanyId) {
-      const createCompanyResult = await createDefaultCompanyWithFreePlan(authUser.uid, profile.firstName)
-      if (!createCompanyResult.success) {
-        return {
-          success: false,
-          error: createCompanyResult.error || "Failed to create default company",
-          needsCheckout: false,
-          checkoutUrl: null,
-        }
+      return {
+        success: false,
+        error: "Company not found. Complete onboarding to create your company.",
+        needsCheckout: false,
+        checkoutUrl: null,
       }
-      return { success: true, needsCheckout: false, checkoutUrl: null }
     }
 
     const subscription = await getCompanySubscription(profile.defaultCompanyId)
@@ -332,6 +333,9 @@ export const confirmEmailAction = async (token: string, companyId?: string, uid?
         }
         return { success: false, error: result.error || t("invalidToken") }
       }
+
+      await completeUserOnboarding(result.uid)
+
       return { success: true, message: "Invitation accepted successfully. You can now sign in." }
     }
 
@@ -349,6 +353,22 @@ export const confirmEmailAction = async (token: string, companyId?: string, uid?
       }
 
       await adminAuth.updateUser(uid, { disabled: false, emailVerified: true })
+
+      const existingProfile = await getUserProfile(uid)
+      if (!existingProfile) {
+        await createUserProfile({
+          uid,
+          email: pending.email,
+          firstName: pending.firstName,
+          lastName: pending.lastName ?? undefined,
+          phone: pending.phone ?? undefined,
+          language: pending.language,
+          onboardingStatus: "pending",
+          onboardingStep: 1,
+          preferredPlanType: pending.planType ?? null,
+        })
+      }
+
       await pendingRef.update({ verified: true })
       return { success: true, message: "Email confirmed successfully. You can now sign in." }
     }
@@ -395,6 +415,22 @@ export const getCurrentUserAction = async () => {
   } catch (error) {
     console.error("Get current user error:", error)
     return { success: false, error: "Failed to get user", user: null }
+  }
+}
+
+export const getFirebaseCustomTokenAction = async () => {
+  try {
+    const { getServerAuthSession } = await import("@/lib/auth/server-session")
+    const session = await getServerAuthSession()
+    if (!session?.uid) {
+      return { success: false, error: "Not authenticated" }
+    }
+
+    const token = await adminAuth.createCustomToken(session.uid)
+    return { success: true, token }
+  } catch (error) {
+    console.error("Firebase custom token error:", error)
+    return { success: false, error: "Failed to create Firebase token" }
   }
 }
 

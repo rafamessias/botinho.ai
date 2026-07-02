@@ -25,16 +25,21 @@ import { generateConfirmationToken, getCurrentLocale } from "./auth"
 import { sendTransactionalEmail } from "@/lib/email/send-transactional-email"
 import { buildCompanyInviteEmail } from "@/lib/email/email-messages"
 import { validateApiAccess } from "@/lib/services/subscription-validation"
+import { companyProfileFieldsSchema } from "@/lib/company-form-schema"
 
 const createCompanySchema = z.object({
-  name: z.string().min(2),
+  name: z.string().trim().min(2),
   description: z.string().optional(),
 })
 
-const updateCompanySchema = z.object({
+const updateCompanyBasicSchema = z.object({
   id: z.string().min(1),
-  name: z.string().min(2),
+  name: z.string().trim().min(2),
   description: z.string().optional(),
+})
+
+const updateCompanySchema = companyProfileFieldsSchema.extend({
+  id: z.string().min(1),
 })
 
 const inviteMemberSchema = z.object({
@@ -43,6 +48,7 @@ const inviteMemberSchema = z.object({
   isAdmin: z.boolean().default(false),
   canPost: z.boolean().default(true),
   canApprove: z.boolean().default(false),
+  canManageAgenda: z.boolean().default(false),
 })
 
 const updateMemberSchema = z.object({
@@ -51,6 +57,7 @@ const updateMemberSchema = z.object({
   isAdmin: z.boolean(),
   canPost: z.boolean(),
   canApprove: z.boolean(),
+  canManageAgenda: z.boolean(),
 })
 
 const removeMemberSchema = z.object({
@@ -60,7 +67,7 @@ const removeMemberSchema = z.object({
 
 const tokenSchema = z.object({
   companyId: z.string().min(1),
-  tokenType: z.enum(["survey", "api"]).default("api"),
+  tokenType: z.literal("api").default("api"),
 })
 
 const bulkInviteMembersSchema = z.object({
@@ -73,6 +80,7 @@ const bulkInviteMembersSchema = z.object({
       isAdmin: z.union([z.boolean(), z.string()]).optional(),
       canPost: z.union([z.boolean(), z.string()]).optional(),
       canApprove: z.union([z.boolean(), z.string()]).optional(),
+      canManageAgenda: z.union([z.boolean(), z.string()]).optional(),
     }),
   ),
 })
@@ -115,6 +123,26 @@ export const createCompanyAction = async (formData: z.infer<typeof createCompany
   }
 }
 
+export const updateCompanyBasicAction = async (formData: z.infer<typeof updateCompanyBasicSchema>) => {
+  const t = await getTranslations("Company")
+  try {
+    const session = await requireSession()
+    const validatedData = updateCompanyBasicSchema.parse(formData)
+    await assertCompanyAdmin(validatedData.id, session.uid)
+    const company = await updateCompany(validatedData.id, {
+      name: validatedData.name,
+      description: validatedData.description,
+    })
+    return { success: true, message: t("messages.updateSuccess"), company }
+  } catch (error) {
+    console.error("Update company basic error:", error)
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.errors[0].message }
+    }
+    return { success: false, error: t("messages.updateFailed") }
+  }
+}
+
 export const updateCompanyAction = async (formData: z.infer<typeof updateCompanySchema>) => {
   const t = await getTranslations("Company")
   try {
@@ -124,6 +152,15 @@ export const updateCompanyAction = async (formData: z.infer<typeof updateCompany
     const company = await updateCompany(validatedData.id, {
       name: validatedData.name,
       description: validatedData.description,
+      country: validatedData.country,
+      documentType: validatedData.documentType,
+      document: validatedData.document,
+      address: validatedData.address,
+      addressNumber: validatedData.addressNumber,
+      zipCode: validatedData.zipCode,
+      complement: validatedData.complement,
+      city: validatedData.city,
+      state: validatedData.state,
     })
     return { success: true, message: t("messages.updateSuccess"), company }
   } catch (error) {
@@ -150,6 +187,7 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
       isAdmin: validatedData.isAdmin,
       canPost: validatedData.canPost,
       canApprove: validatedData.canApprove,
+      canManageAgenda: validatedData.canManageAgenda,
       inviterEmail: session.email!,
       locale: currentLocale,
       confirmationToken,
@@ -196,6 +234,7 @@ export const updateMemberAction = async (formData: z.infer<typeof updateMemberSc
       isAdmin: validatedData.isAdmin,
       canPost: validatedData.canPost,
       canApprove: validatedData.canApprove,
+      canManageAgenda: validatedData.canManageAgenda,
     })
     return { success: true, message: t("messages.memberUpdateSuccess") }
   } catch (error) {
@@ -278,6 +317,7 @@ export const bulkInviteMembersAction = async (formData: z.infer<typeof bulkInvit
           isAdmin: normalizeBool(memberData.isAdmin ?? false),
           canPost: normalizeBool(memberData.canPost ?? true),
           canApprove: normalizeBool(memberData.canApprove ?? false),
+          canManageAgenda: normalizeBool(memberData.canManageAgenda ?? false),
           inviterEmail: session.email!,
           locale: currentLocale,
           confirmationToken,

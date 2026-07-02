@@ -1,39 +1,25 @@
-import Image from "next/image"
-
+import { BrandLogo } from "@/components/brand-logo"
 import { Link } from "@/i18n/navigation"
 import { cn } from "@/lib/utils"
 
 type BrandLogoLinkProps = {
   className?: string
-  width?: number
   height?: number
+  logoClassName?: string
 }
 
 export const BrandLogoLink = ({
   className,
-  width = 128,
-  height = 48,
+  height = 32,
+  logoClassName,
 }: BrandLogoLinkProps) => (
   <Link
     href="/"
     aria-label="botinho.ai home"
     className={cn("flex items-center justify-center rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary", className)}
   >
-    <div className="relative" style={{ width, height }}>
-      <Image
-        src="/logo-green.png"
-        alt="botinho.ai"
-        fill
-        className="object-contain dark:hidden"
-        priority
-      />
-      <Image
-        src="/logo-white.png"
-        alt="botinho.ai"
-        fill
-        className="hidden object-contain dark:block"
-        priority
-      />
+    <div style={{ height }}>
+      <BrandLogo className={cn("h-full w-auto", logoClassName)} priority />
     </div>
   </Link>
 )

@@ -121,6 +121,10 @@ Language detection heuristics choose `en` vs `pt-BR` for responses.
 
 Stored at `companies/{id}/usage/{YYYY-MM}.AI_RESPONSES`.
 
+## Agent surveys
+
+Per-agent survey configuration (`surveyIds`, `surveyTriggers`) and prompt injection are documented in [20-customer-interaction-surveys-and-live-agents.md](20-customer-interaction-surveys-and-live-agents.md).
+
 ## Edge cases
 
 - All operations require accepted company membership via `resolveCompanyContext`.

@@ -6,18 +6,38 @@ import {
   createInboxConversation,
   createInboxMessage,
   getInboxConversationDetail,
+  getInboxConversationForSend,
   getLastCustomerMessage,
   listInboxConversations,
+  listInboxCustomers,
   markConversationRead,
   sanitizeTags,
   updateConversationMetadata,
 } from "@/lib/firebase/services/inbox-service"
 import { generateSuggestedResponses } from "@/lib/firebase/ai/generate"
+import {
+  serializeInboxConversation,
+  serializeInboxConversationDetail,
+  type SerializedInboxConversation,
+  type SerializedInboxConversationDetail,
+} from "@/lib/inbox/serialize-inbox-data"
+import { sendOutbound } from "@/lib/messaging/messaging-service"
+import { isWhatsAppConfigured, checkWhatsAppAvailability, listCompanyWhatsAppSessions } from "@/lib/whatsapp"
+import type { WhatsAppSession } from "@/lib/whatsapp/types"
 import type {
   InboxConversationPriority,
   InboxMessageSenderType,
   InboxMessageStatus,
 } from "@/lib/firebase/types"
+import {
+  encodeInboxConversationCursor,
+  type InboxConversationListFilter,
+} from "@/lib/inbox/conversation-list-pagination"
+import {
+  INBOX_MESSAGES_DEFAULT_PAGE_SIZE,
+  INBOX_MESSAGES_MAX_PAGE_SIZE,
+} from "@/lib/inbox/message-pagination"
+import { listInboxReplyResources } from "@/lib/firebase/services/ai-training-service"
 
 const companyIdSchema = z.object({
   companyId: z.string().optional(),
@@ -25,8 +45,11 @@ const companyIdSchema = z.object({
 
 const getInboxConversationsSchema = companyIdSchema.extend({
   search: z.string().optional(),
-  page: z.number().int().positive().optional(),
+  sessionId: z.string().min(1).optional(),
+  sessionIds: z.array(z.string().min(1)).min(1).optional(),
   pageSize: z.number().int().min(1).max(100).optional(),
+  cursor: z.string().optional(),
+  filter: z.enum(["all", "unread", "favorites", "human", "bot"]).optional(),
   includeCounts: z.boolean().optional(),
   includeArchived: z.boolean().optional(),
 })
@@ -35,8 +58,12 @@ export const getInboxConversationsAction = async (
   input?: z.infer<typeof getInboxConversationsSchema>,
 ): Promise<
   BaseActionResponse<{
-    conversations: Awaited<ReturnType<typeof listInboxConversations>>["conversations"]
-    pagination: Awaited<ReturnType<typeof listInboxConversations>>["pagination"]
+    conversations: SerializedInboxConversation[]
+    pagination: {
+      pageSize: number
+      hasMore: boolean
+      nextCursor: string | null
+    }
     metrics?: { unreadTotal: number }
   }>
 > =>
@@ -46,16 +73,25 @@ export const getInboxConversationsAction = async (
     const result = await listInboxConversations({
       companyId,
       search: payload.search,
-      page: payload.page,
+      sessionId: payload.sessionId,
+      sessionIds: payload.sessionIds,
       pageSize: payload.pageSize,
+      cursor: payload.cursor,
+      filter: payload.filter as InboxConversationListFilter | undefined,
       includeArchived: payload.includeArchived,
+      includeCounts: payload.includeCounts,
     })
 
     return {
       success: true,
       data: {
-        conversations: result.conversations,
-        pagination: result.pagination,
+        conversations: result.conversations.map(serializeInboxConversation),
+        pagination: {
+          ...result.pagination,
+          nextCursor: result.pagination.nextCursor
+            ? encodeInboxConversationCursor(result.pagination.nextCursor)
+            : null,
+        },
         ...(payload.includeCounts ? { metrics: result.metrics } : {}),
       },
     }
@@ -63,11 +99,19 @@ export const getInboxConversationsAction = async (
 
 const getInboxConversationDetailSchema = z.object({
   conversationId: z.string().min(1),
+  messageLimit: z.number().int().min(1).max(INBOX_MESSAGES_MAX_PAGE_SIZE).optional(),
+  messagesBeforeSentAt: z.string().min(1).optional(),
 })
 
 export const getInboxConversationDetailAction = async (
   input: z.infer<typeof getInboxConversationDetailSchema>,
-): Promise<BaseActionResponse<NonNullable<Awaited<ReturnType<typeof getInboxConversationDetail>>>>> =>
+): Promise<
+  BaseActionResponse<
+    SerializedInboxConversationDetail & {
+      hasMoreOlderMessages?: boolean
+    }
+  >
+> =>
   handleAction(async () => {
     const payload = getInboxConversationDetailSchema.parse(input)
     const { companyId } = await resolveCompanyContext()
@@ -75,25 +119,41 @@ export const getInboxConversationDetailAction = async (
     const conversation = await getInboxConversationDetail({
       companyId,
       conversationId: payload.conversationId,
+      messageLimit: payload.messageLimit,
+      messagesBeforeSentAt: payload.messagesBeforeSentAt,
     })
 
     if (!conversation) {
       return { success: false, error: "Conversation not found" }
     }
 
-    return { success: true, data: conversation }
+    const { hasMoreOlderMessages, ...detail } = conversation
+
+    return {
+      success: true,
+      data: {
+        ...serializeInboxConversationDetail(detail),
+        hasMoreOlderMessages,
+      },
+    }
   })
 
 const baseCustomerSchema = z.object({
   name: z.string().trim().min(1),
-  phone: z.string().trim().min(8).max(20).optional(),
-  email: z.string().trim().email().optional(),
+  phone: z.string().trim().min(8).max(32).optional(),
+  email: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => (value ? value : undefined))
+    .pipe(z.string().email().optional()),
   address: z.string().trim().max(255).optional(),
   notes: z.string().trim().max(1000).optional(),
 })
 
 const createInboxConversationSchema = companyIdSchema.extend({
   customer: baseCustomerSchema,
+  sessionId: z.string().min(1).optional(),
   priority: z.enum(["low", "medium", "high"]).optional(),
   tags: z.array(z.string()).max(15).optional(),
   satisfactionScore: z.number().int().min(1).max(5).optional(),
@@ -112,6 +172,7 @@ export const createInboxConversationAction = async (
 ): Promise<
   BaseActionResponse<{
     conversation: Awaited<ReturnType<typeof createInboxConversation>>["conversation"]
+    existing?: boolean
     initialMessage?: Awaited<ReturnType<typeof createInboxMessage>>
   }>
 > =>
@@ -125,6 +186,7 @@ export const createInboxConversationAction = async (
     const result = await createInboxConversation({
       companyId,
       customer: payload.customer,
+      sessionId: payload.sessionId,
       priority: payload.priority as InboxConversationPriority | undefined,
       tags: payload.tags,
       satisfactionScore: payload.satisfactionScore,
@@ -143,11 +205,105 @@ export const createInboxConversationAction = async (
     return { success: true, data: result }
   })
 
+const listInboxCustomersSchema = companyIdSchema.extend({
+  search: z.string().optional(),
+  page: z.number().int().positive().optional(),
+  pageSize: z.number().int().min(1).max(100).optional(),
+  orderBy: z.enum(["name", "createdAt"]).optional(),
+})
+
+export const listInboxCustomersAction = async (
+  input?: z.infer<typeof listInboxCustomersSchema>,
+): Promise<
+  BaseActionResponse<{
+    customers: Awaited<ReturnType<typeof listInboxCustomers>>["customers"]
+    pagination: Awaited<ReturnType<typeof listInboxCustomers>>["pagination"]
+  }>
+> =>
+  handleAction(async () => {
+    const payload = listInboxCustomersSchema.parse(input ?? {})
+    const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
+    const result = await listInboxCustomers({
+      companyId,
+      search: payload.search,
+      page: payload.page,
+      pageSize: payload.pageSize,
+      orderBy: payload.orderBy,
+    })
+
+    return {
+      success: true,
+      data: {
+        customers: result.customers,
+        pagination: result.pagination,
+      },
+    }
+  })
+
+export type InboxConnectionView = {
+  sessionId: string
+  label: string | null
+  phoneNumber: string | null
+  connected: boolean
+}
+
+const WHATSAPP_REPAIR_STATUSES: WhatsAppSession["status"][] = ["qr_pending", "needs_qr", "disconnected"]
+
+const sessionNeedsRepair = (sessions: WhatsAppSession[]) =>
+  sessions.some((session) => WHATSAPP_REPAIR_STATUSES.includes(session.status)) ||
+  (sessions.length > 0 && !sessions.some((session) => session.status === "connected"))
+
+export const getInboxConnectionsAction = async (
+  input?: z.infer<typeof companyIdSchema>,
+): Promise<
+  BaseActionResponse<{
+    configured: boolean
+    available: boolean
+    needsRepair: boolean
+    connections: InboxConnectionView[]
+  }>
+> =>
+  handleAction<{
+    configured: boolean
+    available: boolean
+    needsRepair: boolean
+    connections: InboxConnectionView[]
+  }>(async () => {
+    if (!isWhatsAppConfigured()) {
+      return { success: true, data: { configured: false, available: false, needsRepair: false, connections: [] } }
+    }
+
+    const payload = companyIdSchema.parse(input ?? {})
+    const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
+
+    const { available } = await checkWhatsAppAvailability()
+    const sessions = await listCompanyWhatsAppSessions(companyId)
+    const connections = sessions
+      .filter((session) => session.status === "connected")
+      .map((session) => ({
+        sessionId: session.sessionId,
+        label: session.label ?? null,
+        phoneNumber: session.phoneNumber ?? null,
+        connected: true,
+      }))
+
+    return {
+      success: true,
+      data: {
+        configured: true,
+        available,
+        needsRepair: sessionNeedsRepair(sessions),
+        connections,
+      },
+    }
+  })
+
 const sendInboxMessageSchema = z.object({
   conversationId: z.string().min(1),
   content: z.string().trim().min(1),
   senderType: z.enum(["customer", "agent", "bot", "system"]).default("agent"),
   status: z.enum(["pending", "sent", "delivered", "read", "failed"]).optional(),
+  replyToMessageId: z.string().min(1).optional(),
 })
 
 export const sendInboxMessageAction = async (
@@ -155,23 +311,23 @@ export const sendInboxMessageAction = async (
 ): Promise<
   BaseActionResponse<{
     message: Awaited<ReturnType<typeof createInboxMessage>>
-    conversation: NonNullable<Awaited<ReturnType<typeof getInboxConversationDetail>>>
+    conversation: NonNullable<Awaited<ReturnType<typeof getInboxConversationForSend>>>
   }>
 > =>
   handleAction(async () => {
     const payload = sendInboxMessageSchema.parse(input)
     const { companyId, userId } = await resolveCompanyContext({ requireCanPost: true })
 
-    const conversationDetail = await getInboxConversationDetail({
+    const sendContext = await getInboxConversationForSend({
       companyId,
       conversationId: payload.conversationId,
     })
 
-    if (!conversationDetail) {
+    if (!sendContext) {
       return { success: false, error: "Conversation not found" }
     }
 
-    const message = await createInboxMessage({
+    const { message } = await sendOutbound({
       companyId,
       conversationId: payload.conversationId,
       content: payload.content,
@@ -179,18 +335,24 @@ export const sendInboxMessageAction = async (
       senderUserId: payload.senderType === "agent" ? userId : undefined,
       status: payload.status as InboxMessageStatus | undefined,
       incrementUnread: payload.senderType === "customer",
+      sessionId: sendContext.sessionId,
+      customerPhone: sendContext.customer?.phone ?? undefined,
+      replyToMessageId: payload.replyToMessageId,
     })
 
-    const conversation = await getInboxConversationDetail({
-      companyId,
-      conversationId: payload.conversationId,
-    })
+    const conversation = {
+      ...sendContext,
+      lastMessagePreview: payload.content,
+      lastMessageSentAt: message.sentAt,
+      unreadCount: payload.senderType === "customer" ? sendContext.unreadCount + 1 : 0,
+      updatedAt: message.updatedAt,
+    }
 
     return {
       success: true,
       data: {
         message,
-        conversation: conversation!,
+        conversation,
       },
     }
   })
@@ -221,11 +383,12 @@ const updateInboxConversationMetadataSchema = z.object({
   satisfactionScore: z.number().int().min(1).max(5).optional(),
   assignedToId: z.string().nullable().optional(),
   isArchived: z.boolean().optional(),
+  isBookmarked: z.boolean().optional(),
 })
 
 export const updateInboxConversationMetadataAction = async (
   input: z.infer<typeof updateInboxConversationMetadataSchema>,
-): Promise<BaseActionResponse<{ conversation: Awaited<ReturnType<typeof updateConversationMetadata>> }>> =>
+): Promise<BaseActionResponse<{ conversation: SerializedInboxConversation }>> =>
   handleAction(async () => {
     const payload = updateInboxConversationMetadataSchema.parse(input)
     const { companyId } = await resolveCompanyContext()
@@ -238,9 +401,22 @@ export const updateInboxConversationMetadataAction = async (
       satisfactionScore: payload.satisfactionScore,
       assignedToId: payload.assignedToId,
       isArchived: payload.isArchived,
+      isBookmarked: payload.isBookmarked,
     })
 
-    return { success: true, data: { conversation } }
+    return {
+      success: true,
+      data: { conversation: serializeInboxConversation(await conversation) },
+    }
+  })
+
+export const getInboxReplyResourcesAction = async (): Promise<
+  BaseActionResponse<Awaited<ReturnType<typeof listInboxReplyResources>>>
+> =>
+  handleAction(async () => {
+    const { companyId } = await resolveCompanyContext()
+    const data = await listInboxReplyResources(companyId)
+    return { success: true, data }
   })
 
 const getSuggestedResponsesSchema = z.object({
@@ -260,11 +436,15 @@ export const getSuggestedResponsesAction = async (
     let customerMessage = payload.customerMessage
 
     if (!customerMessage && payload.conversationId) {
-      const lastMessage = await getLastCustomerMessage({
-        companyId,
-        conversationId: payload.conversationId,
-      })
-      customerMessage = lastMessage?.content
+      try {
+        const lastMessage = await getLastCustomerMessage({
+          companyId,
+          conversationId: payload.conversationId,
+        })
+        customerMessage = lastMessage?.content
+      } catch (error) {
+        console.error("[inbox] failed to load last customer message for suggestions:", error)
+      }
     }
 
     const suggestions = await generateSuggestedResponses({

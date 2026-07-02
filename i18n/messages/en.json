@@ -1,18 +1,28 @@
 {
     "Landing": {
+        "meta": {
+            "title": "botinho.ai — WhatsApp AI Customer Support",
+            "description": "Automate WhatsApp support, sales, and follow-ups with AI. Built for restaurants, clinics, and retail. Start free in 5 minutes."
+        },
         "shared": {
             "logoAlt": "botinho logo"
         },
         "header": {
             "logoAria": "Go to botinho home",
             "nav": {
-                "about": "What is botinho",
-                "sessions": "Sessions",
+                "about": "About",
+                "sessions": "How it works",
                 "features": "Features",
                 "pricing": "Pricing",
                 "faq": "FAQ",
                 "contact": "Contact",
                 "itemAria": "Navigate to {section}"
+            },
+            "theme": {
+                "light": "Light",
+                "dark": "Dark",
+                "system": "System",
+                "toggleAria": "Toggle color theme"
             },
             "auth": {
                 "login": "Login",
@@ -21,12 +31,14 @@
                 "startAria": "Create your botinho account"
             },
             "mobileMenu": {
-                "open": "Open navigation menu"
+                "open": "Open navigation menu",
+                "title": "Navigation menu",
+                "description": "Site section links and account options."
             }
         },
         "hero": {
             "badge": "WhatsApp AI, reimagined",
-            "title": "Turn every WhatsApp conversation into a loyal customer moment",
+            "title": "AI that answers customers on WhatsApp",
             "description": "botinho automates support, sales, and follow-ups with a friendly AI assistant that knows your business by heart, hands off seamlessly to your team, and never misses a message.",
             "primaryCta": "Start free in 5 minutes",
             "primaryCtaAria": "Start your free botinho trial",
@@ -35,20 +47,50 @@
             "rating": "4.9/5 from 200+ teams",
             "compliance": "GDPR, LGPD ready",
             "inbox": {
-                "title": "WhatsApp Inbox",
+                "conversationsTitle": "Conversations",
+                "contextTitle": "Context",
+                "handledByBot": "Automated handling",
+                "suggestionsTitle": "AI suggestions",
+                "messagePlaceholder": "Type a message...",
                 "customerName": "Julia Andrade",
+                "customerPhone": "+55 (11) *****-4821",
                 "customerQuestion": "Hello! Do you have vegetarian options for lunch today?",
                 "aiReply": "Hi Julia! We have mushroom stroganoff, Mediterranean salad, and zucchini lasagna today. Can I reserve a table for you?",
                 "customerConfirmation": "Yes! Please reserve for 12:30 under Julia.",
-                "followUpsTitle": "Automated follow-ups",
-                "followUpsDescription": "Send reservation reminders automatically via WhatsApp",
-                "followUpsAria": "Activate follow ups"
+                "reservationConfirmation": "Perfect, Julia! Your reservation for 12:30 is confirmed.",
+                "reservationCode": "#BTH-2847",
+                "reservationLinkLabel": "View reservation details",
+                "conversations": [
+                    {
+                        "id": "julia",
+                        "name": "Julia Andrade",
+                        "preview": "Hello! Do you have vegetarian options...",
+                        "time": "12:04 PM",
+                        "unread": 1
+                    },
+                    {
+                        "id": "marco",
+                        "name": "Marco Silva",
+                        "preview": "What are your opening hours?",
+                        "botReply": "We're open 11 AM to 11 PM, every day!",
+                        "time": "11:42 AM",
+                        "unread": 1
+                    },
+                    {
+                        "id": "ana",
+                        "name": "Ana Costa",
+                        "preview": "Do you deliver to Jardins?",
+                        "botReply": "Yes! Delivery in up to 45 min in Jardins.",
+                        "time": "11:48 AM",
+                        "unread": 1
+                    }
+                ]
             }
         },
         "about": {
             "badge": "What is botinho",
-            "title": "Your WhatsApp co-pilot for hospitality, retail, and service brands",
-            "description": "botinho centralizes every message, automates responses with an AI trained on your business DNA, and keeps humans in the loop for delicate conversations. No code, no stress, just delighted customers.",
+            "title": "AI that handles your customer chats on WhatsApp",
+            "description": "Put all your WhatsApp chats in one inbox. AI answers customers right away, learns your business, and brings in your team when a human is needed.",
             "cards": {
                 "humanFriendly": {
                     "title": "Human-friendly AI",
@@ -56,16 +98,28 @@
                 },
                 "builtForTeams": {
                     "title": "Built for teams",
-                    "description": "Collaborate in real-time, leave internal notes, and assign chats while the AI covers the repetitive tasks."
+                    "description": "Share one inbox, assign conversations, and let the AI handle repetitive replies until an agent steps in."
                 }
             },
             "reasons": {
                 "title": "Why brands choose botinho",
                 "items": [
-                    "24/7 instant replies trained on your own knowledge base.",
-                    "Seamless human handoff with full conversation history.",
-                    "Smart automations for orders, reservations, and follow-ups.",
-                    "Rich analytics to understand sentiment, conversions, and team performance."
+                    {
+                        "title": "24/7 instant replies",
+                        "description": "Trained on your knowledge base, FAQs, and business documents."
+                    },
+                    {
+                        "title": "Seamless human handoff",
+                        "description": "Your team steps in with full conversation history whenever needed."
+                    },
+                    {
+                        "title": "Smart automations",
+                        "description": "Auto-replies, outbound campaigns, and AI suggestions that keep conversations moving."
+                    },
+                    {
+                        "title": "Rich analytics",
+                        "description": "Understand sentiment, conversions, and team performance in one place."
+                    }
                 ]
             }
         },
@@ -84,7 +138,7 @@
                 },
                 "automate": {
                     "title": "Automate Conversations",
-                    "description": "Let botinho answer instantly, qualify leads, schedule appointments, and escalate when needed."
+                    "description": "Let botinho answer instantly, qualify leads, run campaigns, and escalate to your team when needed."
                 },
                 "measure": {
                     "title": "Measure & Improve",
@@ -106,20 +160,78 @@
                     "description": "Enterprise-grade encryption, role-based permissions, and compliance-first infrastructure."
                 },
                 "collaboration": {
-                    "title": "Team Collaboration",
-                    "description": "Assign conversations, leave internal notes, and jump in the moment a human touch is required."
+                    "title": "Shared inbox",
+                    "description": "Assign conversations to agents, take over from the AI, and reply with full chat history in one place."
                 },
-                "appointments": {
-                    "title": "Appointments & Reminders",
-                    "description": "Confirm bookings, send reminders, and sync calendars automatically without any manual work."
+                "campaigns": {
+                    "title": "WhatsApp campaigns",
+                    "description": "Send templated messages to customer tags with throttled delivery and per-campaign metrics."
                 },
-                "integrations": {
-                    "title": "Smart Integrations",
-                    "description": "Connect your CRM, delivery platform, or e-commerce tools to trigger workflows instantly."
+                "whatsapp": {
+                    "title": "WhatsApp connection",
+                    "description": "Pair your business number via QR code and manage linked sessions from settings."
                 },
-                "playbooks": {
-                    "title": "Guided Playbooks",
-                    "description": "Use pre-built templates for sales, support, reservations, and follow-ups to launch faster."
+                "templates": {
+                    "title": "Templates & quick replies",
+                    "description": "Save reusable answers and message templates your team can insert in every conversation."
+                }
+            },
+            "mocks": {
+                "humanFriendly": {
+                    "configLabel": "You configure",
+                    "promptSnippet": "Friendly tone. Answer using our menu and business hours from the knowledge base.",
+                    "customerLabel": "Customer on WhatsApp",
+                    "customerMessage": "Any vegan options today?",
+                    "botLabel": "botinho",
+                    "botReply": "Yes! We have zucchini lasagna and Mediterranean salad. Want the full menu?"
+                },
+                "secure": {
+                    "encryptionLabel": "Protected data",
+                    "encryptionStatus": "End-to-end encryption",
+                    "rolesLabel": "Who can do what",
+                    "roles": [
+                        { "name": "Admin", "access": "Full access" },
+                        { "name": "Agent", "access": "Reply to chats" },
+                        { "name": "Read-only", "access": "View only" }
+                    ],
+                    "compliance": "LGPD · GDPR"
+                },
+                "collaboration": {
+                    "assignmentLabel": "Conversation owner",
+                    "assignedTo": "Ana · Agent",
+                    "statusLabel": "While assigned",
+                    "statusValue": "AI auto-reply paused",
+                    "customerLabel": "Customer",
+                    "customerMessage": "I need to speak with someone on your team.",
+                    "agentLabel": "Ana",
+                    "agentReply": "Hi! I'm Ana. I'll take care of your request now."
+                },
+                "campaigns": {
+                    "campaignLabel": "Campaign",
+                    "campaignName": "Weekend promo",
+                    "audienceLabel": "Audience",
+                    "audienceTags": "VIP · Active customers",
+                    "messageLabel": "Message preview",
+                    "messagePreview": "Hi {{name}}! This weekend only: 20% off delivery. Reply YES to order.",
+                    "metricsLabel": "Delivery",
+                    "metricsValue": "842 sent · 96% delivered"
+                },
+                "whatsapp": {
+                    "connectionLabel": "WhatsApp session",
+                    "phoneNumber": "+55 11 99999-9999",
+                    "statusConnected": "Connected",
+                    "qrHint": "Pair a new number anytime from Settings → WhatsApp.",
+                    "inboundLabel": "Inbound messages",
+                    "inboundStatus": "Routing to inbox"
+                },
+                "templates": {
+                    "quickRepliesLabel": "Quick replies",
+                    "quickReply1": "Business hours",
+                    "quickReply2": "Delivery info",
+                    "templateLabel": "Template",
+                    "templateName": "Order status",
+                    "previewLabel": "Insert in chat",
+                    "composed": "Your order #4821 is on the way and should arrive in about 30 minutes."
                 }
             },
             "banner": {
@@ -132,7 +244,7 @@
         "testimonials": {
             "badge": "Trusted by teams",
             "title": "Less busywork, happier customers",
-            "description": "See how hospitality, retail, and services teams are creating delightful customer moments with botinho.",
+            "description": "See how other teams use botinho to serve customers on WhatsApp.",
             "items": [
                 {
                     "quote": "botinho handles more than 80% of our WhatsApp messages. Customers get answers instantly and our team can focus on the tough questions.",
@@ -140,7 +252,7 @@
                     "role": "Owner, Bistro Verde"
                 },
                 {
-                    "quote": "We connected Shopify and our CRM in minutes. The automation playbooks doubled our qualified leads in the first month.",
+                    "quote": "We launched a weekend campaign to tagged customers in one afternoon. Open rates jumped and the inbox stayed organized.",
                     "name": "Daniel Costa",
                     "role": "Sales Lead, Techfy"
                 },
@@ -154,8 +266,8 @@
         "pricing": {
             "badge": "Pricing",
             "title": "Simple plans that scale with you",
-            "description": "Start for free, upgrade when you are ready. Cancel anytime, no hidden fees, unlimited teammates on every plan.",
-            "savingsNote": "Pay yearly and save 20% on Starter, Pro, and Business plans.",
+            "description": "Start for free, upgrade when you are ready. Cancel anytime, no hidden fees.",
+            "savingsNote": "Pay yearly and save ~17% on Starter, Pro, and Business plans.",
             "mostLoved": "Most loved",
             "perMonthLabel": "/month",
             "plans": {
@@ -222,11 +334,11 @@
                 },
                 {
                     "question": "What integrations are available?",
-                    "answer": "botinho connects with CRMs, e-commerce platforms, delivery services, and more. Use native integrations or webhooks to plug into your stack."
+                    "answer": "Today botinho connects to WhatsApp via QR pairing. CRM, calendar, and e-commerce connectors are on our roadmap — the integrations banner on this page marks what is coming next."
                 },
                 {
                     "question": "Can I escalate conversations to humans?",
-                    "answer": "Yes. You can set smart routing rules, assign agents, and resume the AI once humans finish. Your team stays in full control."
+                    "answer": "Yes. Agents can take over a chat from the inbox, reply manually, and release it back to the AI when finished."
                 },
                 {
                     "question": "Is my customer data secure?",
@@ -281,6 +393,8 @@
         "title": "Inbox",
         "description": "Manage your conversations and messages",
         "searchPlaceholder": "Search conversations...",
+        "searchOrStartChat": "Search or start a new chat",
+        "clearSearch": "Clear search",
         "typeMessagePlaceholder": "Type a message...",
         "status": {
             "online": "Online",
@@ -299,13 +413,28 @@
             "customerFallback": "Customer"
         },
         "conversations": {
-            "title": "Conversations",
+            "title": "Chats",
+            "yesterday": "Yesterday",
             "empty": {
                 "title": "No conversations yet",
                 "description": "Conversations you start or receive will appear here. Keep engaging with your customers!"
             },
+            "filteredEmpty": {
+                "title": "No chats found",
+                "description": "Try a different filter or search term."
+            },
             "noMessage": "No messages yet",
-            "selectConversationAria": "Select conversation with {name}"
+            "selectConversationAria": "Select conversation with {name}",
+            "handledByBot": "Handled by bot",
+            "handledByHuman": "Handled by {name}",
+            "handledByHumanShort": "Handled by agent"
+        },
+        "filters": {
+            "all": "All",
+            "unread": "Unread",
+            "favorites": "Bookmarked",
+            "human": "Human",
+            "bot": "Bot"
         },
         "context": {
             "title": "Context",
@@ -318,11 +447,63 @@
                 "title": "Customer",
                 "satisfaction": "Satisfaction score: {score}"
             },
+            "seeAll": "See all ({count})",
+            "pin": "Pin to sidebar",
+            "unpin": "Unpin from sidebar",
+            "pinHint": "Drag to reorder. Pin up to 3 items to show in the sidebar.",
+            "dragToReorder": "Drag to reorder",
+            "pinLimit": "You can pin up to 3 items.",
             "quickReplies": {
                 "title": "Quick replies",
+                "manage": "Manage",
+                "modalDescription": "Choose a reply to insert, or pin up to 3 favorites for the sidebar.",
+                "empty": {
+                    "title": "No quick replies yet",
+                    "description": "Add saved replies your team can insert into conversations.",
+                    "action": "Add quick replies"
+                }
+            },
+            "templates": {
+                "title": "Templates",
+                "manage": "Manage",
+                "modalDescription": "Choose a template to insert, or pin up to 3 favorites for the sidebar.",
+                "empty": {
+                    "title": "No templates yet",
+                    "description": "Create message templates for common customer interactions.",
+                    "action": "Add templates"
+                }
+            },
+            "aiSuggestions": {
+                "title": "AI suggestions",
+                "assistiveTitle": "AI assist",
                 "empty": {
                     "title": "No suggestions yet",
                     "description": "Keep the conversation going—AI replies will show up once customers message you."
+                }
+            },
+            "assignment": {
+                "title": "Live agent",
+                "unassigned": "No agent assigned — bot may auto-reply",
+                "assignedToYou": "You are handling this conversation",
+                "assignedTo": "Handled by {name}",
+                "takeOver": "Take over",
+                "release": "Release",
+                "takenOver": "You took over this conversation",
+                "released": "Conversation released to bot",
+                "failed": "Could not update assignment"
+            },
+            "surveys": {
+                "title": "Surveys",
+                "manage": "Manage",
+                "empty": "No active surveys",
+                "send": "Send",
+                "sent": "Survey sent",
+                "sendFailed": "Could not send survey",
+                "inProgress": "Survey in progress",
+                "mode": {
+                    "inline": "WhatsApp chat",
+                    "hosted": "Link",
+                    "both": "Chat or link"
                 }
             }
         },
@@ -335,7 +516,31 @@
                 "title": "No messages yet",
                 "description": "Break the ice and send the first reply to keep the conversation flowing."
             },
-            "inputPlaceholderNoSelection": "Select a conversation to reply"
+            "inputPlaceholderNoSelection": "Select a conversation to reply",
+            "sendFailed": "Could not send message",
+            "whatsappDeliveryFailed": "Message saved, but WhatsApp delivery failed. Check your connection in Settings.",
+            "botPending": "Sending…",
+            "botFailed": "Auto-reply failed",
+            "reply": "Reply",
+            "replyingTo": "Replying to {name}",
+            "cancelReply": "Cancel reply",
+            "loadingOlder": "Loading older messages…",
+            "scrollForOlder": "Scroll up for older messages",
+            "quoteSender": {
+                "customer": "Customer",
+                "agent": "You",
+                "bot": "Bot",
+                "system": "System",
+                "unknown": "Message"
+            }
+        },
+        "whatsappOffline": {
+            "message": "WhatsApp offline — outbound messages are paused.",
+            "settingsLink": "Settings"
+        },
+        "whatsappRepair": {
+            "message": "WhatsApp is not receiving messages — re-pair your number in Settings.",
+            "settingsLink": "Re-pair in Settings"
         },
         "actions": {
             "openConversations": "Open conversations list",
@@ -343,7 +548,72 @@
             "hideConversations": "Collapse conversations",
             "showContext": "Show context",
             "hideContext": "Hide context",
-            "send": "Send message"
+            "send": "Send message",
+            "newConversation": "New conversation",
+            "addBookmark": "Bookmark conversation",
+            "removeBookmark": "Remove bookmark",
+            "bookmarkFailed": "Could not update bookmark"
+        },
+        "toolbar": {
+            "connectionLabel": "Connection",
+            "connectionPlaceholder": "Select a connection",
+            "allConnections": "All connections",
+            "selectConnectionTitle": "Select phone numbers",
+            "selectConnectionDescription": "Search and select one or more numbers to filter conversations. Leave none selected to view all.",
+            "viewingConnection": "Viewing: {connection}",
+            "viewingMultiple": "{count} numbers selected",
+            "connectionButtonTitle": "Change connection ({connection})",
+            "searchConnectionsPlaceholder": "Search numbers...",
+            "noConnectionsFound": "No numbers found.",
+            "selectAll": "Select all",
+            "clearSelection": "Clear",
+            "selectedCount": "{selected} of {total} selected",
+            "applySelection": "Apply",
+            "cancelSelection": "Cancel"
+        },
+        "newConversation": {
+            "title": "Start a conversation",
+            "description": "Choose an existing customer or add a new contact to begin messaging.",
+            "connectionLabel": "Send from",
+            "connectionPlaceholder": "Select a phone number",
+            "tabs": {
+                "existing": "Existing customers",
+                "adhoc": "New contact"
+            },
+            "searchCustomersPlaceholder": "Search customers...",
+            "loadingCustomers": "Loading customers...",
+            "emptyCustomers": "No customers found. Add a new contact instead.",
+            "adhocHint": "Create a one-off contact without saving them to your customer list first.",
+            "fields": {
+                "name": "Name",
+                "namePlaceholder": "Customer name",
+                "phone": "Phone",
+                "phonePlaceholder": "+55 11 99999-0000",
+                "email": "Email",
+                "emailPlaceholder": "email@example.com"
+            },
+            "columns": {
+                "name": "Name",
+                "phone": "Phone",
+                "email": "Email"
+            },
+            "actions": {
+                "cancel": "Cancel",
+                "start": "Start conversation",
+                "creating": "Starting..."
+            },
+            "messages": {
+                "created": "Conversation started",
+                "existingConversation": "Opened existing conversation"
+            },
+            "errors": {
+                "loadCustomers": "Could not load customers",
+                "customerRequired": "Select a customer to continue",
+                "nameRequired": "Name is required",
+                "phoneRequired": "Phone is required to start a WhatsApp conversation",
+                "connectionRequired": "Select a connection to send messages",
+                "createFailed": "Could not start the conversation"
+            }
         },
         "priority": {
             "low": "Low",
@@ -359,6 +629,7 @@
             "addKnowledge": "Add Knowledge",
             "addQuickAnswer": "Add Quick Answer",
             "createTemplate": "Create Template",
+            "copyTemplate": "Copy template",
             "cancel": "Cancel",
             "update": "Update",
             "addOption": "Add Option"
@@ -368,7 +639,8 @@
             "quickAnswers": "Quick Answers",
             "templates": "Templates",
             "textContent": "Text Content",
-            "websiteUrl": "Website URL"
+            "websiteUrl": "Website URL",
+            "pdfFile": "PDF File"
         },
         "form": {
             "title": "Title",
@@ -384,6 +656,16 @@
             "urlTitlePlaceholder": "e.g., Product Catalog, FAQ Page",
             "urlPlaceholder": "https://example.com/page",
             "urlDescription": "We'll extract and learn from this page's content",
+            "pdfTitlePlaceholder": "e.g., Product Catalog, Policy Document",
+            "pdfUploadLabel": "PDF document",
+            "pdfUploadDescription": "Upload a PDF up to {maxMb} MB. We'll extract the text for your AI to learn from.",
+            "pdfClickOrDrag": "Click to upload or drag and drop",
+            "pdfDropHere": "Drop the PDF here",
+            "pdfSupportedFormats": "PDF files only",
+            "pdfRemoveFile": "Remove PDF",
+            "pdfReplaceHint": "Upload a new PDF to replace the extracted content, or update the title only.",
+            "pdfInvalidFileType": "Invalid file type. Please upload a PDF file.",
+            "pdfFileTooLarge": "File is too large. Maximum size is {maxMb} MB.",
             "templateNamePlaceholder": "e.g., Welcome Message, Order Confirmation",
             "selectCategory": "Select a category",
             "messageContentPlaceholder": "Enter your template message... Use [VARIABLE_NAME] for dynamic content",
@@ -392,7 +674,79 @@
             "buttonLabelPlaceholder": "Button label (what user sees)",
             "buttonValuePlaceholder": "Value (what gets sent)",
             "noOptionsAdded": "No options added yet",
-            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons"
+            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons",
+            "quickAnswerContentPlaceholder": "Enter a short reply your AI can reuse in conversations...",
+            "quickAnswerContentTip": "Tip: Add facts your AI should know — hours, shipping, returns, payment methods, etc."
+        },
+        "quickAnswerExamples": {
+            "title": "Start from an example",
+            "items": {
+                "businessHours": {
+                    "label": "Business hours",
+                    "content": "We're open Monday to Friday, 9 AM–6 PM. Closed on weekends and public holidays."
+                },
+                "shippingPolicy": {
+                    "label": "Shipping policy",
+                    "content": "Standard shipping takes 3–5 business days. Free shipping on orders over $50."
+                },
+                "returnPolicy": {
+                    "label": "Return policy",
+                    "content": "Returns are accepted within 30 days. Items must be unused and in original packaging."
+                },
+                "paymentMethods": {
+                    "label": "Payment methods",
+                    "content": "We accept credit cards, debit cards, and PIX."
+                },
+                "orderTracking": {
+                    "label": "Order tracking",
+                    "content": "You can track your order using the tracking link sent to your email after shipping."
+                },
+                "speakToHuman": {
+                    "label": "Speak to a person",
+                    "content": "I'll connect you with a team member who can help you further."
+                }
+            }
+        },
+        "messageExamples": {
+            "title": "Start from an example",
+            "items": {
+                "welcomeGreeting": {
+                    "label": "Welcome message",
+                    "name": "Welcome Message",
+                    "category": "greeting",
+                    "content": "Hi [CUSTOMER_NAME]! 👋 Welcome to [COMPANY_NAME].\n\nWe're happy to have you here. How can we help you today?"
+                },
+                "orderConfirmation": {
+                    "label": "Order confirmation",
+                    "name": "Order Confirmation",
+                    "category": "orders",
+                    "content": "Hi [CUSTOMER_NAME], your order #[ORDER_ID] has been confirmed! ✅\n\nTotal: [ORDER_TOTAL]\nEstimated delivery: [DELIVERY_DATE]\n\nWe'll keep you updated on the status."
+                },
+                "orderShipped": {
+                    "label": "Order shipped",
+                    "name": "Order Shipped",
+                    "category": "orders",
+                    "content": "Great news, [CUSTOMER_NAME]! 📦\n\nYour order #[ORDER_ID] has been shipped.\nTracking: [TRACKING_NUMBER]\nExpected delivery: [DELIVERY_DATE]\n\nLet us know if you need anything!"
+                },
+                "productRecommendation": {
+                    "label": "Product recommendation",
+                    "name": "Product Recommendation",
+                    "category": "products",
+                    "content": "Hi [CUSTOMER_NAME]! Based on what you're looking for, we recommend:\n\n[PRODUCT_NAME] — [PRODUCT_PRICE]\n[PRODUCT_DESCRIPTION]\n\nWould you like more details or help placing an order?"
+                },
+                "supportAcknowledgment": {
+                    "label": "Support acknowledgment",
+                    "name": "Support Acknowledgment",
+                    "category": "support",
+                    "content": "Hi [CUSTOMER_NAME], thanks for reaching out. 🙏\n\nWe've received your message about [ISSUE_TOPIC] and a team member will get back to you shortly.\n\nReference: [TICKET_ID]"
+                },
+                "closingThankYou": {
+                    "label": "Thank you & closing",
+                    "name": "Thank You & Closing",
+                    "category": "closing",
+                    "content": "Thank you for choosing [COMPANY_NAME], [CUSTOMER_NAME]! 🌟\n\nIf you need anything else, just send us a message. Have a great day!"
+                }
+            }
         },
         "categories": {
             "greeting": "Greeting",
@@ -417,7 +771,8 @@
             "description": "All information your AI uses to respond to customers",
             "type": {
                 "text": "Text",
-                "url": "URL"
+                "url": "URL",
+                "pdf": "PDF"
             },
             "added": "Added",
             "empty": {
@@ -485,33 +840,1023 @@
             "quickAnswerDeleted": "Quick answer removed"
         }
     },
+    "AiAgents": {
+        "title": "Botinho",
+        "description": "Create and manage Botinhos with custom prompts, knowledge, and phone assignments",
+        "subtitle": "Configure Botinhos that reply on your WhatsApp numbers",
+        "buttons": {
+            "addKnowledge": "Add Knowledge",
+            "addQuickAnswer": "Add Quick Answer",
+            "createTemplate": "Create Template",
+            "createAgent": "Create Botinho",
+            "manageAgent": "Manage",
+            "saveAgent": "Save Botinho",
+            "saving": "Saving...",
+            "creating": "Creating...",
+            "backToAgents": "Back to Botinhos",
+            "cancel": "Cancel",
+            "update": "Update",
+            "addOption": "Add Option"
+        },
+        "list": {
+            "title": "Your Botinhos",
+            "description": "Each Botinho can have its own prompt, knowledge base, and assigned WhatsApp number.",
+            "loading": "Loading Botinhos...",
+            "count": "{count, plural, one {# Botinho} other {# Botinhos}}",
+            "statusReady": "Ready",
+            "statusSetup": "Setup needed",
+            "noPrompt": "No custom prompt yet",
+            "autoReplyOn": "Auto-reply on",
+            "autoReplyOff": "Auto-reply off",
+            "numberAssigned": "WhatsApp number assigned",
+            "numbersAssigned": "{count} WhatsApp numbers assigned",
+            "noNumber": "No number assigned",
+            "empty": {
+                "title": "No Botinhos yet",
+                "description": "Create your first Botinho to get started."
+            },
+            "delete": {
+                "title": "Delete Botinho",
+                "description": "This action cannot be undone. The Botinho and its knowledge base will be permanently removed.",
+                "nameLabel": "Type the Botinho name to confirm",
+                "nameNote": "You must type the exact Botinho name to confirm deletion",
+                "warning": "All knowledge, settings, and phone assignments for this Botinho will be permanently deleted.",
+                "confirm": "Delete Botinho"
+            }
+        },
+        "toolbar": {
+            "searchPlaceholder": "Search Botinhos...",
+            "statusFilter": "Filter by status",
+            "statusAll": "All statuses",
+            "addBotinho": "New Botinho"
+        },
+        "table": {
+            "name": "Name",
+            "status": "Status",
+            "setup": "Setup",
+            "phones": "Phone numbers",
+            "autoReply": "Auto-reply",
+            "actions": "Actions",
+            "empty": {
+                "title": "No Botinhos yet",
+                "description": "Create your first Botinho to get started."
+            },
+            "messages": {
+                "noResults": "No Botinhos found"
+            }
+        },
+        "setup": {
+            "badge": "Botinho",
+            "title": "Set up Botinho in minutes",
+            "description": "Create a Botinho, define how it should behave, add knowledge, and connect a WhatsApp number.",
+            "steps": {
+                "1": "Create a Botinho and give it a name",
+                "2": "Pick a prompt template and assign a WhatsApp number",
+                "3": "Add knowledge your Botinho should use when replying",
+                "4": "Enable auto-reply to go live"
+            },
+            "create": {
+                "title": "New Botinho",
+                "description": "Start with a name — you'll configure the rest on the next screen.",
+                "button": "Create & configure"
+            },
+            "continueSetup": "Continue setup",
+            "checklist": {
+                "name": "Named",
+                "prompt": "Prompt set",
+                "phone": "Number assigned",
+                "live": "Auto-reply on"
+            },
+            "links": {
+                "quickAnswers": "Quick Answers",
+                "templates": "Message Templates",
+                "hint": "Shared across all Botinhos"
+            }
+        },
+        "detail": {
+            "loading": "Loading Botinho...",
+            "subtitle": "Complete each step to get your Botinho ready.",
+            "steps": {
+                "settings": "Behavior & number",
+                "knowledge": "Knowledge base",
+                "surveys": "Surveys"
+            },
+            "nextStep": "Next: Knowledge base",
+            "previousStep": "Back to settings",
+            "finishSetup": "Done — back to Botinhos",
+            "sharedResources": {
+                "title": "Shared resources",
+                "description": "Quick answers, templates, and surveys apply across Botinhos and inbox.",
+                "quickAnswers": "Manage quick answers →",
+                "templates": "Manage templates →",
+                "surveys": "Manage surveys →"
+            }
+        },
+        "surveys": {
+            "title": "Survey configuration",
+            "description": "Choose which surveys this Botinho can offer and when.",
+            "enabledSurveys": "Enabled surveys",
+            "selectSurveys": "Select surveys...",
+            "loading": "Loading surveys...",
+            "noSurveys": "No active surveys yet.",
+            "createSurvey": "Create a survey",
+            "save": "Save surveys",
+            "triggers": {
+                "title": "When to offer surveys",
+                "proactiveOffer": "Suggest in conversation (with consent)",
+                "onConversationClose": "After issue resolved",
+                "onEscalation": "When escalating to human"
+            },
+            "messages": {
+                "saved": "Survey settings saved"
+            },
+            "errors": {
+                "saveFailed": "Could not save survey settings"
+            }
+        },
+        "settings": {
+            "title": "Botinho settings",
+            "description": "Name your Botinho, define its behavior, and assign WhatsApp numbers."
+        },
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to unlock Botinho tools tied to your team."
+        },
+        "tabs": {
+            "knowledgeBase": "Knowledge Base",
+            "quickAnswers": "Quick Answers",
+            "templates": "Templates",
+            "textContent": "Text Content",
+            "websiteUrl": "Website URL",
+            "pdfFile": "PDF File"
+        },
+        "form": {
+            "agentName": "Botinho name",
+            "agentNamePlaceholder": "e.g., Sales Botinho, Support Botinho",
+            "systemPrompt": "System prompt",
+            "systemPromptPlaceholder": "Describe how this Botinho should behave, tone, and rules...",
+            "systemPromptDescription": "This prompt is layered on top of the knowledge base when generating replies. Use the guide above to structure clear instructions for your Botinho.",
+            "ticketsEnabled": "Ticket creation",
+            "ticketsEnabledDescription": "When enabled, this Botinho can search and create support tickets during conversations (e.g. order issues, complaints). Share the TKT number with the customer when a ticket is opened.",
+            "schedulingEnabled": "Appointment scheduling",
+            "schedulingEnabledDescription": "When enabled, this Botinho can check availability and book or cancel appointments during conversations.",
+            "assignedNumbers": "Assigned WhatsApp numbers",
+            "selectNumbers": "Select connected numbers",
+            "numbersSelected": "{count} numbers selected",
+            "selectNumber": "Select a connected number",
+            "noNumberAssigned": "No numbers assigned",
+            "noConnectedNumbers": "Connect a WhatsApp number in Settings to assign it here.",
+            "autoReply": "Auto-reply",
+            "autoReplyDescription": "When enabled, this Botinho automatically replies to incoming messages on its assigned numbers.",
+            "responseLanguage": "Response language",
+            "responseLanguagePtBr": "Portuguese (Brazil)",
+            "responseLanguageEn": "English",
+            "responseLanguageAuto": "Automatic (customer + prompt)",
+            "responseLanguageDescription": "Controls the language used for auto-replies and AI suggestions. Choose Portuguese for pt-BR Botinhos.",
+            "reassignNumberTitle": "Number already assigned to another Botinho",
+            "reassignNumberDescription": "One or more selected numbers are already in use. Confirming will remove them from the other Botinho and assign them here.",
+            "reassignNumberConflict": "{number} is assigned to {agentName}",
+            "reassignNumberConfirm": "Reassign and save",
+            "reassignNumberCancel": "Cancel",
+            "title": "Title",
+            "content": "Content",
+            "templateName": "Template Name",
+            "category": "Category",
+            "messageContent": "Message Content",
+            "quickReplyOptions": "Quick Reply Options",
+            "option": "Option",
+            "websiteUrl": "Website URL",
+            "titlePlaceholder": "e.g., Business Hours, Pricing, Return Policy",
+            "contentPlaceholder": "Enter the information you want your AI to know...",
+            "urlTitlePlaceholder": "e.g., Product Catalog, FAQ Page",
+            "urlPlaceholder": "https://example.com/page",
+            "urlDescription": "We'll extract and learn from this page's content",
+            "pdfTitlePlaceholder": "e.g., Product Catalog, Policy Document",
+            "pdfUploadLabel": "PDF document",
+            "pdfUploadDescription": "Upload a PDF up to {maxMb} MB. We'll extract the text for your AI to learn from.",
+            "pdfClickOrDrag": "Click to upload or drag and drop",
+            "pdfDropHere": "Drop the PDF here",
+            "pdfSupportedFormats": "PDF files only",
+            "pdfRemoveFile": "Remove PDF",
+            "pdfReplaceHint": "Upload a new PDF to replace the extracted content, or update the title only.",
+            "pdfInvalidFileType": "Invalid file type. Please upload a PDF file.",
+            "pdfFileTooLarge": "File is too large. Maximum size is {maxMb} MB.",
+            "templateNamePlaceholder": "e.g., Welcome Message, Order Confirmation",
+            "selectCategory": "Select a category",
+            "messageContentPlaceholder": "Enter your template message... Use [VARIABLE_NAME] for dynamic content",
+            "messageContentTip": "Tip: Use [BRACKETS] for variables like [CUSTOMER_NAME], [ORDER_ID], etc.",
+            "quickReplyOptionsDescription": "Add buttons for customers to select from (optional)",
+            "buttonLabelPlaceholder": "Button label (what user sees)",
+            "buttonValuePlaceholder": "Value (what gets sent)",
+            "noOptionsAdded": "No options added yet",
+            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons"
+        },
+        "promptTemplates": {
+            "title": "Start from a template",
+            "items": {
+                "generalSupport": {
+                    "label": "General support",
+                    "hint": "Friendly support assistant for FAQs, policies, and everyday customer questions.",
+                    "content": "You are a customer support assistant for [business name].\n\n## Tone\n- Friendly and welcoming\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Greet the customer and understand their need before answering\n- Answer using only the knowledge base\n- Ask one clarifying question when needed\n- Confirm key details before promising anything\n\n## What to avoid\n- Do not invent prices, policies, deadlines, or product features\n- Do not promise refunds or discounts unless documented\n\n## Escalation\n- Hand off to a human when: angry customer, complex case, or missing information in the knowledge base\n- Say: \"I'll connect you with our team to help with this.\"",
+                    "contentWithTickets": "You are a customer support assistant for [business name].\n\n## Tone\n- Friendly and welcoming\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Greet the customer and understand their need before answering\n- Answer using only the knowledge base\n- Ask one clarifying question when needed\n- Confirm key details before promising anything\n\n## What to avoid\n- Do not invent prices, policies, deadlines, or product features\n- Do not promise refunds or discounts unless documented\n\n## Escalation\n- Hand off to a human when: angry customer, complex case, or missing information in the knowledge base\n- Say: \"I'll connect you with our team to help with this.\"\n\n## Tickets\n- When a customer reports a problem, complaint, or request that needs follow-up, create a support ticket\n- Before creating, search existing tickets to avoid duplicates\n- Tell the customer the ticket number (e.g. TKT-00042) after creating one"
+                },
+                "sales": {
+                    "label": "Sales & leads",
+                    "hint": "Helps prospects find the right product and move toward a quote or follow-up.",
+                    "content": "You are a sales assistant for [business name].\n\n## Tone\n- Enthusiastic but not pushy\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Help the customer find the right product or service\n- Ask one clarifying question at a time when needed\n- Highlight benefits using only the knowledge base\n- Guide interested customers toward the next step (quote, demo, or human follow-up)\n\n## What to avoid\n- Do not invent prices, features, deadlines, or commercial terms\n- Do not promise discounts or special conditions unless documented\n\n## Escalation\n- Hand off to a human when: complex negotiation, formal quote request, or customer ready to close\n- Say: \"I'll connect you with our sales team to move this forward.\"",
+                    "contentWithTickets": "You are a sales assistant for [business name].\n\n## Tone\n- Enthusiastic but not pushy\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Help the customer find the right product or service\n- Ask one clarifying question at a time when needed\n- Highlight benefits using only the knowledge base\n- Guide interested customers toward the next step (quote, demo, or human follow-up)\n\n## What to avoid\n- Do not invent prices, features, deadlines, or commercial terms\n- Do not promise discounts or special conditions unless documented\n\n## Escalation\n- Hand off to a human when: complex negotiation, formal quote request, or customer ready to close\n- Say: \"I'll connect you with our sales team to move this forward.\"\n\n## Tickets\n- When the customer requests a formal quote or proposal follow-up, create a support ticket\n- Before creating, search existing tickets to avoid duplicates\n- Tell the customer the ticket number (e.g. TKT-00042) after creating one"
+                },
+                "ecommerce": {
+                    "label": "E-commerce & orders",
+                    "hint": "Handles orders, shipping, returns, and product questions with clear next steps.",
+                    "content": "You are an e-commerce assistant for [business name].\n\n## Tone\n- Calm and reassuring\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Help with orders, shipping, returns, and product questions\n- Ask for order number or email when relevant\n- Answer using only the knowledge base\n- Be clear about timelines and next steps\n\n## What to avoid\n- Do not invent order status, delivery times, or return policies\n- Do not confirm refunds unless documented in the knowledge base\n\n## Escalation\n- Hand off to a human when: payment dispute, lost order, or refund you cannot confirm\n- Say: \"I'll connect you with our team to resolve this.\"",
+                    "contentWithTickets": "You are an e-commerce assistant for [business name].\n\n## Tone\n- Calm and reassuring\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Help with orders, shipping, returns, and product questions\n- Ask for order number or email when relevant\n- Answer using only the knowledge base\n- Be clear about timelines and next steps\n\n## What to avoid\n- Do not invent order status, delivery times, or return policies\n- Do not confirm refunds unless documented in the knowledge base\n\n## Escalation\n- Hand off to a human when: payment dispute, lost order, or refund you cannot confirm\n- Say: \"I'll connect you with our team to resolve this.\"\n\n## Tickets\n- When a customer reports an order problem, defect, or request that needs follow-up, create a support ticket\n- Before creating, search existing tickets to avoid duplicates\n- Tell the customer the ticket number (e.g. TKT-00042) after creating one"
+                },
+                "appointments": {
+                    "label": "Appointments",
+                    "hint": "Schedules, reschedules, and cancels appointments with confirmed details.",
+                    "content": "You are an appointments assistant for [business name].\n\n## Tone\n- Organized and helpful\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Help schedule, reschedule, or cancel appointments\n- Confirm date, time, and service type before finalizing\n- Share availability and rules using only the knowledge base\n- Remind customers of any preparation needed\n\n## What to avoid\n- Do not invent available time slots or cancellation policies\n- Do not confirm appointments without validating required details\n\n## Escalation\n- Hand off to a human when: slot unavailable, urgent request, or special case\n- Say: \"I'll connect you with our team to find the best option.\"",
+                    "contentWithTickets": "You are an appointments assistant for [business name].\n\n## Tone\n- Organized and helpful\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Help schedule, reschedule, or cancel appointments\n- Confirm date, time, and service type before finalizing\n- Share availability and rules using only the knowledge base\n- Remind customers of any preparation needed\n\n## What to avoid\n- Do not invent available time slots or cancellation policies\n- Do not confirm appointments without validating required details\n\n## Escalation\n- Hand off to a human when: slot unavailable, urgent request, or special case\n- Say: \"I'll connect you with our team to find the best option.\"\n\n## Tickets\n- When an appointment needs manual follow-up or confirmation, create a support ticket\n- Before creating, search existing tickets to avoid duplicates\n- Tell the customer the ticket number (e.g. TKT-00042) after creating one"
+                },
+                "restaurant": {
+                    "label": "Restaurant & delivery",
+                    "hint": "Answers menu, hours, reservation, and delivery questions like a great host.",
+                    "content": "You are a restaurant assistant for [business name].\n\n## Tone\n- Welcoming and efficient, like a great host\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Answer menu, hours, reservation, and delivery questions\n- For reservations, collect party size, date, and time\n- For delivery, confirm address and timelines from the knowledge base\n- Mention allergens only if documented\n\n## What to avoid\n- Do not invent dishes, prices, availability, or delivery times\n- Do not confirm reservations without required details\n\n## Escalation\n- Hand off to a human when: large order, special event, or delivery complaint\n- Say: \"I'll connect you with our team to help with this.\"",
+                    "contentWithTickets": "You are a restaurant assistant for [business name].\n\n## Tone\n- Welcoming and efficient, like a great host\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Answer menu, hours, reservation, and delivery questions\n- For reservations, collect party size, date, and time\n- For delivery, confirm address and timelines from the knowledge base\n- Mention allergens only if documented\n\n## What to avoid\n- Do not invent dishes, prices, availability, or delivery times\n- Do not confirm reservations without required details\n\n## Escalation\n- Hand off to a human when: large order, special event, or delivery complaint\n- Say: \"I'll connect you with our team to help with this.\"\n\n## Tickets\n- When a customer reports an order, delivery problem, or request that needs follow-up, create a support ticket\n- Before creating, search existing tickets to avoid duplicates\n- Tell the customer the ticket number (e.g. TKT-00042) after creating one"
+                },
+                "realEstate": {
+                    "label": "Real estate",
+                    "hint": "Supports property questions, visits, and connecting interested buyers with an agent.",
+                    "content": "You are a real estate assistant for [business name].\n\n## Tone\n- Professional and trustworthy\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Answer property questions, visits, and basic requirements\n- Share details only from the knowledge base (location, size, price, amenities)\n- Ask about budget, timeline, and preferred area when helpful\n- Offer to schedule a visit or connect with an agent when interest is clear\n\n## What to avoid\n- Do not invent availability, prices, or deal terms\n- Do not guarantee financing approval or documentation\n\n## Escalation\n- Hand off to a human when: customer ready for a visit, negotiation, or documentation\n- Say: \"I'll connect you with one of our agents to move this forward.\"",
+                    "contentWithTickets": "You are a real estate assistant for [business name].\n\n## Tone\n- Professional and trustworthy\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Answer property questions, visits, and basic requirements\n- Share details only from the knowledge base (location, size, price, amenities)\n- Ask about budget, timeline, and preferred area when helpful\n- Offer to schedule a visit or connect with an agent when interest is clear\n\n## What to avoid\n- Do not invent availability, prices, or deal terms\n- Do not guarantee financing approval or documentation\n\n## Escalation\n- Hand off to a human when: customer ready for a visit, negotiation, or documentation\n- Say: \"I'll connect you with one of our agents to move this forward.\"\n\n## Tickets\n- When a prospect requests a visit, proposal, or follow-up, create a support ticket\n- Before creating, search existing tickets to avoid duplicates\n- Tell the customer the ticket number (e.g. TKT-00042) after creating one"
+                }
+            }
+        },
+        "promptGuide": {
+            "title": "How to write a good system prompt",
+            "intro": "A clear prompt helps your Botinho stay on-brand, avoid mistakes, and know when to escalate. Use the sections below as a checklist.",
+            "skeletonHint": "Start from a structured template and fill in the blanks for your business.",
+            "insertSkeleton": "Insert template",
+            "skeleton": "You are a [role, e.g. customer support assistant] for [business name].\n\n## Tone\n- [Friendly / professional / casual]\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Answer using only the knowledge base\n- Ask one clarifying question when needed\n- Confirm key details before promising anything\n\n## What to avoid\n- Do not invent prices, policies, deadlines, or product features\n- Do not promise refunds or discounts unless documented\n\n## Escalation\n- Hand off to a human when: [angry customer / payment dispute / missing info]\n- Say: \"I'll connect you with our team to help with this.\"",
+            "skeletonWithTickets": "You are a [role, e.g. customer support assistant] for [business name].\n\n## Tone\n- [Friendly / professional / casual]\n- Keep replies short, like WhatsApp messages\n\n## What you should do\n- Answer using only the knowledge base\n- Ask one clarifying question when needed\n- Confirm key details before promising anything\n\n## What to avoid\n- Do not invent prices, policies, deadlines, or product features\n- Do not promise refunds or discounts unless documented\n\n## Escalation\n- Hand off to a human when: [angry customer / payment dispute / missing info]\n- Say: \"I'll connect you with our team to help with this.\"\n\n## Tickets\n- When a customer reports an order problem, defect, or request that needs follow-up, create a support ticket\n- Before creating, search existing tickets to avoid duplicates\n- Tell the customer the ticket number (e.g. TKT-00042) after creating one",
+            "sections": {
+                "role": {
+                    "title": "1. Define the role",
+                    "description": "Tell the Botinho who it represents and what it is for.",
+                    "tips": [
+                        "Name the business and the Botinho's purpose (support, sales, appointments)",
+                        "Mention the channel: WhatsApp — keep answers brief",
+                        "Example: \"You are the support assistant for Acme Store.\""
+                    ]
+                },
+                "tone": {
+                    "title": "2. Tone & style",
+                    "description": "Set how the Botinho should sound in every message.",
+                    "tips": [
+                        "Pick a tone: warm, professional, casual, or formal",
+                        "Prefer short sentences; avoid long paragraphs",
+                        "Use the customer's name when you know it"
+                    ]
+                },
+                "rules": {
+                    "title": "3. Rules & boundaries",
+                    "description": "Prevent hallucinations and wrong commitments.",
+                    "tips": [
+                        "Use only facts from the knowledge base",
+                        "Never invent prices, stock, hours, or policies",
+                        "If unsure, say you will check with the team"
+                    ]
+                },
+                "escalation": {
+                    "title": "4. When to escalate",
+                    "description": "Define when a human should take over.",
+                    "tips": [
+                        "List triggers: angry customer, legal issue, payment dispute",
+                        "Say what to tell the customer when escalating",
+                        "Do not try to resolve complex cases alone"
+                    ]
+                },
+                "tickets": {
+                    "title": "5. Support tickets",
+                    "description": "Guide the Botinho on when to open or look up tickets.",
+                    "tips": [
+                        "Create a ticket for order issues, defects, or follow-ups",
+                        "Search first to avoid duplicate tickets",
+                        "Share the TKT number with the customer after creating one"
+                    ]
+                },
+                "examples": {
+                    "title": "6. Examples (optional)",
+                    "description": "Short examples improve consistency.",
+                    "tips": [
+                        "Add 1–2 sample replies for common questions",
+                        "Show how to ask for an order number politely",
+                        "Show how to decline when information is not in the knowledge base"
+                    ]
+                }
+            }
+        },
+        "categories": {
+            "greeting": "Greeting",
+            "orders": "Orders",
+            "products": "Products",
+            "support": "Support",
+            "closing": "Closing"
+        },
+        "stats": {
+            "knowledgeItems": "Knowledge Items",
+            "templates": "Templates",
+            "quickAnswers": "Quick Answers",
+            "trainingStatus": "Botinho Status",
+            "active": "Active",
+            "knowledgeItemsDescription": "Total items in knowledge base",
+            "templatesDescription": "Ready-to-use message templates",
+            "quickAnswersDescription": "Saved replies for rapid responses",
+            "trainingStatusDescription": "Botinho is configured and ready"
+        },
+        "knowledge": {
+            "title": "Knowledge Base",
+            "description": "All information this Botinho uses to respond to customers",
+            "type": {
+                "text": "Text",
+                "url": "URL",
+                "pdf": "PDF"
+            },
+            "added": "Added",
+            "empty": {
+                "title": "No knowledge yet",
+                "description": "Start by adding information for this Botinho",
+                "button": "Add First Item"
+            }
+        },
+        "quickAnswers": {
+            "title": "Quick Answers",
+            "description": "Short responses this Botinho can reuse in conversations",
+            "label": "Quick Answer",
+            "added": "Added",
+            "empty": {
+                "title": "No quick answers yet",
+                "description": "Create quick answers for your most common replies",
+                "button": "Create First Quick Answer"
+            }
+        },
+        "templates": {
+            "title": "Message Templates",
+            "description": "Pre-written messages for common customer interactions",
+            "quickReplyOptions": "Quick Reply Options",
+            "created": "Created",
+            "empty": {
+                "title": "No templates yet",
+                "description": "Create your first message template",
+                "button": "Create First Template"
+            }
+        },
+        "dialog": {
+            "createAgent": "Create Botinho",
+            "createAgentDescription": "Give your Botinho a name and optional behavior prompt. You can add knowledge and assign a number after creation.",
+            "addKnowledge": "Add New Knowledge",
+            "editKnowledge": "Edit Knowledge",
+            "addKnowledgeDescription": "Add information to train this Botinho",
+            "editKnowledgeDescription": "Update the information below",
+            "createTemplate": "Create New Template",
+            "editTemplate": "Edit Template",
+            "createTemplateDescription": "Create a reusable message template",
+            "editTemplateDescription": "Update your template below",
+            "createQuickAnswer": "Create Quick Answer",
+            "editQuickAnswer": "Edit Quick Answer",
+            "createQuickAnswerDescription": "Save a short response to reuse later",
+            "editQuickAnswerDescription": "Update the quick answer below"
+        },
+        "errors": {
+            "fillAllFields": "Error",
+            "fillAllFieldsDescription": "Please fill in all fields",
+            "agentNameRequired": "Botinho name required",
+            "agentNameRequiredDescription": "Please enter a name for your Botinho.",
+            "setupIncomplete": "Complete required fields",
+            "setupIncompleteDescription": "Add a name, system prompt, and at least one WhatsApp number before continuing.",
+            "loadFailed": "Unable to load Botinhos",
+            "createFailed": "Unable to create Botinho",
+            "deleteFailed": "Unable to delete Botinho",
+            "saveFailed": "Unable to save Botinho",
+            "saveKnowledgeFailed": "Unable to save knowledge",
+            "deleteKnowledgeFailed": "Unable to delete knowledge",
+            "agentNotFound": "Botinho not found",
+            "tryAgain": "Please try again."
+        },
+        "success": {
+            "agentCreated": "Botinho created!",
+            "agentCreatedDescription": "Your new Botinho is ready to configure.",
+            "agentUpdated": "Botinho saved",
+            "agentUpdatedDescription": "Botinho settings have been updated.",
+            "agentDeleted": "Botinho deleted",
+            "agentDeletedDescription": "The Botinho has been removed.",
+            "knowledgeAdded": "Knowledge added!",
+            "knowledgeAddedDescription": "Your Botinho has been updated with new information",
+            "knowledgeUpdated": "Knowledge item has been updated",
+            "knowledgeDeleted": "Knowledge item removed",
+            "templateCreated": "Template created!",
+            "templateCreatedDescription": "Your new template is ready to use",
+            "templateUpdated": "Template has been updated",
+            "templateDeleted": "Template removed",
+            "copied": "Copied!",
+            "templateCopied": "Template copied to clipboard",
+            "deleted": "Deleted",
+            "updated": "Updated!",
+            "quickAnswerCreated": "Quick answer created!",
+            "quickAnswerCreatedDescription": "Your new quick answer is ready to use",
+            "quickAnswerUpdated": "Quick answer has been updated",
+            "quickAnswerDeleted": "Quick answer removed"
+        }
+    },
+    "QuickAnswers": {
+        "title": "Quick Answers",
+        "description": "Short canned responses shared across all Botinhos.",
+        "loading": "Loading quick answers...",
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to manage quick answers."
+        },
+        "buttons": {
+            "addQuickAnswer": "Add Quick Answer",
+            "cancel": "Cancel",
+            "update": "Update"
+        },
+        "toolbar": {
+            "searchPlaceholder": "Search quick answers...",
+            "addQuickAnswer": "Add quick answer",
+            "retry": "Retry"
+        },
+        "table": {
+            "content": "Content",
+            "created": "Created",
+            "actions": "Actions",
+            "empty": {
+                "title": "No quick answers yet",
+                "description": "Create quick answers for your most common replies."
+            },
+            "messages": {
+                "noResults": "No quick answers found"
+            }
+        },
+        "actions": {
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "deleteConfirm": {
+            "title": "Delete quick answer?",
+            "description": "This will permanently remove this quick answer. This action cannot be undone."
+        },
+        "quickAnswers": {
+            "title": "Quick Answers",
+            "description": "Reusable replies your Botinhos can draw from during conversations",
+            "label": "Quick Answer",
+            "added": "Added",
+            "empty": {
+                "title": "No quick answers yet",
+                "description": "Create quick answers for your most common replies",
+                "button": "Create First Quick Answer"
+            }
+        },
+        "dialog": {
+            "createQuickAnswer": "Create Quick Answer",
+            "editQuickAnswer": "Edit Quick Answer",
+            "createQuickAnswerDescription": "Save a short response to reuse later",
+            "editQuickAnswerDescription": "Update the quick answer below"
+        },
+        "form": {
+            "content": "Content",
+            "contentPlaceholder": "Enter a short reply to reuse in conversations...",
+            "quickAnswerContentPlaceholder": "Enter a short reply your AI can reuse in conversations...",
+            "quickAnswerContentTip": "Tip: Add facts your AI should know — hours, shipping, returns, payment methods, etc."
+        },
+        "quickAnswerExamples": {
+            "title": "Start from an example",
+            "items": {
+                "businessHours": {
+                    "label": "Business hours",
+                    "content": "We're open Monday to Friday, 9 AM–6 PM. Closed on weekends and public holidays."
+                },
+                "shippingPolicy": {
+                    "label": "Shipping policy",
+                    "content": "Standard shipping takes 3–5 business days. Free shipping on orders over $50."
+                },
+                "returnPolicy": {
+                    "label": "Return policy",
+                    "content": "Returns are accepted within 30 days. Items must be unused and in original packaging."
+                },
+                "paymentMethods": {
+                    "label": "Payment methods",
+                    "content": "We accept credit cards, debit cards, and PIX."
+                },
+                "orderTracking": {
+                    "label": "Order tracking",
+                    "content": "You can track your order using the tracking link sent to your email after shipping."
+                },
+                "speakToHuman": {
+                    "label": "Speak to a person",
+                    "content": "I'll connect you with a team member who can help you further."
+                }
+            }
+        },
+        "errors": {
+            "fillAllFields": "Missing content",
+            "fillAllFieldsDescription": "Please enter a quick answer",
+            "loadFailed": "Unable to load quick answers",
+            "saveFailed": "Unable to save quick answer",
+            "deleteFailed": "Unable to delete quick answer",
+            "tryAgain": "Please try again."
+        },
+        "success": {
+            "created": "Quick answer created!",
+            "createdDescription": "Your new quick answer is ready to use",
+            "updated": "Updated!",
+            "updatedDescription": "Quick answer has been updated",
+            "deleted": "Deleted",
+            "deletedDescription": "Quick answer removed"
+        }
+    },
+    "Templates": {
+        "title": "Templates",
+        "description": "Message templates shared across all Botinhos.",
+        "loading": "Loading templates...",
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to manage templates."
+        },
+        "buttons": {
+            "createTemplate": "Create Template",
+            "copyTemplate": "Copy template",
+            "cancel": "Cancel",
+            "update": "Update",
+            "addOption": "Add Option"
+        },
+        "toolbar": {
+            "searchPlaceholder": "Search templates...",
+            "addTemplate": "New template",
+            "categoryFilter": "Filter by category",
+            "categoryAll": "All categories",
+            "retry": "Retry"
+        },
+        "table": {
+            "name": "Name",
+            "category": "Category",
+            "content": "Content",
+            "created": "Created",
+            "actions": "Actions",
+            "empty": {
+                "title": "No templates yet",
+                "description": "Create your first message template to reuse across conversations."
+            },
+            "messages": {
+                "noResults": "No templates found"
+            }
+        },
+        "actions": {
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "deleteConfirm": {
+            "title": "Delete template?",
+            "description": "This will permanently remove \"{name}\". This action cannot be undone.",
+            "descriptionGeneric": "This action cannot be undone."
+        },
+        "form": {
+            "templateName": "Template Name",
+            "category": "Category",
+            "messageContent": "Message Content",
+            "quickReplyOptions": "Quick Reply Options",
+            "option": "Option",
+            "templateNamePlaceholder": "e.g., Welcome Message, Order Confirmation",
+            "selectCategory": "Select a category",
+            "messageContentPlaceholder": "Enter your template message... Use [VARIABLE_NAME] for dynamic content",
+            "messageContentTip": "Tip: Use [BRACKETS] for variables like [CUSTOMER_NAME], [ORDER_ID], etc.",
+            "quickReplyOptionsDescription": "Add buttons for customers to select from (optional)",
+            "buttonLabelPlaceholder": "Button label (what user sees)",
+            "buttonValuePlaceholder": "Value (what gets sent)",
+            "noOptionsAdded": "No options added yet",
+            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons"
+        },
+        "messageExamples": {
+            "title": "Start from an example",
+            "items": {
+                "welcomeGreeting": {
+                    "label": "Welcome message",
+                    "name": "Welcome Message",
+                    "category": "greeting",
+                    "content": "Hi [CUSTOMER_NAME]! 👋 Welcome to [COMPANY_NAME].\n\nWe're happy to have you here. How can we help you today?"
+                },
+                "orderConfirmation": {
+                    "label": "Order confirmation",
+                    "name": "Order Confirmation",
+                    "category": "orders",
+                    "content": "Hi [CUSTOMER_NAME], your order #[ORDER_ID] has been confirmed! ✅\n\nTotal: [ORDER_TOTAL]\nEstimated delivery: [DELIVERY_DATE]\n\nWe'll keep you updated on the status."
+                },
+                "orderShipped": {
+                    "label": "Order shipped",
+                    "name": "Order Shipped",
+                    "category": "orders",
+                    "content": "Great news, [CUSTOMER_NAME]! 📦\n\nYour order #[ORDER_ID] has been shipped.\nTracking: [TRACKING_NUMBER]\nExpected delivery: [DELIVERY_DATE]\n\nLet us know if you need anything!"
+                },
+                "productRecommendation": {
+                    "label": "Product recommendation",
+                    "name": "Product Recommendation",
+                    "category": "products",
+                    "content": "Hi [CUSTOMER_NAME]! Based on what you're looking for, we recommend:\n\n[PRODUCT_NAME] — [PRODUCT_PRICE]\n[PRODUCT_DESCRIPTION]\n\nWould you like more details or help placing an order?"
+                },
+                "supportAcknowledgment": {
+                    "label": "Support acknowledgment",
+                    "name": "Support Acknowledgment",
+                    "category": "support",
+                    "content": "Hi [CUSTOMER_NAME], thanks for reaching out. 🙏\n\nWe've received your message about [ISSUE_TOPIC] and a team member will get back to you shortly.\n\nReference: [TICKET_ID]"
+                },
+                "closingThankYou": {
+                    "label": "Thank you & closing",
+                    "name": "Thank You & Closing",
+                    "category": "closing",
+                    "content": "Thank you for choosing [COMPANY_NAME], [CUSTOMER_NAME]! 🌟\n\nIf you need anything else, just send us a message. Have a great day!"
+                }
+            }
+        },
+        "categories": {
+            "greeting": "Greeting",
+            "orders": "Orders",
+            "products": "Products",
+            "support": "Support",
+            "closing": "Closing"
+        },
+        "templates": {
+            "title": "Message Templates",
+            "description": "Pre-written messages for common customer interactions",
+            "quickReplyOptions": "Quick Reply Options",
+            "created": "Created",
+            "empty": {
+                "title": "No templates yet",
+                "description": "Create your first message template",
+                "button": "Create First Template"
+            }
+        },
+        "dialog": {
+            "createTemplate": "Create New Template",
+            "editTemplate": "Edit Template",
+            "createTemplateDescription": "Create a reusable message template",
+            "editTemplateDescription": "Update your template below"
+        },
+        "errors": {
+            "fillAllFields": "Missing fields",
+            "fillAllFieldsDescription": "Please fill in all fields",
+            "loadFailed": "Unable to load templates",
+            "saveFailed": "Unable to save template",
+            "deleteFailed": "Unable to delete template",
+            "copyFailed": "Unable to copy template",
+            "tryAgain": "Please try again."
+        },
+        "success": {
+            "created": "Template created!",
+            "createdDescription": "Your new template is ready to use",
+            "updated": "Updated!",
+            "updatedDescription": "Template has been updated",
+            "deleted": "Deleted",
+            "deletedDescription": "Template removed",
+            "copied": "Copied!",
+            "copiedDescription": "Template copied to clipboard"
+        }
+    },
     "AppSidebar": {
+        "sections": {
+            "workspace": "Workspace",
+            "customerInteraction": "Customer Interaction",
+            "management": "Management"
+        },
         "navigation": {
             "dashboard": "Dashboard",
             "customer": "Customers",
             "inbox": "Inbox",
-            "aiTraining": "AI Training",
+            "tickets": "Tickets",
+            "schedule": "Schedule",
+            "aiAgents": "Botinho",
+            "quickAnswers": "Quick Answers",
+            "templates": "Templates",
+            "surveys": "Surveys",
+            "campaigns": "Campaigns",
             "company": "Company",
             "settings": "Settings",
+            "connectWhatsApp": "Connect WhatsApp",
+            "subscription": "Subscription",
             "support": "Support"
         },
         "documents": {
             "dataLibrary": "Data Library"
         }
     },
-    "NavMain": {
-        "quickCreate": "Create Survey",
-        "addCompany": "Add Company",
-        "selectCompany": "Select company...",
-        "searchCompanies": "Search companies...",
-        "noCompaniesFound": "No companies found.",
-        "messages": {
-            "companiesUpdated": "Companies updated successfully",
-            "failedToUpdateDefaultCompany": "Failed to update default company"
-        }
-    },
     "SiteHeader": {
         "title": "Main Dashboard"
+    },
+    "Surveys": {
+        "title": "Surveys",
+        "description": "Create custom surveys to measure customer satisfaction, NPS, and feedback.",
+        "loading": "Loading surveys...",
+        "tabs": {
+            "builder": "Builder",
+            "metrics": "Metrics"
+        },
+        "list": {
+            "title": "Your surveys",
+            "description": "Create surveys and track customer feedback from the inbox.",
+            "new": "New survey",
+            "empty": "No surveys yet",
+            "emptyHint": "Create your first survey to collect CSAT, NPS, or custom feedback.",
+            "createFirst": "Create your first survey",
+            "responses": "responses"
+        },
+        "toolbar": {
+            "searchPlaceholder": "Search surveys...",
+            "addSurvey": "New survey",
+            "statusFilter": "Filter by status",
+            "statusAll": "All statuses",
+            "retry": "Retry"
+        },
+        "table": {
+            "name": "Name",
+            "status": "Status",
+            "delivery": "Delivery",
+            "questions": "Questions",
+            "responses": "Responses",
+            "actions": "Actions",
+            "moreActions": "More actions",
+            "empty": {
+                "title": "No surveys yet",
+                "description": "Create your first survey to collect CSAT, NPS, or custom feedback."
+            },
+            "messages": {
+                "noResults": "No surveys found"
+            }
+        },
+        "status": {
+            "draft": "Draft",
+            "active": "Active",
+            "archived": "Archived"
+        },
+        "view": {
+            "backToList": "Back to surveys",
+            "editSurvey": "Edit survey",
+            "newSurvey": "New survey",
+            "metricsFor": "Metrics — {name}"
+        },
+        "editor": {
+            "selectOrCreate": "Select a survey or create a new one",
+            "newTitle": "New survey",
+            "editTitle": "Edit survey",
+            "description": "Add questions and choose how customers receive the survey.",
+            "advanced": "Advanced options",
+            "noQuestions": "Add at least one question."
+        },
+        "fields": {
+            "name": "Survey name",
+            "namePlaceholder": "e.g. Post-support CSAT",
+            "description": "Internal description",
+            "deliveryMode": "Delivery mode",
+            "introMessage": "Intro message",
+            "thankYouMessage": "Thank you message",
+            "active": "Active (available to send)",
+            "questions": "Questions",
+            "question": "Question {number}",
+            "questionPrompt": "Question text",
+            "optionsPlaceholder": "Options separated by commas"
+        },
+        "deliveryMode": {
+            "inline": "WhatsApp chat",
+            "hosted": "Hosted link",
+            "both": "Both"
+        },
+        "questionTypes": {
+            "rating": "Rating (1–5)",
+            "nps": "NPS (0–10)",
+            "single_choice": "Single choice",
+            "multi_choice": "Multiple choice",
+            "text": "Free text",
+            "scale": "Custom scale"
+        },
+        "actions": {
+            "save": "Save",
+            "edit": "Edit",
+            "viewMetrics": "View metrics",
+            "duplicate": "Duplicate",
+            "delete": "Delete",
+            "archive": "Archive",
+            "addQuestion": "Add question",
+            "remove": "Remove"
+        },
+        "deleteConfirm": {
+            "title": "Delete survey?",
+            "description": "This will permanently remove this survey. This action cannot be undone."
+        },
+        "archiveConfirm": {
+            "title": "Archive survey?",
+            "description": "This survey has responses and will be archived instead of deleted. You can no longer send it, but metrics are preserved."
+        },
+        "messages": {
+            "saved": "Survey saved",
+            "duplicated": "Survey duplicated",
+            "deleted": "Survey deleted",
+            "archived": "Survey archived"
+        },
+        "defaults": {
+            "thankYou": "Thank you for your feedback!"
+        },
+        "errors": {
+            "loadFailed": "Could not load surveys",
+            "saveFailed": "Could not save survey",
+            "archiveFailed": "Could not archive survey",
+            "deleteFailed": "Could not delete survey",
+            "duplicateFailed": "Could not duplicate survey",
+            "nameRequired": "Survey name is required"
+        },
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to manage surveys."
+        },
+        "metrics": {
+            "loading": "Loading metrics...",
+            "empty": "No responses yet",
+            "sent": "Sent",
+            "completed": "Completed",
+            "responseRate": "Response rate",
+            "averageRating": "Avg rating",
+            "nps": "NPS score",
+            "distribution": "Answer distribution"
+        }
+    },
+    "Campaigns": {
+        "title": "Campaigns",
+        "description": "Send personalized WhatsApp messages to customers by tag, track delivery, and route replies to a dedicated Botinho.",
+        "loading": "Loading campaigns...",
+        "list": {
+            "title": "Your campaigns",
+            "description": "Create outbound campaigns with variable messages and throttled delivery.",
+            "empty": "No campaigns yet",
+            "emptyHint": "Launch your first campaign to reach tagged customers with valid phone numbers.",
+            "createFirst": "Create your first campaign",
+            "delivered": "delivered"
+        },
+        "toolbar": {
+            "addCampaign": "New campaign",
+            "retry": "Retry",
+            "searchPlaceholder": "Search campaigns...",
+            "statusFilter": "Filter by status",
+            "statusAll": "All statuses"
+        },
+        "table": {
+            "name": "Name",
+            "status": "Status",
+            "progress": "Progress",
+            "contacts": "Contacts",
+            "tags": "Tags",
+            "actions": "Actions",
+            "moreActions": "More actions",
+            "empty": {
+                "title": "No campaigns yet",
+                "description": "Launch your first campaign to reach tagged customers with valid phone numbers."
+            },
+            "messages": {
+                "noResults": "No campaigns found"
+            }
+        },
+        "status": {
+            "draft": "Draft",
+            "scheduled": "Scheduled",
+            "running": "Running",
+            "paused": "Paused",
+            "completed": "Completed",
+            "cancelled": "Cancelled"
+        },
+        "view": {
+            "backToList": "Back to campaigns",
+            "newCampaign": "New campaign",
+            "editCampaign": "Edit campaign",
+            "metricsFor": "Metrics for {name}"
+        },
+        "editor": {
+            "description": "Configure message, audience, send rate, and reply Botinho.",
+            "name": "Campaign name",
+            "descriptionField": "Description",
+            "message": "Message template",
+            "templateApplied": "Template applied",
+            "preview": "Preview",
+            "starterTemplates": {
+                "title": "Starter templates",
+                "description": "Click a template to fill in your message. You can edit it before sending.",
+                "items": {
+                    "welcome": {
+                        "name": "Welcome message",
+                        "description": "Greet new or returning customers warmly.",
+                        "message": "Hi {{customer.firstName}}, welcome to {{company.name}}! We're happy to have you. Reply anytime if you need help."
+                    },
+                    "promotion": {
+                        "name": "Special offer",
+                        "description": "Share a promotion or limited-time deal.",
+                        "message": "Hi {{customer.firstName}}! {{company.name}} has a special offer for you. Reply to this message and we'll share the details."
+                    },
+                    "appointmentReminder": {
+                        "name": "Appointment reminder",
+                        "description": "Remind customers about an upcoming visit or booking.",
+                        "message": "Hi {{customer.firstName}}, this is {{company.name}} reminding you about your upcoming appointment. Reply to confirm or reschedule."
+                    },
+                    "feedback": {
+                        "name": "Feedback request",
+                        "description": "Ask for a quick review or satisfaction check.",
+                        "message": "Hi {{customer.firstName}}, we'd love your feedback about {{company.name}}. How was your recent experience? Just reply to this message."
+                    },
+                    "winBack": {
+                        "name": "Win-back",
+                        "description": "Re-engage customers who haven't been in touch lately.",
+                        "message": "Hi {{customer.firstName}}, we miss you at {{company.name}}! Reply to hear about an exclusive offer we picked for you."
+                    }
+                }
+            },
+            "tags": "Target tags",
+            "tagsPlaceholder": "Select or add tags...",
+            "tagsHint": "Customers matching any selected tag (OR) with a valid phone number will be included.",
+            "previewAudience": "Preview audience",
+            "audiencePreviewTitle": "Audience preview",
+            "audienceCounts": "{matched} matched by tags · {eligible} eligible",
+            "audienceEmpty": "No eligible customers found. Check tags, customer status filter, and phone numbers.",
+            "audienceSample": "Sample recipients",
+            "messagesPerInterval": "Messages per batch",
+            "intervalMinutes": "Minutes between batches",
+            "agent": "Reply Botinho",
+            "agentPlaceholder": "Select Botinho",
+            "noAgent": "No Botinho",
+            "session": "WhatsApp session",
+            "customerStatus": "Customer status",
+            "statusActive": "Active",
+            "statusProspect": "Prospect",
+            "statusInactive": "Inactive",
+            "save": "Save draft",
+            "launch": "Start campaign"
+        },
+        "actions": {
+            "edit": "Edit",
+            "start": "Start campaign",
+            "metrics": "Metrics",
+            "pause": "Pause",
+            "resume": "Resume",
+            "cancel": "Cancel",
+            "duplicate": "Duplicate"
+        },
+        "messages": {
+            "saved": "Campaign saved",
+            "launched": "Campaign launched",
+            "pause": "Campaign paused",
+            "resume": "Campaign resumed",
+            "cancel": "Campaign cancelled",
+            "duplicate": "Campaign duplicated"
+        },
+        "errors": {
+            "loadFailed": "Could not load campaigns",
+            "saveFailed": "Could not save campaign",
+            "launchFailed": "Could not launch campaign",
+            "previewFailed": "Could not preview audience",
+            "actionFailed": "Action failed",
+            "nameRequired": "Campaign name is required",
+            "messageRequired": "Message template is required",
+            "tagsRequired": "At least one tag is required"
+        },
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to manage campaigns."
+        },
+        "metrics": {
+            "loading": "Loading metrics...",
+            "empty": "No delivery data yet",
+            "targeted": "Targeted",
+            "delivered": "Delivered",
+            "failed": "Failed",
+            "skipped": "Skipped",
+            "responses": "Responses",
+            "responseRate": "Response rate",
+            "botReplies": "Bot replies",
+            "progress": "Progress",
+            "deliveries": "Deliveries",
+            "customer": "Customer",
+            "status": "Status",
+            "sentAt": "Sent at",
+            "failureReason": "Failure reason",
+            "responded": "Responded",
+            "yes": "Yes",
+            "no": "No"
+        }
+    },
+    "PublicSurvey": {
+        "subtitle": "Your feedback helps us improve",
+        "submit": "Submit survey",
+        "completed": {
+            "title": "Thank you!",
+            "defaultMessage": "Your response has been recorded."
+        },
+        "errors": {
+            "notFound": "Survey not found or expired",
+            "submitFailed": "Could not submit survey"
+        }
     },
     "SectionCards": {
         "totalRevenue": {
@@ -590,11 +1935,22 @@
             "rowsPerPage": "Rows per page",
             "page": "Page",
             "of": "of",
-            "rowsSelected": "row(s) selected",
+            "rowsSelected": "{selected} of {total} row(s) selected.",
+            "totalRows": "{count} row(s) total.",
             "goToFirstPage": "Go to first page",
             "goToPreviousPage": "Go to previous page",
             "goToNextPage": "Go to next page",
-            "goToLastPage": "Go to last page"
+            "goToLastPage": "Go to last page",
+            "showingRange": "Showing {from}-{to} of {total}"
+        },
+        "columnHeader": {
+            "sortAsc": "Asc",
+            "sortDesc": "Desc",
+            "hide": "Hide"
+        },
+        "view": {
+            "view": "View",
+            "toggleColumns": "Toggle columns"
         },
         "messages": {
             "noResults": "No results.",
@@ -640,7 +1996,7 @@
         }
     },
     "NavUser": {
-        "account": "Account",
+        "profile": "Profile",
         "subscription": "Subscription",
         "notifications": "Notifications",
         "settings": "Settings",
@@ -716,76 +2072,6 @@
             "upgradeRequired": "Removing branding is not available in your current plan",
             "updateFailed": "Failed to update branding settings"
         },
-        "api": {
-            "title": "API Configuration",
-            "description": "Manage API tokens for programmatic access",
-            "surveyToken": "Integration Token",
-            "apiToken": "API Token",
-            "noTokenGenerated": "No token generated",
-            "generateToken": "Generate Token",
-            "regenerateToken": "Regenerate Token",
-            "generating": "Generating...",
-            "regenerating": "Regenerating...",
-            "apiEndpoint": "API Endpoint",
-            "documentation": "API Documentation",
-            "documentationDescription": "View code examples and API reference",
-            "showDocs": "Show Docs",
-            "hideDocs": "Hide Docs",
-            "requestBody": "Request Body",
-            "successResponse": "Success Response",
-            "tokenCopied": "Token copied",
-            "tokenCopiedDescription": "API token has been copied to clipboard",
-            "codeCopied": "Code copied",
-            "codeCopiedDescription": "Code example copied to clipboard",
-            "endpointCopied": "Endpoint copied",
-            "endpointCopiedDescription": "API endpoint URL copied to clipboard",
-            "noCompany": "No company available. Please create or join a company first.",
-            "confirmRegenerateTitle": "Regenerate Token",
-            "confirmRegenerateDescription": "Are you sure you want to regenerate this token? This action cannot be undone and will invalidate the current token.",
-            "confirmRegenerate": "Regenerate Token",
-            "cancel": "Cancel",
-            "tabs": {
-                "surveyToken": "Survey Token",
-                "apiToken": "API Token"
-            },
-            "codeSnippets": {
-                "surveyWidget": {
-                    "title": "Survey Widget Integration",
-                    "description": "Use this token to embed surveys directly on your website",
-                    "example": "Survey Widget Example",
-                    "copyCode": "Copy Code"
-                },
-                "apiIntegration": {
-                    "title": "API Integration",
-                    "description": "Use this token to submit survey responses via API",
-                    "example": "API Integration Example",
-                    "copyCode": "Copy Code"
-                }
-            },
-            "widget": {
-                "title": "Survey Widget Integration",
-                "description": "Embed surveys directly on your website with our JavaScript widget",
-                "show": "Show Guide",
-                "hide": "Hide Guide",
-                "codeCopied": "Code copied to clipboard",
-                "htmlSetup": "HTML Setup",
-                "fullExample": "Complete Implementation",
-                "questionFormats": "Question Types Reference",
-                "quickStart": "Quick Start Guide",
-                "tabs": {
-                    "setup": "Setup",
-                    "implementation": "Implementation",
-                    "formats": "Question Types"
-                },
-                "steps": {
-                    "includeScript": "Include the widget script in your HTML",
-                    "createContainer": "Add a container div element",
-                    "configureQuestions": "Configure your survey questions",
-                    "addToken": "Add your company token for submissions",
-                    "mount": "Mount the widget to your container"
-                }
-            }
-        },
         "page": {
             "tabs": {
                 "whatsapp": "WhatsApp",
@@ -823,11 +2109,22 @@
                     "title": "No WhatsApp numbers connected yet.",
                     "description": "Click the button above to connect your first number."
                 },
+                "offlineBanner": "WhatsApp is offline. Your numbers are listed below, but messaging is paused.",
+                "repairBanner": "WhatsApp is not receiving messages. Scan the QR code again to restore inbound delivery.",
+                "repairAction": "Re-pair now",
                 "status": {
                     "connected": "Connected",
-                    "disconnected": "Disconnected"
+                    "disconnected": "Disconnected",
+                    "offline": "Offline"
                 },
                 "disconnect": "Disconnect",
+                "label": {
+                    "placeholder": "Connection label",
+                    "editAria": "Edit connection label",
+                    "save": "Save label",
+                    "cancel": "Cancel editing",
+                    "required": "Enter a label for this connection"
+                },
                 "messages": {
                     "messagesThisMonth": "{count} messages this month"
                 },
@@ -836,11 +2133,34 @@
                     "removeAria": "Remove WhatsApp number {name}",
                     "connect": "Connect Number"
                 },
+                "details": {
+                    "title": "Connection details",
+                    "openAria": "View details for {name}",
+                    "fields": {
+                        "sessionId": "Session ID",
+                        "label": "Label",
+                        "phoneNumber": "Phone number",
+                        "status": "Status",
+                        "pairedAt": "Paired on",
+                        "lastSeenAt": "Last seen",
+                        "updatedAt": "Last updated"
+                    },
+                    "status": {
+                        "pending": "Pending",
+                        "qrPending": "Waiting for QR scan",
+                        "needsQr": "Needs QR scan"
+                    }
+                },
                 "autoReply": {
                     "label": "Auto-Reply",
                     "description": "Automatically respond to customer messages",
                     "aria": "Toggle automatic reply",
                     "save": "Save Changes"
+                },
+                "groupMessages": {
+                    "label": "Groups, communities & channels",
+                    "description": "Receive messages from WhatsApp groups, communities, and channels on this number. Direct messages are always received.",
+                    "aria": "Toggle group, community, and channel messages for this number"
                 },
                 "dialog": {
                     "title": "Add WhatsApp Number",
@@ -874,6 +2194,8 @@
                         "idle": "Start pairing to generate a WhatsApp QR code."
                     },
                     "qrAlt": "WhatsApp pairing QR code",
+                    "nameLabel": "Session name",
+                    "nameHint": "Optional — auto-generated from phone number if left blank",
                     "displayNameHint": "Leave blank to use default: WhatsApp [last 4 digits]",
                     "latest": {
                         "title": "WhatsApp connected",
@@ -917,7 +2239,8 @@
                     "save": "Save Changes"
                 },
                 "delete": {
-                    "confirm": "Are you sure you want to disconnect this WhatsApp number?"
+                    "title": "Disconnect WhatsApp number",
+                    "confirm": "Are you sure you want to disconnect {name}? This will stop receiving messages on this number."
                 }
             }
         }
@@ -1151,6 +2474,66 @@
             "invalidToken": "Invalid or expired reset token"
         }
     },
+    "Onboarding": {
+        "stepper": {
+            "company": "Company",
+            "whatsapp": "WhatsApp",
+            "bot": "Botinho",
+            "plan": "Plan"
+        },
+        "company": {
+            "title": "Create your company",
+            "description": "Tell us about your business to get started.",
+            "nameLabel": "Company name",
+            "namePlaceholder": "Acme Inc.",
+            "nameError": "Company name must be at least 2 characters",
+            "descriptionLabel": "Description (optional)",
+            "descriptionPlaceholder": "What does your company do?",
+            "continue": "Continue",
+            "error": "Failed to create company"
+        },
+        "whatsapp": {
+            "title": "Connect WhatsApp",
+            "description": "Link your WhatsApp number to receive and reply to customer messages.",
+            "hint": "Scan the QR code with WhatsApp on your phone.",
+            "labelOptional": "Number label (optional)",
+            "labelPlaceholder": "Support line",
+            "connect": "Connect WhatsApp",
+            "skip": "Skip for now",
+            "continue": "Continue",
+            "retry": "Try again",
+            "creating": "Preparing connection...",
+            "scan": "Scan this QR code with WhatsApp",
+            "finalizing": "Finishing connection...",
+            "connected": "WhatsApp connected successfully",
+            "connectedTitle": "WhatsApp connected",
+            "qrAlt": "WhatsApp QR code",
+            "notConfigured": "WhatsApp integration is not available in this environment. You can connect your number later in Settings.",
+            "error": "Failed to connect WhatsApp"
+        },
+        "bot": {
+            "title": "Create your Botinho",
+            "description": "Set up an AI agent to automate customer conversations.",
+            "nameLabel": "Bot name",
+            "namePlaceholder": "Support Bot",
+            "nameRequired": "Bot name is required",
+            "promptLabel": "Instructions (optional)",
+            "promptPlaceholder": "You are a helpful assistant for...",
+            "sessionsLabel": "Assign WhatsApp numbers",
+            "create": "Create Botinho",
+            "skip": "Skip for now",
+            "error": "Failed to create Botinho"
+        },
+        "plan": {
+            "title": "Choose your plan",
+            "description": "Select a plan to finish setup. You can change it anytime.",
+            "completed": "Welcome to botinho!",
+            "checkoutSuccess": "Payment successful! Setting up your account...",
+            "checkoutCanceled": "Checkout canceled. You can choose a plan below.",
+            "redirecting": "Redirecting to checkout...",
+            "error": "Failed to select plan"
+        }
+    },
     "AuthErrors": {
         "invalidCredentials": "Invalid email or password",
         "emailNotConfirmed": "Please confirm your email before signing in",
@@ -1183,242 +2566,18 @@
         "inviteCompanyConflict": "This account already belongs to another company and cannot accept this invitation."
     },
     "Company": {
-        "title": "Company Management",
-        "description": "Manage your companies and company members",
-        "createCompany": "Create Company",
-        "createCompanyDescription": "Create a new company to get started.",
-        "editCompany": "Edit Company",
-        "editCompanyDescription": "Update your company information.",
-        "selectCompany": "Select Company",
-        "companyDetails": "Company information and settings",
-        "noCompanies": "No companies found",
-        "noCompaniesDescription": "You haven't created any companies yet. Create your first company to get started.",
-        "createFirstCompany": "Create Your First Company",
-        "form": {
-            "name": "Company Name",
-            "namePlaceholder": "Enter company name",
-            "documentType": "Document Type",
-            "selectDocumentType": "Document type",
-            "document": "Document Number",
-            "documentPlaceholder": "Enter document number",
-            "zipCode": "ZIP Code",
-            "zipCodePlaceholder": "Enter ZIP code",
-            "state": "State",
-            "statePlaceholder": "Enter state",
-            "city": "City",
-            "cityPlaceholder": "Enter city",
-            "address": "Address",
-            "addressPlaceholder": "Enter full address",
-            "cancel": "Cancel",
-            "create": "Create Company",
-            "creating": "Creating...",
-            "update": "Update Company",
-            "updating": "Updating..."
+        "title": "Settings",
+        "description": "Manage your company details and team members.",
+        "tabs": {
+            "company": "Company",
+            "users": "Users",
+            "checklist": "Checklist templates"
         },
-        "documentTypes": {
-            "cpf": "CPF",
-            "cnpj": "CNPJ"
+        "checklist": {
+            "title": "Checklist templates",
+            "description": "Manage your company checklist templates.",
+            "empty": "No checklist templates yet."
         },
-        "members": {
-            "title": "Team Members",
-            "description": "Manage your company team members and their permissions",
-            "inviteMember": "Invite Member",
-            "inviteDescription": "Send an invitation to a new team member.",
-            "email": "Email Address",
-            "emailPlaceholder": "member@example.com",
-            "permissions": "Permissions",
-            "isAdmin": "Administrator - Can manage company and members",
-            "canPost": "Can Create - Can create surveys",
-            "canApprove": "Can Read - Can read surveys and results",
-            "sendInvite": "Send Invitation",
-            "inviting": "Sending...",
-            "name": "Name",
-            "role": "Role",
-            "statusLabel": "Status",
-            "owner": "Owner",
-            "admin": "Admin",
-            "member": "Member",
-            "makeAdmin": "Make Admin",
-            "removeAdmin": "Remove Admin",
-            "removeMember": "Remove Member",
-            "noMembers": "No company members",
-            "noMembersDescription": "Your company doesn't have any members yet.",
-            "inviteFirstMember": "Invite Your First Member",
-            "status": {
-                "invited": "Invited",
-                "accepted": "Active",
-                "rejected": "Rejected"
-            },
-            "inviteSuccess": "Member invited successfully",
-            "inviteFailed": "Failed to invite member",
-            "inviteCompanyUserConflict": "This email already belongs to another company.",
-            "inviteResent": "Invitation resent successfully",
-            "inviteResendFailed": "Failed to resend invitation",
-            "alreadyHasCompany": "You already belong to a company and cannot create another one.",
-            "removeSuccess": "Member removed successfully",
-            "removeFailed": "Failed to remove member",
-            "updateSuccess": "Member permissions updated successfully",
-            "updateFailed": "Failed to update member permissions",
-            "actions": "Actions",
-            "openMenu": "Open menu",
-            "resendInvite": "Resend invitation",
-            "resendingInvite": "Resending...",
-            "excel": {
-                "singleInvite": "Single Invite",
-                "bulkImport": "Bulk Import",
-                "uploadLabel": "Upload Excel File",
-                "uploadDescription": "Upload an Excel or CSV file with member information to invite multiple members at once.",
-                "dropHere": "Drop the file here",
-                "clickOrDrag": "Click to upload or drag and drop",
-                "supportedFormats": "Supports .xlsx, .xls, and .csv files",
-                "formatInfo": "Required columns: email (required). Optional columns: firstName, lastName, isAdmin, canPost, canApprove. Column names are case-insensitive.",
-                "parseError": "Failed to parse Excel file",
-                "readError": "Failed to read file",
-                "invalidFileType": "Invalid file type. Please upload .xlsx, .xls, or .csv files.",
-                "parsedSuccess": "Successfully parsed {count} member(s)",
-                "parsedWithErrors": "Parsed with {count} error(s)",
-                "errorsFound": "{count} error(s) found",
-                "noData": "No valid member data found in file",
-                "email": "Email",
-                "firstName": "First Name",
-                "lastName": "Last Name",
-                "admin": "Admin",
-                "canPost": "Can Post",
-                "canApprove": "Can Approve",
-                "preview": "Preview ({count} members)",
-                "clear": "Clear",
-                "inviting": "Inviting...",
-                "inviteAll": "Invite All ({count})",
-                "bulkSuccess": "Successfully invited {count} member(s)",
-                "bulkErrors": "Failed to invite {count} member(s)",
-                "bulkFailed": "Bulk invite failed"
-            }
-        },
-        "messages": {
-            "createSuccess": "Company created successfully",
-            "updateSuccess": "Company updated successfully",
-            "operationFailed": "Operation failed",
-            "unexpectedError": "An unexpected error occurred",
-            "bulkInviteSuccess": "Successfully invited {count} member(s)",
-            "bulkInviteFailed": "Failed to invite members"
-        }
-    },
-    "Profile": {
-        "title": "Profile",
-        "description": "Manage your account information and preferences",
-        "avatar": {
-            "title": "Profile Picture",
-            "description": "Update your profile picture",
-            "change": "Change photo",
-            "instructions": "Click the camera icon to upload a new profile picture. Supported formats: JPG, PNG, GIF.",
-            "updating": "Updating avatar..."
-        },
-        "profile": {
-            "title": "Personal Information",
-            "description": "Update your personal information",
-            "firstName": "First Name",
-            "firstNamePlaceholder": "Enter your first name",
-            "lastName": "Last Name",
-            "lastNamePlaceholder": "Enter your last name",
-            "phone": "Phone Number",
-            "phonePlaceholder": "+1 (555) 123-4567",
-            "position": "Position",
-            "positionPlaceholder": "Enter your position",
-            "companyName": "Company Name",
-            "companyNamePlaceholder": "Enter your company name",
-            "country": "Country",
-            "countryPlaceholder": "Enter your country",
-            "socialLinks": "Social Links",
-            "linkedinUrl": "LinkedIn URL",
-            "twitterUrl": "X URL",
-            "websiteUrl": "Website URL",
-            "githubUrl": "GitHub URL",
-            "email": "Email Address",
-            "emailNote": "Email address cannot be changed"
-        },
-        "messages": {
-            "profileUpdated": "Profile updated successfully",
-            "avatarUpdated": "Profile picture updated successfully",
-            "updateFailed": "Failed to update profile",
-            "avatarUpdateFailed": "Failed to update profile picture",
-            "unexpectedError": "An unexpected error occurred",
-            "accountDeleted": "Account deleted successfully",
-            "deleteFailed": "Failed to delete account"
-        },
-        "validation": {
-            "firstNameRequired": "First name is required",
-            "firstNameTooLong": "First name is too long",
-            "lastNameTooLong": "Last name is too long",
-            "phoneMinLength": "Phone number must be at least 10 characters",
-            "phoneInvalid": "Invalid phone number format",
-            "urlInvalid": "Please enter a valid URL"
-        },
-        "deleteAccount": {
-            "title": "Delete Account",
-            "description": "Permanently delete your account and all associated data",
-            "warning": "This action cannot be undone. All your data, surveys, and company memberships will be permanently deleted.",
-            "button": "Delete Account",
-            "modal": {
-                "title": "Delete Account",
-                "description": "This action cannot be undone. This will permanently delete your account and remove all data from our servers.",
-                "emailLabel": "Type your email to confirm",
-                "emailNote": "You must type your exact email address to confirm deletion",
-                "confirm": "Yes, delete my account",
-                "consequences": {
-                    "title": "What happens when you delete your account:",
-                    "account": "Your account will be permanently deleted",
-                    "teams": "If you own any teams, all members will be removed and teams will be deactivated",
-                    "companies": "If you own any companies, all members will be removed and companies will be deactivated",
-                    "data": "All your surveys, responses, and data will be permanently deleted",
-                    "irreversible": "This action is irreversible and cannot be undone"
-                }
-            }
-        }
-    },
-    "CompanyInvitation": {
-        "pageTitle": "Company Invitation",
-        "title": "You've been invited!",
-        "description": "You have received an invitation to join a company.",
-        "companyInvitation": "Company invitation",
-        "acceptInvitation": "Accept Invitation",
-        "rejectInvitation": "Decline Invitation",
-        "accepting": "Accepting...",
-        "rejecting": "Declining...",
-        "status": {
-            "accepted": {
-                "title": "Invitation Accepted!",
-                "description": "You have successfully joined the company.",
-                "descriptionWithCompany": "You have successfully joined {companyName}.",
-                "redirecting": "Redirecting you to the company page...",
-                "goToCompany": "Go to Company"
-            },
-            "rejected": {
-                "title": "Invitation Declined",
-                "description": "You have declined the company invitation.",
-                "goHome": "Go to Home"
-            },
-            "error": {
-                "title": "Invalid Invitation",
-                "description": "This invitation link is invalid or has expired.",
-                "instructions": "The invitation may have already been used or canceled.",
-                "goToCompanies": "Go to Companies",
-                "goHome": "Go to Home"
-            }
-        },
-        "messages": {
-            "invitationAccepted": "Company invitation accepted successfully",
-            "invitationRejected": "Company invitation declined"
-        },
-        "errors": {
-            "invalidInvitation": "Invalid invitation link",
-            "acceptFailed": "Failed to accept invitation",
-            "rejectFailed": "Failed to decline invitation",
-            "unexpectedError": "An unexpected error occurred"
-        }
-    },
-    "Company": {
-        "title": "Company Management",
-        "description": "Manage your companies and company members",
         "companies": "Companies",
         "createCompany": "Create Company",
         "createCompanyDescription": "Create a new company to collaborate with others.",
@@ -1431,27 +2590,77 @@
         "noCompaniesDescription": "You haven't created any companies yet. Create your first company to get started.",
         "createFirstCompany": "Create Your First Company",
         "form": {
-            "name": "Company Name",
+            "name": "Company name",
             "namePlaceholder": "Enter company name",
             "description": "Description",
             "descriptionPlaceholder": "Enter company description (optional)",
+            "descriptionHint": "Tell us a little about your company and what makes it unique.",
+            "country": "Company country",
+            "countryPlaceholder": "Select country",
+            "documentType": "Document type",
+            "selectDocumentType": "Document type",
+            "documentNumber": "CPF/CNPJ",
+            "documentNumberEin": "EIN",
+            "documentNumberEntity": "Entity number",
+            "document": "Document number",
+            "documentPlaceholder": "Enter document number",
+            "documentPlaceholderEin": "12-3456789",
+            "documentPlaceholderEntity": "Enter entity number",
+            "number": "Number",
+            "complement": "Complement (optional)",
+            "clearAddress": "Clear address",
+            "zipCode": "Zip code",
+            "zipCodePlaceholder": "Enter zip code",
+            "state": "State",
+            "statePlaceholder": "Enter state",
+            "city": "City",
+            "cityPlaceholder": "Enter city",
+            "address": "Address",
+            "addressPlaceholder": "Enter full address",
             "cancel": "Cancel",
             "create": "Create Company",
             "creating": "Creating...",
             "update": "Update Company",
-            "updating": "Updating..."
+            "updating": "Updating...",
+            "save": "Save",
+            "saving": "Saving...",
+            "validation": {
+                "nameRequired": "Company name is required",
+                "documentRequired": "Document number is required",
+                "addressRequired": "Address is required"
+            }
+        },
+        "documentTypes": {
+            "cpf": "CPF",
+            "cnpj": "CNPJ"
         },
         "members": {
-            "title": "Company Members",
-            "description": "Manage your company members and their permissions",
+            "title": "Team Members",
+            "description": "Manage your team members and their permissions",
+            "helpTitle": "Team member or project guest?",
+            "helpDescription": "Team members have ongoing access to the company and can collaborate on conversations and settings based on their permissions. Guests receive an email link and must accept the invitation before accessing the platform.",
+            "inviteMemberButton": "Invite Member",
+            "searchPlaceholder": "Search by name or email...",
+            "statusFilter": "All statuses",
+            "statusAll": "All statuses",
+            "memberCountSingular": "1 member",
+            "memberCountPlural": "{count} members",
+            "noResults": "No members found for the selected filters.",
+            "permissionsFullAccess": "Full access",
+            "permissionsAdminAccess": "Admin access",
+            "permissionsLimited": "Limited access",
+            "canPostShort": "Create",
+            "canApproveShort": "Read",
             "inviteMember": "Invite Member",
             "inviteDescription": "Send an invitation to a new company member.",
             "email": "Email Address",
             "emailPlaceholder": "member@example.com",
             "permissions": "Permissions",
             "isAdmin": "Administrator - Can manage company and members",
-            "canPost": "Can Create - Can create surveys",
-            "canApprove": "Can Read - Can read surveys and results",
+            "canPost": "Can Create - Can send messages and manage content",
+            "canApprove": "Can Read - Can view conversations and reports",
+            "canManageAgenda": "Agenda - Can manage schedule, block time, and view meetings",
+            "canManageAgendaShort": "Agenda",
             "sendInvite": "Send Invitation",
             "inviting": "Sending...",
             "name": "Name",
@@ -1548,8 +2757,9 @@
                 "description": "Update permissions for {firstName} {lastName}",
                 "permissions": "Permissions",
                 "companyAdministrator": "Company Administrator",
-                "canPostContent": "Can Create Surveys",
-                "canApproveContent": "Can Read Surveys and Results",
+                "canPostContent": "Can send messages and manage content",
+                "canApproveContent": "Can view conversations and reports",
+                "canManageAgendaContent": "Can manage the company schedule, block time, and view meetings",
                 "cancel": "Cancel",
                 "saveChanges": "Save Changes",
                 "saving": "Saving..."
@@ -1562,6 +2772,119 @@
                 "removeMember": "Remove Member"
             },
             "noCompanySelected": "Select a company to view details"
+        }
+    },
+    "Profile": {
+        "title": "Profile",
+        "description": "Manage your account information and preferences",
+        "avatar": {
+            "title": "Profile Picture",
+            "description": "Update your profile picture",
+            "change": "Change photo",
+            "instructions": "Click the camera icon to upload a new profile picture. Supported formats: JPG, PNG, GIF.",
+            "updating": "Updating avatar..."
+        },
+        "profile": {
+            "title": "Personal Information",
+            "description": "Update your personal information",
+            "firstName": "First Name",
+            "firstNamePlaceholder": "Enter your first name",
+            "lastName": "Last Name",
+            "lastNamePlaceholder": "Enter your last name",
+            "phone": "Phone Number",
+            "phonePlaceholder": "+1 (555) 123-4567",
+            "position": "Position",
+            "positionPlaceholder": "Enter your position",
+            "companyName": "Company Name",
+            "companyNamePlaceholder": "Enter your company name",
+            "country": "Country",
+            "countryPlaceholder": "Enter your country",
+            "socialLinks": "Social Links",
+            "linkedinUrl": "LinkedIn URL",
+            "twitterUrl": "X URL",
+            "websiteUrl": "Website URL",
+            "githubUrl": "GitHub URL",
+            "email": "Email Address",
+            "emailNote": "Email address cannot be changed"
+        },
+        "messages": {
+            "profileUpdated": "Profile updated successfully",
+            "avatarUpdated": "Profile picture updated successfully",
+            "updateFailed": "Failed to update profile",
+            "avatarUpdateFailed": "Failed to update profile picture",
+            "unexpectedError": "An unexpected error occurred",
+            "accountDeleted": "Account deleted successfully",
+            "deleteFailed": "Failed to delete account"
+        },
+        "validation": {
+            "firstNameRequired": "First name is required",
+            "firstNameTooLong": "First name is too long",
+            "lastNameTooLong": "Last name is too long",
+            "phoneMinLength": "Phone number must be at least 10 characters",
+            "phoneInvalid": "Invalid phone number format",
+            "urlInvalid": "Please enter a valid URL"
+        },
+        "deleteAccount": {
+            "title": "Delete Account",
+            "description": "Permanently delete your account and all associated data",
+            "warning": "This action cannot be undone. All your data, conversations, and company memberships will be permanently deleted.",
+            "button": "Delete Account",
+            "modal": {
+                "title": "Delete Account",
+                "description": "This action cannot be undone. This will permanently delete your account and remove all data from our servers.",
+                "emailLabel": "Type your email to confirm",
+                "emailNote": "You must type your exact email address to confirm deletion",
+                "confirm": "Yes, delete my account",
+                "consequences": {
+                    "title": "What happens when you delete your account:",
+                    "account": "Your account will be permanently deleted",
+                    "teams": "If you own any teams, all members will be removed and teams will be deactivated",
+                    "companies": "If you own any companies, all members will be removed and companies will be deactivated",
+                    "data": "All your conversations, customer data, and settings will be permanently deleted",
+                    "irreversible": "This action is irreversible and cannot be undone"
+                }
+            }
+        }
+    },
+    "CompanyInvitation": {
+        "pageTitle": "Company Invitation",
+        "title": "You've been invited!",
+        "description": "You have received an invitation to join a company.",
+        "companyInvitation": "Company invitation",
+        "acceptInvitation": "Accept Invitation",
+        "rejectInvitation": "Decline Invitation",
+        "accepting": "Accepting...",
+        "rejecting": "Declining...",
+        "status": {
+            "accepted": {
+                "title": "Invitation Accepted!",
+                "description": "You have successfully joined the company.",
+                "descriptionWithCompany": "You have successfully joined {companyName}.",
+                "redirecting": "Redirecting you to the company page...",
+                "goToCompany": "Go to Company"
+            },
+            "rejected": {
+                "title": "Invitation Declined",
+                "description": "You have declined the company invitation.",
+                "goHome": "Go to Home"
+            },
+            "error": {
+                "title": "Invalid Invitation",
+                "description": "This invitation link is invalid or has expired.",
+                "instructions": "The invitation may have already been used or canceled.",
+                "goToCompanies": "Go to Companies",
+                "goHome": "Go to Home"
+            }
+        },
+        "messages": {
+            "invitationAccepted": "Company invitation accepted successfully",
+            "invitationRejected": "Company invitation declined"
+        },
+        "errors": {
+            "invalidInvitation": "Invalid invitation link",
+            "acceptFailed": "Failed to accept invitation",
+            "rejectFailed": "Failed to decline invitation",
+            "unexpectedError": "An unexpected error occurred"
         }
     },
     "Subscription": {
@@ -1668,8 +2991,18 @@
             "currentUsage": "Current usage for this billing period",
             "planFeatures": "Plan Features",
             "featuresIncluded": "Features included in your current plan",
-            "maxAiResponses": "AI Responses / month",
+            "maxAiCredits": "AI credits / month",
+            "maxSyncedNumbers": "Synced WhatsApp numbers",
+            "aiCredits": "AI credits",
+            "syncedNumbers": "Synced numbers",
             "aiResponses": "AI Responses",
+            "messagesReceived": "Messages Received",
+            "messagesSent": "Messages Sent",
+            "botAutoReplies": "Bot Auto-Replies",
+            "botAutoRepliesUsesCredits": "uses AI credits",
+            "channelUsage": "WhatsApp Line Usage",
+            "channelUsageDescription": "Message counts per connected WhatsApp number this period",
+            "phoneNumber": "Phone Number",
             "analytics": "Analytics",
             "removeBranding": "Remove Branding",
             "exports": "Data Export",
@@ -1764,415 +3097,20 @@
             }
         }
     },
-    "Survey": {
-        "title": "Surveys",
-        "description": "Manage your surveys and collect responses",
-        "stats": {
-            "totalSurveys": {
-                "title": "Total Surveys",
-                "description": "All surveys created",
-                "subtitle": "Includes drafts and completed"
-            },
-            "activeSurveys": {
-                "title": "Active Surveys",
-                "description": "Currently collecting responses",
-                "subtitle": "Live and accepting responses"
-            },
-            "totalResponses": {
-                "title": "Total Responses",
-                "description": "All responses collected",
-                "subtitle": "Across all surveys"
-            },
-            "responseRate": {
-                "title": "Response Rate",
-                "description": "Average completion rate",
-                "subtitle": "Response quality indicator"
-            }
-        },
-        "table": {
-            "title": "All Surveys",
-            "totalSurveys": "surveys",
-            "columns": {
-                "title": "Survey Title",
-                "type": "Type",
-                "status": "Status",
-                "responses": "Responses",
-                "responseRate": "Rate",
-                "totalOpenSurveys": "Open",
-                "createdAt": "Created",
-                "updatedAt": "Updated"
-            },
-            "status": {
-                "active": "Active",
-                "draft": "Draft",
-                "published": "Published",
-                "archived": "Archived"
-            },
-            "actions": {
-                "view": "View",
-                "edit": "Edit",
-                "duplicate": "Duplicate",
-                "delete": "Delete",
-                "openMenu": "Open menu",
-                "publish": "Publish",
-                "archive": "Archive",
-                "copySurveyId": "Copy Survey ID"
-            },
-            "buttons": {
-                "createSurvey": "Create Survey",
-                "customizeColumns": "Customize Columns",
-                "columns": "Columns"
-            },
-            "search": {
-                "placeholder": "Search surveys..."
-            },
-            "filters": {
-                "status": "Filter by status",
-                "allStatuses": "All Statuses",
-                "active": "Active",
-                "draft": "Draft",
-                "completed": "Completed"
-            },
-            "pagination": {
-                "rowsPerPage": "Rows per page",
-                "page": "Page",
-                "of": "of",
-                "rowsSelected": "row(s) selected",
-                "goToFirstPage": "Go to first page",
-                "goToPreviousPage": "Go to previous page",
-                "goToNextPage": "Go to next page",
-                "goToLastPage": "Go to last page"
-            },
-            "messages": {
-                "noResults": "No surveys found.",
-                "loadingSurveys": "Loading surveys...",
-                "noType": "No Type",
-                "surveyDeletedSuccess": "Survey deleted successfully",
-                "surveyDuplicatedSuccess": "Survey duplicated successfully",
-                "surveyUpdatedSuccess": "Survey updated successfully",
-                "fetchSurveysError": "Failed to fetch surveys",
-                "deleteSurveyError": "Failed to delete survey",
-                "duplicateSurveyError": "Failed to duplicate survey",
-                "updateSurveyError": "Failed to update survey status",
-                "unexpectedError": "An unexpected error occurred",
-                "surveyIdCopied": "Survey ID copied to clipboard",
-                "copyError": "Failed to copy survey ID"
-            },
-            "deleteDialog": {
-                "title": "Delete Survey",
-                "description": "Are you sure you want to delete \"{surveyName}\"? This action cannot be undone.",
-                "cancel": "Cancel",
-                "delete": "Delete",
-                "deleting": "Deleting..."
-            }
-        },
-        "emptyState": {
-            "title": "No Company Found",
-            "description": "You need to create or join a company to start creating surveys.",
-            "createCompanyButton": "Go to Companies",
-            "noSurveys": {
-                "title": "Start Creating Your First Survey",
-                "subtitle": "Create engaging surveys to collect valuable feedback",
-                "description": "Surveys help you understand your audience better and make data-driven decisions.",
-                "button": "Create Your First Survey",
-                "previewLabel": "Preview of what your surveys will look like"
-            }
-        }
-    },
-    "UpgradeModal": {
-        "limitReached": {
-            "surveys": {
-                "title": "Active Survey Limit Reached",
-                "description": "You've reached your plan's limit for active surveys. Upgrade to create more surveys.",
-                "descriptionWithLimit": "You've reached your plan's limit of {limit} active surveys. Upgrade to create more surveys."
-            },
-            "responses": {
-                "title": "Response Limit Reached",
-                "description": "You've reached your plan's limit for survey responses. Upgrade to collect more responses.",
-                "descriptionWithLimit": "You've reached your plan's limit of {limit} responses. Upgrade to collect more responses."
-            },
-            "remove_branding": {
-                "title": "Remove Branding",
-                "description": "This feature is not available in your current plan. Upgrade to remove branding from your surveys.",
-                "descriptionWithLimit": "Branding removal is not available in your current plan. Upgrade to customize your surveys."
-            },
-            "exports": {
-                "title": "Export Feature Unavailable",
-                "description": "Data export is not available in your current plan. Upgrade to export your survey data.",
-                "descriptionWithLimit": "Data export is not available in your current plan. Upgrade to unlock unlimited exports."
-            },
-            "apis": {
-                "title": "API Access Unavailable",
-                "description": "API access is not available in your current plan. Upgrade to integrate with your applications.",
-                "descriptionWithLimit": "API access is not available in your current plan. Upgrade to unlock API features."
-            },
-            "public_pages": {
-                "title": "Public Pages Unavailable",
-                "description": "Public survey pages are not available in your current plan. Upgrade to create public survey pages.",
-                "descriptionWithLimit": "Public survey pages are not available in your current plan. Upgrade to unlock this feature."
-            },
-            "custom": {
-                "title": "Upgrade Required",
-                "description": "You've reached a limit of your current plan. Upgrade to continue.",
-                "descriptionWithLimit": "You've reached a limit of your current plan. Upgrade to continue."
-            }
-        },
-        "benefits": {
-            "title": "Upgrade to unlock:",
-            "unlimited": "Higher limits",
-            "advanced": "Advanced features"
-        },
-        "actions": {
-            "upgrade": "View Plans & Upgrade",
-            "cancel": "Maybe Later"
-        }
-    },
-    "PublicSurvey": {
-        "thankYou": "Thank You!",
-        "responseSubmitted": "Your response has been submitted successfully.",
-        "submitAnother": "Submit Another Response",
-        "toggleTheme": "Toggle theme",
-        "error": {
-            "title": "Survey Error",
-            "description": "Please check that you have the correct survey link and token.",
-            "goHome": "Go Home"
-        }
-    },
-    "CreateSurvey": {
-        "title": "Create Survey",
-        "description": "Create a new survey to collect responses from your audience",
-        "actions": {
-            "saveDraft": "Save",
-            "publish": "Publish",
-            "saving": "Saving...",
-            "publishing": "Publishing...",
-            "copySurveyId": "Copy Survey ID"
-        },
-        "messages": {
-            "saveSuccess": "Survey saved successfully!",
-            "saveError": "Failed to save survey",
-            "publishSuccess": "Survey published successfully!",
-            "publishError": "Failed to publish survey",
-            "unexpectedError": "An unexpected error occurred",
-            "surveyIdCopied": "Survey ID copied to clipboard",
-            "readonlyMode": "You don't have permission to edit this survey",
-            "activeSurveysLimitReached": "You have reached your active surveys limit ({limit})."
-        },
-        "aiGenerator": {
-            "title": "AI Survey Generator",
-            "description": "Let AI create your complete survey including name, description, and questions based on your context",
-            "createWithAI": "Create with AI",
-            "placeholder": "Describe your survey context...\n\nExample: \"Create a customer satisfaction survey for an e-commerce platform focusing on delivery experience, product quality, and customer service.\"",
-            "hint": "Be specific about your survey goals, target audience, and the type of feedback you want to collect.",
-            "generate": "Generate Survey",
-            "generating": "Generating...",
-            "steps": {
-                "analyzing": "Analyzing your context...",
-                "thinking": "Thinking and planning survey...",
-                "creating": "Creating your survey...",
-                "done": "Survey created successfully!"
-            },
-            "preview": "Generated {count} questions:",
-            "success": "Successfully generated survey with {count} questions!",
-            "errors": {
-                "emptyPrompt": "Please describe your survey context",
-                "failed": "Failed to generate survey. Please try again."
-            }
-        },
-        "defaultQuestion": {
-            "yesLabel": "Yes",
-            "noLabel": "No"
-        },
-        "details": {
-            "title": "Survey Details",
-            "name": {
-                "label": "Name",
-                "placeholder": "Enter survey name"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Enter survey description (optional)"
-            },
-            "type": {
-                "label": "Survey Type",
-                "placeholder": "Select survey type",
-                "manageTypes": "Manage Types"
-            },
-            "status": {
-                "label": "Status",
-                "placeholder": "Select survey status",
-                "draft": "Draft",
-                "published": "Published",
-                "archived": "Archived"
-            },
-            "multipleResponses": {
-                "label": "Allow multiple responses per person",
-                "description": "Let the same person respond multiple times"
-            }
-        },
-        "questions": {
-            "title": "Questions",
-            "addQuestion": "Add Question",
-            "collapseAll": "Collapse All",
-            "expandAll": "Expand All",
-            "question": "question",
-            "questions": "questions",
-            "questionTitle": {
-                "label": "Title",
-                "placeholder": "Enter question title"
-            },
-            "description": {
-                "label": "Description (Optional)",
-                "placeholder": "Enter question description"
-            },
-            "format": {
-                "label": "Format",
-                "placeholder": "Select question format"
-            },
-            "required": {
-                "label": "Required",
-                "description": "Make this question mandatory"
-            },
-            "options": {
-                "label": "Options",
-                "addOption": "Add Option",
-                "optionPlaceholder": "Enter option text",
-                "removeOption": "Remove option",
-                "includeOther": "Include 'Other' option",
-                "otherOptionText": "Other"
-            },
-            "yesNoLabels": {
-                "label": "Custom Labels",
-                "yesLabel": "Yes Label",
-                "noLabel": "No Label",
-                "yesPlaceholder": "Enter yes label",
-                "noPlaceholder": "Enter no label"
-            },
-            "buttonLabel": {
-                "label": "Button Label",
-                "buttonLabel": "Button Text",
-                "buttonPlaceholder": "Continue"
-            },
-            "formats": {
-                "yesNo": "Yes/No",
-                "starRating": "5 Star Rating",
-                "longText": "Long Text",
-                "statement": "Statement",
-                "singleChoice": "Single Choice",
-                "multipleChoice": "Multiple Choice"
-            }
-        },
-        "targets": {
-            "title": "Targets",
-            "description": "Survey targets allow you to add surveys to the pages of your website or product without having to change any code.",
-            "addTarget": "Add Target",
-            "noTargets": "No targets configured yet"
-        },
-        "style": {
-            "title": "Style",
-            "collapse": "Collapse",
-            "expand": "Expand",
-            "backgroundColor": {
-                "label": "Background Colour"
-            },
-            "textColor": {
-                "label": "Text Colour"
-            },
-            "buttonBackgroundColor": {
-                "label": "Button Background Colour"
-            },
-            "buttonTextColor": {
-                "label": "Button Text Colour"
-            },
-            "margin": {
-                "label": "Margin"
-            },
-            "padding": {
-                "label": "Padding"
-            },
-            "border": {
-                "label": "Border"
-            },
-            "borderRadius": {
-                "label": "Border Radius"
-            },
-            "titleFontSize": {
-                "label": "Title Font Size"
-            },
-            "bodyFontSize": {
-                "label": "Body Font Size"
-            },
-            "fontFamily": {
-                "label": "Font Family",
-                "placeholder": "Select font family"
-            },
-            "styleMode": {
-                "label": "Style Mode",
-                "placeholder": "Select style mode",
-                "basic": "Basic",
-                "advanced": "Advanced"
-            },
-            "advancedCSS": {
-                "label": "Advanced CSS",
-                "placeholder": "Enter your custom CSS here...",
-                "description": "Write custom CSS to style your survey. Use classes like .sv, .qt, .qd, .btn, etc."
-            },
-            "preview": {
-                "label": "Preview",
-                "title": "Sample Question",
-                "description": "This is how your survey will look to respondents",
-                "button": "Submit Response"
-            }
-        },
-        "preview": {
-            "title": "Preview"
-        },
-        "surveyTypes": {
-            "modal": {
-                "title": "Manage Survey Types",
-                "description": "Create, edit, or delete survey types",
-                "createNew": "Create New Type",
-                "editType": "Edit Type",
-                "deleteType": "Delete Type",
-                "typeName": "Type Name",
-                "typeNamePlaceholder": "Enter type name",
-                "save": "Save",
-                "cancel": "Cancel",
-                "delete": "Delete",
-                "saving": "Saving...",
-                "deleting": "Deleting..."
-            },
-            "actions": {
-                "edit": "Edit",
-                "delete": "Delete",
-                "openMenu": "Open menu"
-            },
-            "messages": {
-                "createSuccess": "Survey type created successfully",
-                "updateSuccess": "Survey type updated successfully",
-                "deleteSuccess": "Survey type deleted successfully",
-                "createFailed": "Failed to create survey type",
-                "updateFailed": "Failed to update survey type",
-                "deleteFailed": "Failed to delete survey type",
-                "nameRequired": "Type name is required",
-                "nameTooLong": "Type name is too long"
-            },
-            "defaultTypes": {
-                "customerFeedback": "Customer Feedback",
-                "internal": "Internal",
-                "marketResearch": "Market Research",
-                "employeeSatisfaction": "Employee Satisfaction",
-                "productFeedback": "Product Feedback",
-                "eventFeedback": "Event Feedback"
-            }
-        }
-    },
     "Customer": {
         "title": "Customers",
         "description": "Manage your customer directory and keep their details up to date.",
         "toolbar": {
             "searchPlaceholder": "Search customers...",
-            "addCustomer": "Add Customer"
+            "addCustomer": "Add Customer",
+            "statusFilter": "Filter by status",
+            "statusAll": "All statuses",
+            "tagsFilter": "Filter by tags",
+            "tagsAll": "All tags",
+            "tagsSelected": "{count} tag(s)",
+            "tagsSearchPlaceholder": "Search tags...",
+            "tagsEmpty": "No tags found.",
+            "tagsClear": "Clear tags"
         },
         "table": {
             "columns": {
@@ -2180,15 +3118,22 @@
                 "email": "Email",
                 "phone": "Phone",
                 "company": "Company",
+                "tags": "Tags",
                 "status": "Status",
-                "createdAt": "Created"
+                "createdAt": "Created",
+                "actions": "Actions"
             },
             "empty": {
                 "title": "No customers yet",
                 "description": "Start by adding your first customer."
             },
+            "messages": {
+                "noResults": "No customers found"
+            },
             "actions": {
-                "edit": "Edit"
+                "edit": "Edit",
+                "startConversation": "Message",
+                "openMenu": "Open menu"
             },
             "badges": {
                 "active": "Active",
@@ -2225,6 +3170,17 @@
                 "status": {
                     "label": "Status",
                     "placeholder": "Select status"
+                },
+                "description": {
+                    "label": "Description",
+                    "placeholder": "Add notes about this customer for your team and AI assistant"
+                },
+                "tags": {
+                    "label": "Tags",
+                    "placeholder": "Add tags to segment this customer",
+                    "searchPlaceholder": "Search or create tag...",
+                    "empty": "No tags found.",
+                    "create": "Create \"{tag}\""
                 }
             },
             "buttons": {
@@ -2234,14 +3190,19 @@
             },
             "validation": {
                 "nameRequired": "Full name is required",
-                "emailRequired": "Please enter a valid email address"
+                "invalidEmail": "Please enter a valid email address",
+                "phoneRequired": "Phone number is required"
             }
         },
         "messages": {
+            "loading": "Loading customers...",
+            "loadFailed": "Could not load customers",
             "customerCreated": "Customer added successfully",
             "customerUpdated": "Customer updated successfully",
             "customerSaveError": "Something went wrong while saving the customer.",
             "customersImported": "{count} customer(s) imported successfully",
+            "customersUpdatedFromImport": "{count} existing customer(s) updated from import",
+            "customersSkippedFromImport": "{count} duplicate customer(s) skipped",
             "customersImportError": "Failed to import customers"
         },
         "import": {
@@ -2252,7 +3213,8 @@
             "dropHere": "Drop the file here",
             "clickOrDrag": "Click to upload or drag and drop",
             "supportedFormats": "Supports .xlsx, .xls, and .csv files",
-            "formatInfo": "Required columns: name, email. Optional columns: phone, company, status. Column names are case-insensitive.",
+            "formatInfo": "Required columns: name, phone. Optional columns: email, company, status. Column names are case-insensitive.",
+            "downloadTemplate": "Download template (.xls)",
             "parseError": "Failed to parse Excel file",
             "readError": "Failed to read file",
             "invalidFileType": "Invalid file type. Please upload .xlsx, .xls, or .csv files.",
@@ -2269,113 +3231,488 @@
             "clear": "Clear",
             "importing": "Importing...",
             "importAll": "Import All ({count})",
+            "duplicateStrategy": {
+                "label": "Duplicate phone numbers",
+                "description": "Choose how to handle rows that match an existing customer by phone number.",
+                "merge": "Merge data",
+                "mergeDescription": "Update existing customers with imported values. Empty imported fields keep the current value.",
+                "overwrite": "Replace data",
+                "overwriteDescription": "Replace existing customer fields with the imported row.",
+                "skip": "Skip duplicates",
+                "skipDescription": "Keep existing customers unchanged and import only new phone numbers."
+            },
             "bulkSuccess": "Successfully imported {count} customer(s)",
             "bulkErrors": "Failed to import {count} customer(s)",
             "bulkFailed": "Bulk import failed",
             "invalidStatus": "Invalid status. Must be one of: active, inactive, prospect"
         }
     },
+    "Tickets": {
+        "title": "Tickets",
+        "description": "Track customer requests, orders, and support issues in one place.",
+        "toolbar": {
+            "searchPlaceholder": "Search tickets...",
+            "addTicket": "New Ticket",
+            "statusFilter": "Filter by status",
+            "statusAll": "All statuses",
+            "statusCount": "{count} statuses",
+            "statusSelectAll": "Select all",
+            "statusClear": "Clear",
+            "typeFilter": "Filter by type",
+            "typeAll": "All types"
+        },
+        "list": {
+            "title": "Tickets",
+            "empty": "Choose a ticket from the list to view details and add journal entries.",
+            "selectTicket": "Select a ticket"
+        },
+        "actions": {
+            "showTickets": "Show ticket list",
+            "hideTickets": "Hide ticket list",
+            "openTickets": "Open ticket list",
+            "backToList": "Back to ticket list"
+        },
+        "detail": {
+            "metadataTitle": "Details",
+            "activityTitle": "Activity",
+            "unsavedChangesTitle": "Discard unsaved changes?",
+            "unsavedChanges": "You have unsaved changes on this ticket. Discard them and continue?",
+            "discardChanges": "Discard changes"
+        },
+        "table": {
+            "columns": {
+                "ticketNumber": "Ticket #",
+                "title": "Title",
+                "type": "Type",
+                "priority": "Priority",
+                "status": "Status",
+                "orderReference": "Order",
+                "createdAt": "Created",
+                "actions": "Actions"
+            },
+            "empty": {
+                "title": "No tickets yet",
+                "description": "Create your first ticket to track a customer request or order."
+            },
+            "messages": {
+                "noResults": "No tickets found"
+            },
+            "actions": {
+                "edit": "Edit"
+            },
+            "badges": {
+                "status": {
+                    "open": "Open",
+                    "in_progress": "In Progress",
+                    "waiting": "Waiting",
+                    "resolved": "Resolved",
+                    "closed": "Closed"
+                },
+                "priority": {
+                    "low": "Low",
+                    "medium": "Medium",
+                    "high": "High"
+                },
+                "type": {
+                    "customer_request": "Customer Request",
+                    "order": "Order",
+                    "support": "Support",
+                    "complaint": "Complaint",
+                    "other": "Other"
+                }
+            }
+        },
+        "form": {
+            "title": {
+                "create": "New Ticket",
+                "edit": "Edit Ticket"
+            },
+            "description": {
+                "create": "Log a customer request, order issue, or support case.",
+                "edit": "Update ticket details and status."
+            },
+            "fields": {
+                "title": {
+                    "label": "Title",
+                    "placeholder": "Brief summary of the issue"
+                },
+                "description": {
+                    "label": "Description",
+                    "placeholder": "Describe the customer request or issue in detail"
+                },
+                "type": {
+                    "label": "Type",
+                    "placeholder": "Select type"
+                },
+                "priority": {
+                    "label": "Priority",
+                    "placeholder": "Select priority"
+                },
+                "status": {
+                    "label": "Status",
+                    "placeholder": "Select status"
+                },
+                "orderReference": {
+                    "label": "Order Reference",
+                    "placeholder": "Order ID or reference number (optional)"
+                },
+                "customer": {
+                    "label": "Customer",
+                    "placeholder": "Search customers...",
+                    "loading": "Loading customers...",
+                    "clear": "Clear",
+                    "empty": "No customers found"
+                }
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "create": "Create Ticket",
+                "update": "Update Ticket",
+                "updateWithShortcut": "Update Ticket ({shortcut})",
+                "updateShort": "Save"
+            },
+            "validation": {
+                "titleRequired": "Title is required",
+                "descriptionRequired": "Description is required"
+            },
+            "errors": {
+                "loadCustomers": "Could not load customers"
+            }
+        },
+        "messages": {
+            "loading": "Loading tickets...",
+            "loadingMore": "Loading more tickets...",
+            "loadFailed": "Could not load tickets",
+            "ticketCreated": "Ticket created successfully",
+            "ticketUpdated": "Ticket updated successfully",
+            "ticketSaveError": "Something went wrong while saving the ticket."
+        },
+        "tabs": {
+            "details": "Details",
+            "journal": "Journal",
+            "activity": "Activity"
+        },
+        "journal": {
+            "addLabel": "Add journal entry",
+            "placeholder": "Describe what happened, next steps, or internal notes...",
+            "addButton": "Add entry",
+            "shortcutHint": "{shortcut} to add entry",
+            "historyTitle": "Journal history",
+            "loading": "Loading journal entries...",
+            "empty": "No journal entries yet. Add the first update on this ticket.",
+            "added": "Journal entry added",
+            "addFailed": "Could not add journal entry",
+            "loadFailed": "Could not load journal entries",
+            "unknownAuthor": "Team member"
+        },
+        "activity": {
+            "loading": "Loading activity...",
+            "empty": "No activity recorded yet.",
+            "loadFailed": "Could not load activity",
+            "unknownActor": "Team member",
+            "actions": {
+                "created": "{actor} opened ticket {ticket}",
+                "status_changed": "{actor} changed status from {previous} to {next}",
+                "priority_changed": "{actor} changed priority from {previous} to {next}",
+                "type_changed": "{actor} changed type from {previous} to {next}",
+                "title_changed": "{actor} updated the title",
+                "description_changed": "{actor} updated the description",
+                "customer_changed": "{actor} changed customer from {previous} to {next}",
+                "order_reference_changed": "{actor} changed order reference from {previous} to {next}",
+                "assigned": "{actor} assigned ticket to {next}",
+                "unassigned": "{actor} unassigned {previous}",
+                "comment_added": "{actor} added a journal entry"
+            },
+            "values": {
+                "empty": "—",
+                "status": {
+                    "open": "Open",
+                    "in_progress": "In Progress",
+                    "waiting": "Waiting",
+                    "resolved": "Resolved",
+                    "closed": "Closed"
+                },
+                "priority": {
+                    "low": "Low",
+                    "medium": "Medium",
+                    "high": "High"
+                },
+                "type": {
+                    "customer_request": "Customer Request",
+                    "order": "Order",
+                    "support": "Support",
+                    "complaint": "Complaint",
+                    "other": "Other"
+                }
+            }
+        }
+    },
     "Dashboard": {
         "title": "Dashboard",
         "description": "Welcome back! Here's what's happening today.",
+        "noCompanyAccess": "Select or create a company to view dashboard metrics.",
+        "errors": {
+            "loadFailed": "Unable to load dashboard metrics."
+        },
         "stats": {
+            "noData": "—",
             "messagesHandled": {
                 "title": "Messages Handled",
-                "value": "445",
-                "change": "12%",
                 "changeLabel": "vs last week"
             },
             "avgResponseTime": {
                 "title": "Avg Response Time",
-                "value": "1.2s",
-                "change": "8%",
-                "changeLabel": "faster"
+                "changeLabel": "vs last week",
+                "formats": {
+                    "seconds": "{value}s",
+                    "minutes": "{value} min",
+                    "hours": "{hours}h {minutes}m"
+                }
             },
             "satisfactionRate": {
                 "title": "Satisfaction Rate",
-                "value": "94%",
-                "change": "3%",
-                "changeLabel": "improvement"
+                "formatted": "{value}%",
+                "changeLabel": "vs last week"
             },
             "activeCustomers": {
                 "title": "Active Customers",
-                "value": "1,234",
-                "change": "18%",
-                "changeLabel": "growth"
+                "changeLabel": "new customers vs last week"
             }
         },
         "charts": {
             "messageVolume": {
                 "title": "Message Volume",
-                "description": "Daily messages handled this week",
-                "label": "Messages"
+                "description": "Daily messages handled over the last 7 days",
+                "label": "Messages",
+                "total": "{count} messages this week"
             },
-            "performance": {
-                "title": "Area Chart",
-                "description": "Showing total visitors for the last 6 months",
-                "trend": "Trending up by 5.2% this month",
-                "period": "January - June 2024",
-                "series": {
-                    "desktop": "Desktop"
-                }
-            }
-        },
-        "months": {
-            "january": {
-                "short": "Jan",
-                "full": "January"
-            },
-            "february": {
-                "short": "Feb",
-                "full": "February"
-            },
-            "march": {
-                "short": "Mar",
-                "full": "March"
-            },
-            "april": {
-                "short": "Apr",
-                "full": "April"
-            },
-            "may": {
-                "short": "May",
-                "full": "May"
-            },
-            "june": {
-                "short": "Jun",
-                "full": "June"
-            }
-        },
-        "recentActivity": {
-            "title": "Recent Activity",
-            "description": "Latest customer interactions",
-            "customers": {
-                "maria": "Maria Silva",
-                "joao": "João Santos",
-                "ana": "Ana Costa",
-                "pedro": "Pedro Lima"
-            },
-            "messages": {
-                "hours": "What are your business hours?",
-                "delivery": "Do you offer delivery?",
-                "price": "What's the price of product X?",
-                "cancel": "How do I cancel?"
-            },
-            "time": {
-                "2min": "2 min ago",
-                "5min": "5 min ago",
-                "12min": "12 min ago",
-                "18min": "18 min ago"
-            },
-            "status": {
-                "answered": "answered",
-                "pending": "pending"
+            "empty": {
+                "title": "No message activity yet",
+                "description": "When customers start messaging, daily volume will appear here.",
+                "action": "Open Inbox"
             }
         },
         "quickActions": {
-            "title": "Ready to train your AI?",
-            "description": "Add knowledge to make your bot even smarter",
-            "startTraining": "Start Training"
+            "title": "Ready to set up Botinho?",
+            "description": "Add knowledge to make Botinho even smarter",
+            "startTraining": "Open Botinho"
+        }
+    },
+    "Schedule": {
+        "title": "Schedule",
+        "description": "Manage appointments, services, and team availability.",
+        "views": {
+            "table": "Table",
+            "calendar": "Calendar"
+        },
+        "tabs": {
+            "reservations": "Reservations",
+            "services": "Services",
+            "settings": "Settings"
+        },
+        "table": {
+            "number": "Reservation #",
+            "datetime": "Date & time",
+            "service": "Service",
+            "assignee": "Assignee",
+            "customer": "Customer",
+            "status": "Status",
+            "source": "Source",
+            "searchPlaceholder": "Search reservations...",
+            "empty": "No reservations found"
+        },
+        "status": {
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "cancelled": "Cancelled",
+            "completed": "Completed",
+            "no_show": "No show"
+        },
+        "source": {
+            "bot": "Botinho",
+            "manual": "Manual"
+        },
+        "blockType": {
+            "blocked": "Blocked",
+            "break": "Break",
+            "unavailable": "Unavailable"
+        },
+        "actions": {
+            "newReservation": "New reservation",
+            "blockTime": "Block time",
+            "edit": "Edit",
+            "cancel": "Cancel",
+            "close": "Close",
+            "save": "Save",
+            "saving": "Saving...",
+            "retry": "Retry",
+            "addService": "Add service",
+            "saveSettings": "Save settings",
+            "delete": "Delete"
+        },
+        "calendar": {
+            "today": "Today",
+            "previousWeek": "Previous week",
+            "nextWeek": "Next week",
+            "createAt": "Create reservation at {time}"
+        },
+        "modal": {
+            "createTitle": "New reservation",
+            "editTitle": "Edit reservation",
+            "service": "Service",
+            "selectService": "Select a service",
+            "date": "Date",
+            "selectDate": "Pick a date",
+            "slot": "Available slot",
+            "selectSlot": "Select a slot",
+            "loadingSlots": "Loading available slots...",
+            "status": "Status",
+            "customerName": "Customer name",
+            "customer": {
+                "label": "Customer",
+                "searchPlaceholder": "Search customers by name, phone, or email",
+                "clear": "Clear customer",
+                "loading": "Loading customers...",
+                "empty": "No customers found",
+                "loadFailed": "Failed to load customers",
+                "addNew": "Add new customer",
+                "newCustomerTitle": "New customer",
+                "backToSearch": "Back to search",
+                "name": "Name",
+                "namePlaceholder": "Customer name",
+                "phone": "Phone",
+                "email": "Email (optional)",
+                "emailPlaceholder": "email@example.com"
+            },
+            "notes": "Notes"
+        },
+        "blockModal": {
+            "title": "Block time",
+            "assignee": "Team member",
+            "type": "Block type",
+            "start": "Start",
+            "end": "End",
+            "selectDateTime": "Pick date and time",
+            "reason": "Reason"
+        },
+        "services": {
+            "title": "Services",
+            "description": "Manage bookable services, durations, and team availability.",
+            "name": "Service name",
+            "descriptionLabel": "Description",
+            "duration": "Duration (minutes)",
+            "bufferBefore": "Buffer before (minutes)",
+            "bufferAfter": "Buffer after (minutes)",
+            "assignees": "Team members",
+            "noAssignees": "No team members available",
+            "active": "Active",
+            "activeHint": "Inactive services are hidden from new bookings.",
+            "inactive": "Inactive",
+            "empty": "No services yet. Add your first service to start taking bookings.",
+            "minutesValue": "{value} min",
+            "bufferSummary": "{before} min before · {after} min after",
+            "deleteTitle": "Delete service?",
+            "deleteDescription": "This will permanently remove \"{name}\". Existing reservations will not be deleted.",
+            "table": {
+                "name": "Service",
+                "duration": "Duration",
+                "buffer": "Buffer",
+                "assignees": "Assignees",
+                "status": "Status",
+                "actions": "Actions"
+            },
+            "modal": {
+                "createTitle": "Add service",
+                "editTitle": "Edit service",
+                "namePlaceholder": "e.g. Consultation",
+                "descriptionPlaceholder": "Optional details shown to your team"
+            },
+            "errors": {
+                "assigneeRequired": "Select at least one team member"
+            }
+        },
+        "settings": {
+            "title": "Schedule settings",
+            "description": "Configure timezone, slot intervals, and booking windows.",
+            "timezone": "Timezone",
+            "timezonePlaceholder": "Select timezone",
+            "defaultBuffer": "Default buffer (minutes)",
+            "slotInterval": "Slot interval (minutes)",
+            "minAdvance": "Minimum advance booking (minutes)",
+            "maxAdvanceDays": "Maximum advance booking (days)",
+            "sections": {
+                "general": "General",
+                "generalHint": "Used to display and calculate appointment times.",
+                "slots": "Slots & buffers",
+                "slotsHint": "Controls how time is divided and spaced between appointments.",
+                "booking": "Booking windows",
+                "bookingHint": "Define how far in advance customers can book."
+            }
+        },
+        "messages": {
+            "loadFailed": "Failed to load schedule data",
+            "loading": "Loading schedule...",
+            "created": "Reservation created",
+            "updated": "Reservation updated",
+            "cancelled": "Reservation cancelled",
+            "blockCreated": "Time blocked successfully",
+            "serviceSaved": "Service saved",
+            "serviceDeleted": "Service deleted",
+            "settingsSaved": "Settings saved",
+            "saveFailed": "Failed to save",
+            "requiredFields": "Please fill in all required fields"
+        },
+        "accessDenied": {
+            "title": "Schedule access required",
+            "description": "You need agenda permissions to view and manage the company schedule."
+        }
+    },
+    "Pricing": {
+        "mostLoved": "Most loved",
+        "perMonth": "/month",
+        "contactSales": "Talk to sales",
+        "billedAnnually": "billed annually",
+        "creditsTooltip": "1 auto-reply = 1 credit. 1 inbox suggestion request = 0.25 credit.",
+        "loading": "Loading...",
+        "cta": "Get Started",
+        "billing": {
+            "monthly": "Monthly",
+            "yearly": "Yearly",
+            "save": "Save ~17%"
+        },
+        "features": {
+            "syncedNumbers": "{count, plural, one {# synced WhatsApp number} other {# synced WhatsApp numbers}}",
+            "unlimitedManualConversations": "Unlimited manual conversations (no AI)",
+            "aiCredits": "{count} AI credits/month",
+            "analytics": "Analytics dashboard",
+            "removeBranding": "Remove branding",
+            "dataExport": "Data export",
+            "apiAccess": "API & webhooks",
+            "communitySupport": "Community support",
+            "emailSupport": "Email support",
+            "prioritySupport": "Priority support"
+        },
+        "plans": {
+            "free": {
+                "name": "Free",
+                "description": "Perfect for testing",
+                "cta": "Start for free"
+            },
+            "starter": {
+                "name": "Starter",
+                "description": "For small teams",
+                "cta": "Choose Starter"
+            },
+            "pro": {
+                "name": "Pro",
+                "description": "Our most popular plan",
+                "cta": "Upgrade to Pro"
+            },
+            "business": {
+                "name": "Business",
+                "description": "For scaling companies",
+                "cta": "Talk to sales"
+            }
         }
     }
 }

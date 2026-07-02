@@ -27,6 +27,7 @@ export enum SubscriptionStatus {
 export enum KnowledgeItemType {
   TEXT = "TEXT",
   URL = "URL",
+  PDF = "PDF",
 }
 
 export enum AiTemplateCategory {

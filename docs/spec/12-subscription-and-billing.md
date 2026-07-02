@@ -83,9 +83,12 @@ Validated via [subscription-validation.ts](../../lib/services/subscription-valid
 Tracked in Firestore and surfaced on the subscription page:
 
 - Path: `companies/{id}/usage/{YYYY-MM}`
-- Metric: `AI_RESPONSES`
-- Limits per plan: [lib/plan-limits.ts](../../lib/plan-limits.ts)
+- Metric: `AI_CREDITS_TENTHS` (legacy `AI_RESPONSES` supported on read)
+- Synced numbers: enforced via [synced-numbers-service.ts](../../lib/firebase/services/synced-numbers-service.ts)
+- Limits per plan: [lib/plan-catalog.ts](../../lib/plan-catalog.ts)
 - Service: [ai-usage-service.ts](../../lib/firebase/services/ai-usage-service.ts)
+
+See [26-pricing-unit-economics.md](26-pricing-unit-economics.md) for COGS and plan matrix.
 
 ## Edge cases
 

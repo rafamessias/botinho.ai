@@ -3,11 +3,11 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Edit, FileText, LinkIcon, Loader2, Trash2 } from "lucide-react"
+import { Edit, FileText, FileUp, LinkIcon, Loader2, Trash2 } from "lucide-react"
 import { EmptyState } from "../components/empty-state"
 import { ErrorState } from "../components/error-state"
 import { KnowledgeDialog } from "../dialogs/knowledge-dialog"
-import type { KnowledgeItemView, TranslationFn } from "../types"
+import type { KnowledgeItemView, KnowledgeTab, TranslationFn } from "../types"
 
 type KnowledgeSectionProps = {
     t: TranslationFn
@@ -23,16 +23,32 @@ type KnowledgeSectionProps = {
         onOpenChange: (open: boolean) => void
         onTriggerClick: () => void
         editingItem: KnowledgeItemView | null
-        activeTab: "text" | "url"
-        onTabChange: (value: "text" | "url") => void
+        activeTab: KnowledgeTab
+        onTabChange: (value: KnowledgeTab) => void
         newTitle: string
         onTitleChange: (value: string) => void
         newContent: string
         onContentChange: (value: string) => void
+        pdfFile: File | null
+        onPdfFileChange: (file: File | null) => void
+        pdfError: string | null
+        onPdfErrorChange: (error: string | null) => void
         isSubmitting: boolean
         onCancel: () => void
         onSubmit: () => void
     }
+}
+
+const knowledgeTypeIcon = (type: KnowledgeItemView["type"]) => {
+    if (type === "url") return LinkIcon
+    if (type === "pdf") return FileUp
+    return FileText
+}
+
+const knowledgeTypeAccent = (type: KnowledgeItemView["type"]) => {
+    if (type === "url") return "accent-purple"
+    if (type === "pdf") return "accent-orange"
+    return "accent-blue"
 }
 
 export const KnowledgeSection = ({
@@ -64,6 +80,10 @@ export const KnowledgeSection = ({
                 onTitleChange={dialog.onTitleChange}
                 newContent={dialog.newContent}
                 onContentChange={dialog.onContentChange}
+                pdfFile={dialog.pdfFile}
+                onPdfFileChange={dialog.onPdfFileChange}
+                pdfError={dialog.pdfError}
+                onPdfErrorChange={dialog.onPdfErrorChange}
                 isSubmitting={dialog.isSubmitting}
                 onCancel={dialog.onCancel}
                 onSubmit={dialog.onSubmit}
@@ -92,60 +112,61 @@ export const KnowledgeSection = ({
                 />
             ) : (
                 <div className="space-y-3">
-                    {items.map((item) => (
-                        <div
-                            key={item.id}
-                            className="refined-card rounded-xl border border-primary/10 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5"
-                        >
+                    {items.map((item) => {
+                        const TypeIcon = knowledgeTypeIcon(item.type)
+                        return (
                             <div
-                                className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${item.type === "text" ? "accent-blue" : "accent-purple"}`}
+                                key={item.id}
+                                className="refined-card rounded-xl border border-border p-4 transition-colors duration-200 hover:border-primary/40 hover:bg-muted"
                             >
-                                {item.type === "text" ? (
-                                    <FileText className="h-5 w-5 text-primary" />
-                                ) : (
-                                    <LinkIcon className="h-5 w-5 text-primary" />
-                                )}
-                            </div>
-                            <div className="mt-2 flex-1 min-w-0">
-                                <div className="flex items-start justify-between gap-2">
-                                    <div className="flex-1">
-                                        <h4 className="heading-secondary">{item.title}</h4>
-                                        <p className="body-secondary mt-1 line-clamp-2 text-sm">{item.content}</p>
-                                        <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                                            <Badge variant="secondary">
-                                                {item.type === "text" ? t("knowledge.type.text") : t("knowledge.type.url")}
-                                            </Badge>
-                                            <span>
-                                                {t("knowledge.added")} {item.createdAt}
-                                            </span>
+                                <div
+                                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${knowledgeTypeAccent(item.type)}`}
+                                >
+                                    <TypeIcon className="h-5 w-5 text-primary" />
+                                </div>
+                                <div className="mt-2 flex-1 min-w-0">
+                                    <div className="flex items-start justify-between gap-2">
+                                        <div className="flex-1">
+                                            <h4 className="heading-secondary">{item.title}</h4>
+                                            <p className="body-secondary mt-1 line-clamp-2 text-sm">{item.content}</p>
+                                            <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                                                <Badge variant="secondary">
+                                                    {item.type === "text"
+                                                        ? t("knowledge.type.text")
+                                                        : item.type === "url"
+                                                          ? t("knowledge.type.url")
+                                                          : t("knowledge.type.pdf")}
+                                                </Badge>
+                                                <span>
+                                                    {t("knowledge.added")} {item.createdAt}
+                                                </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Button variant="ghost" size="sm" onClick={() => onEdit(item)}>
-                                            <Edit className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="text-red-600 hover:bg-red-50 hover:text-red-700"
-                                            onClick={() => onDelete(item.id)}
-                                            disabled={isDeletingId === item.id}
-                                        >
-                                            {isDeletingId === item.id ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                            ) : (
-                                                <Trash2 className="h-4 w-4" />
-                                            )}
-                                        </Button>
+                                        <div className="flex items-center gap-2">
+                                            <Button variant="ghost" size="sm" onClick={() => onEdit(item)}>
+                                                <Edit className="h-4 w-4" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                                onClick={() => onDelete(item.id)}
+                                                disabled={isDeletingId === item.id}
+                                            >
+                                                {isDeletingId === item.id ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Trash2 className="h-4 w-4" />
+                                                )}
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             )}
         </CardContent>
     </Card>
 )
-
-

@@ -22,7 +22,6 @@ Previously removed remnants:
 
 | Location | Was | Resolution |
 |----------|-----|------------|
-| vercel.json | Survey API routes and cache headers | Removed; regions-only config |
 | readme.md | Prisma, PostgreSQL, Resend references | Rewritten for Firebase stack |
 | Contact email | `contact@opineeo.com` | `SUPPORT_EMAIL` env (default `hello@botinho.ai`) |
 | Subscription UI | Survey-era feature names | AI responses, API access, export, branding |
@@ -45,14 +44,15 @@ No Prisma schema or survey models remain in the codebase.
 
 | Feature | Status | Detail |
 |---------|--------|--------|
-| WhatsApp / messaging | `stub` | No provider connected; inbox is Firestore-only |
+| WhatsApp / messaging | `partial` | whatsmeow worker + webhook wired; linked-device can drop (re-pair) — [23-whatsapp-inbound-reliability.md](23-whatsapp-inbound-reliability.md) |
 | Production email | `stub` | Dev console fallback only ([lib/email/](../../lib/email/)) |
-| Auto-reply delivery | `partial` | Gemini generates text; send blocked without provider |
+| Auto-reply delivery | `partial` | Works when session `connected` and agent enabled |
 | Customer CRM | `stub` | [customer-page.tsx](../../components/customer/customer-page.tsx) uses mock local state |
 | Dashboard analytics | `partial` | UI exists; not all KPIs from live data |
-| Inbound message webhook | `stub` | `recordInboundMessage` exists but no HTTP route |
+| Inbound message webhook | `partial` | Worker → `/api/webhooks/whatsapp/inbound`; requires active linked session |
 | Firestore security rules | `implemented` | Deny-all with inbox read exception for accepted members |
 | Company membership guards | `implemented` | Single-company policy — [19-company-and-members.md](19-company-and-members.md) |
+| WhatsApp session store persistence | `partial` | Phase 1 implemented — [24-whatsapp-session-store-persistence.md](24-whatsapp-session-store-persistence.md) |
 
 ---
 
@@ -62,8 +62,9 @@ No Prisma schema or survey models remain in the codebase.
 |-------|-------------|--------|
 | Prisma + PostgreSQL | Cloud Firestore | Removed |
 | Resend + React Email | Email stub (provider TBD) | Removed |
-| Custom WhatsApp controller + WebSocket | Provider TBD | Removed |
-| Zavu SDK | Provider TBD | Removed |
+| Custom WhatsApp controller + WebSocket | Go whatsmeow worker + Redis orchestrator | Removed |
+| Zavu SDK | WhatsApp worker | Removed |
+| Vercel Cron (`vercel.json`) | Google Cloud Scheduler → `/api/cron/*` | Removed — see [22-scheduled-jobs.md](22-scheduled-jobs.md) |
 | Rule-based inbox suggestions | Gemini | Removed |
 | Opineeo survey product remnants | botinho.ai branding + AI usage billing | Removed |
 
@@ -117,6 +118,7 @@ No Prisma schema or survey models remain in the codebase.
 |-----|-------|
 | future/01, future/02 | Marked completed; as-is specs now authoritative |
 | future/03-zavu-messaging.md | Deleted — replaced by messaging TBD spec |
+| `vercel.json` | Removed — cron documented in [22-scheduled-jobs.md](22-scheduled-jobs.md) |
 
 ---
 

@@ -1,68 +1,73 @@
 "use client"
 
-import { useCallback, useMemo, useState, type ChangeEvent } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
-import { Plus, Search } from "lucide-react"
+import { Loader2, Plus, Users } from "lucide-react"
 import { toast } from "sonner"
+import { useRouter } from "@/i18n/navigation"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import type { Customer } from "@/lib/types/customer"
+import type { Customer, CustomerImportMergeStrategy } from "@/lib/types/customer"
 import { CustomerModal, type CustomerFormValues } from "@/components/customer/customer-modal"
 import { CustomerTable } from "@/components/customer/customer-table"
+import { collectCustomerTags } from "@/components/customer/customer-tag-utils"
+import { ErrorState } from "@/components/ai-training/components/error-state"
+import {
+    bulkImportCustomersAction,
+    createCustomerAction,
+    listCustomersAction,
+    updateCustomerAction,
+} from "@/components/server-actions/customers"
 
-const now = new Date()
+type CustomerPageProps = {
+    initialCustomers: Customer[]
+    initialLoadError?: string | null
+    hasCompanyAccess: boolean
+}
 
-const initialCustomers: Customer[] = [
-    {
-        id: "cust-001",
-        name: "Maria Silva",
-        email: "maria.silva@example.com",
-        phone: "+55 (11) 99999-1234",
-        company: "Botinho LTDA",
-        status: "active",
-        createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 7).toISOString(),
-        updatedAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 3).toISOString(),
-    },
-    {
-        id: "cust-002",
-        name: "João Pereira",
-        email: "joao.pereira@example.com",
-        phone: "+55 (21) 98888-4321",
-        company: "Loja do João",
-        status: "prospect",
-        createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 15).toISOString(),
-        updatedAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 1).toISOString(),
-    },
-    {
-        id: "cust-003",
-        name: "Ana Costa",
-        email: "ana.costa@example.com",
-        company: "Costa Consulting",
-        status: "inactive",
-        createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 30).toISOString(),
-        updatedAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 12).toISOString(),
-    },
-]
-
-const generateCustomerId = () =>
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `cust-${Math.random().toString(36).slice(2, 10)}`
-
-export const CustomerPage = () => {
+export const CustomerPage = ({
+    initialCustomers,
+    initialLoadError = null,
+    hasCompanyAccess,
+}: CustomerPageProps) => {
     const t = useTranslations("Customer")
+    const router = useRouter()
 
     const [customers, setCustomers] = useState<Customer[]>(initialCustomers)
-    const [searchTerm, setSearchTerm] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+    const [loadError, setLoadError] = useState<string | null>(initialLoadError)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalMode, setModalMode] = useState<"create" | "edit">("create")
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
     const [isSaving, setIsSaving] = useState(false)
 
-    const handleSearchChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value)
-    }, [])
+    const availableTags = useMemo(() => collectCustomerTags(customers), [customers])
+
+    const loadCustomers = useCallback(async () => {
+        if (!hasCompanyAccess) {
+            setCustomers([])
+            return
+        }
+
+        setIsLoading(true)
+        setLoadError(null)
+
+        try {
+            const result = await listCustomersAction({ pageSize: 200 })
+
+            if (!result.success || !result.data) {
+                setLoadError(result.error || t("messages.loadFailed"))
+                return
+            }
+
+            setCustomers(result.data.customers)
+        } catch (error) {
+            console.error("Failed to load customers", error)
+            setLoadError(t("messages.loadFailed"))
+        } finally {
+            setIsLoading(false)
+        }
+    }, [hasCompanyAccess, t])
 
     const handleCloseModal = useCallback(() => {
         setIsModalOpen(false)
@@ -82,41 +87,67 @@ export const CustomerPage = () => {
         setIsModalOpen(true)
     }, [])
 
+    const handleStartConversation = useCallback(
+        (customer: Customer) => {
+            const params = new URLSearchParams({
+                startConversation: "1",
+                name: customer.name,
+            })
+
+            if (customer.phone) {
+                params.set("phone", customer.phone)
+            }
+
+            if (customer.email) {
+                params.set("email", customer.email)
+            }
+
+            router.push(`/inbox?${params.toString()}`)
+        },
+        [router],
+    )
+
     const handleSubmitCustomer = useCallback(
         async (values: CustomerFormValues) => {
+            setIsSaving(true)
             try {
-                setIsSaving(true)
-                const timestamp = new Date().toISOString()
-
                 if (modalMode === "create") {
-                    const newCustomer: Customer = {
-                        id: generateCustomerId(),
+                    const result = await createCustomerAction({
                         name: values.name,
-                        email: values.email,
                         phone: values.phone,
+                        email: values.email,
                         company: values.company,
+                        description: values.description,
+                        tags: values.tags,
                         status: values.status,
-                        createdAt: timestamp,
-                        updatedAt: timestamp,
+                    })
+
+                    if (!result.success || !result.data) {
+                        throw new Error(result.error || "Unable to create customer")
                     }
 
-                    setCustomers((previous) => [newCustomer, ...previous])
+                    const { customer } = result.data
+                    setCustomers((previous) => [customer, ...previous])
                     toast.success(t("messages.customerCreated"))
                 } else if (selectedCustomer) {
+                    const result = await updateCustomerAction({
+                        customerId: selectedCustomer.id,
+                        name: values.name,
+                        phone: values.phone,
+                        email: values.email,
+                        company: values.company,
+                        description: values.description,
+                        tags: values.tags,
+                        status: values.status,
+                    })
+
+                    if (!result.success || !result.data) {
+                        throw new Error(result.error || "Unable to update customer")
+                    }
+
+                    const { customer } = result.data
                     setCustomers((previous) =>
-                        previous.map((customer) =>
-                            customer.id === selectedCustomer.id
-                                ? {
-                                      ...customer,
-                                      name: values.name,
-                                      email: values.email,
-                                      phone: values.phone,
-                                      company: values.company,
-                                      status: values.status,
-                                      updatedAt: timestamp,
-                                  }
-                                : customer,
-                        ),
+                        previous.map((item) => (item.id === selectedCustomer.id ? customer : item)),
                     )
                     toast.success(t("messages.customerUpdated"))
                 }
@@ -124,7 +155,9 @@ export const CustomerPage = () => {
                 handleCloseModal()
             } catch (error) {
                 console.error("Failed to save customer", error)
-                toast.error(t("messages.customerSaveError"))
+                const message = error instanceof Error ? error.message : t("messages.customerSaveError")
+                toast.error(message || t("messages.customerSaveError"))
+            } finally {
                 setIsSaving(false)
             }
         },
@@ -132,68 +165,62 @@ export const CustomerPage = () => {
     )
 
     const handleBulkImport = useCallback(
-        async (customersToImport: Omit<Customer, "id" | "createdAt" | "updatedAt">[]) => {
+        async (
+            customersToImport: Omit<Customer, "id" | "createdAt" | "updatedAt">[],
+            mergeStrategy: CustomerImportMergeStrategy,
+        ) => {
             try {
-                const timestamp = new Date().toISOString()
-                const newCustomers: Customer[] = customersToImport.map((customer) => ({
-                    ...customer,
-                    id: generateCustomerId(),
-                    createdAt: timestamp,
-                    updatedAt: timestamp,
-                }))
+                const result = await bulkImportCustomersAction({
+                    customers: customersToImport.map((customer) => ({
+                        name: customer.name,
+                        phone: customer.phone,
+                        email: customer.email,
+                        company: customer.company,
+                        tags: customer.tags,
+                        status: customer.status,
+                    })),
+                    mergeStrategy,
+                })
 
-                setCustomers((previous) => [...newCustomers, ...previous])
-                toast.success(t("messages.customersImported", { count: newCustomers.length }))
+                if (!result.success || !result.data) {
+                    throw new Error(result.error || "Unable to import customers")
+                }
+
+                if (result.data.customers.length > 0) {
+                    setCustomers((previous) => [...result.data!.customers, ...previous])
+                    toast.success(t("messages.customersImported", { count: result.data.customers.length }))
+                }
+
+                if (result.data.updated.length > 0) {
+                    setCustomers((previous) => {
+                        const updatedById = new Map(result.data!.updated.map((customer) => [customer.id, customer]))
+                        return previous.map((customer) => updatedById.get(customer.id) ?? customer)
+                    })
+                    toast.success(t("messages.customersUpdatedFromImport", { count: result.data.updated.length }))
+                }
+
+                if (result.data.skipped > 0) {
+                    toast.info(t("messages.customersSkippedFromImport", { count: result.data.skipped }))
+                }
+
+                if (result.data.errors.length > 0) {
+                    toast.warning(t("import.parsedWithErrors", { count: result.data.errors.length }))
+                }
+
                 handleCloseModal()
             } catch (error) {
                 console.error("Failed to import customers", error)
-                toast.error(t("messages.customersImportError"))
+                const message = error instanceof Error ? error.message : t("messages.customersImportError")
+                toast.error(message || t("messages.customersImportError"))
                 throw error
             }
         },
         [handleCloseModal, t],
     )
 
-    const filteredCustomers = useMemo(() => {
-        const query = searchTerm.trim().toLowerCase()
-        if (!query) {
-            return customers
-        }
-
-        return customers.filter((customer) => {
-            if (
-                customer.name.toLowerCase().includes(query) ||
-                customer.email.toLowerCase().includes(query)
-            ) {
-                return true
-            }
-
-            if (customer.phone && customer.phone.toLowerCase().includes(query)) {
-                return true
-            }
-
-            if (customer.company && customer.company.toLowerCase().includes(query)) {
-                return true
-            }
-
-            return false
-        })
-    }, [customers, searchTerm])
-
     return (
         <div className="section-spacing space-y-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <label className="relative flex w-full sm:max-w-xs" htmlFor="customer-search">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-                    <Input
-                        id="customer-search"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        placeholder={t("toolbar.searchPlaceholder")}
-                        className="pl-9"
-                        aria-label={t("toolbar.searchPlaceholder")}
-                    />
-                </label>
+            <div className="flex justify-end">
                 <Button
                     onClick={handleOpenCreateModal}
                     className="sm:w-auto"
@@ -204,7 +231,27 @@ export const CustomerPage = () => {
                 </Button>
             </div>
 
-            <CustomerTable customers={filteredCustomers} onEdit={handleEditCustomer} />
+            {isLoading ? (
+                <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+                    <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                    {t("messages.loading")}
+                </div>
+            ) : loadError ? (
+                <ErrorState
+                    icon={Users}
+                    title={t("messages.loadFailed")}
+                    description={loadError}
+                    retryLabel="Retry"
+                    onRetry={() => void loadCustomers()}
+                />
+            ) : (
+                <CustomerTable
+                    customers={customers}
+                    availableTags={availableTags}
+                    onEdit={handleEditCustomer}
+                    onStartConversation={handleStartConversation}
+                />
+            )}
 
             <CustomerModal
                 isOpen={isModalOpen}
@@ -214,10 +261,10 @@ export const CustomerPage = () => {
                 initialCustomer={selectedCustomer}
                 isSubmitting={isSaving}
                 onBulkImport={handleBulkImport}
+                tagSuggestions={availableTags}
             />
         </div>
     )
 }
 
 export default CustomerPage
-

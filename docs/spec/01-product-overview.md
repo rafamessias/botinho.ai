@@ -84,7 +84,7 @@ flowchart TD
 | Database | Cloud Firestore |
 | AI | Gemini via Firebase AI Logic |
 | Multi-tenancy | Company-scoped data |
-| Deployment | Vercel (primary) |
+| Deployment | Firebase App Hosting (or self-hosted Node) |
 | Tests | None |
 | CI/CD | None in repo |
 

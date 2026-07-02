@@ -87,7 +87,7 @@ export const QuickAnswersSection = ({
                     {items.map((item) => (
                         <div
                             key={item.id}
-                            className="refined-card rounded-xl border border-primary/10 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5"
+                            className="refined-card rounded-xl border border-border p-4 transition-colors duration-200 hover:border-primary/40 hover:bg-muted"
                         >
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-start justify-between gap-2">

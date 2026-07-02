@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info, Zap, RefreshCw, Eye } from "lucide-react";
-import { createPortalSession, getAvailablePlans } from "@/components/server-actions/subscription";
+import { createPortalSession } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { PlanType } from "@/lib/types/enums"
@@ -43,8 +43,6 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
     const t = useTranslations("Subscription");
     const [isLoading, setIsLoading] = useState(false);
     const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
-    const [availablePlans, setAvailablePlans] = useState<any[]>([]);
-    const [loadingPlans, setLoadingPlans] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [showUpgradeButton, setShowUpgradeButton] = useState(true);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -145,7 +143,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         }
     };
 
-    const handleUpgradeClick = async () => {
+    const handleUpgradeClick = () => {
         if (!userHasPermission.isAdmin) {
             toast({
                 title: t("Access denied"),
@@ -155,65 +153,12 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
             return;
         }
         setShowUpgradeButton(true);
-        if (availablePlans.length === 0) {
-            setLoadingPlans(true);
-            try {
-                const result = await getAvailablePlans();
-                if (result.success && result.plans) {
-                    setAvailablePlans(result.plans);
-                    setShowUpgradeButton(true);
-                    setUpgradeModalOpen(true);
-                } else {
-                    toast({
-                        title: t("toast.error.title"),
-                        description: t("toast.error.description"),
-                        variant: "destructive",
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching plans:', error);
-                toast({
-                    title: t("toast.error.title"),
-                    description: t("toast.error.description"),
-                    variant: "destructive",
-                });
-            } finally {
-                setLoadingPlans(false);
-            }
-        } else {
-            setUpgradeModalOpen(true);
-        }
+        setUpgradeModalOpen(true);
     };
 
-    const handleViewPlans = async () => {
-        if (availablePlans.length === 0) {
-            setLoadingPlans(true);
-            try {
-                const result = await getAvailablePlans();
-                if (result.success && result.plans) {
-                    setAvailablePlans(result.plans);
-                    setShowUpgradeButton(false);
-                    setUpgradeModalOpen(true);
-                } else {
-                    toast({
-                        title: t("toast.error.title"),
-                        description: t("toast.error.description"),
-                        variant: "destructive",
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching plans:', error);
-                toast({
-                    title: t("toast.error.title"),
-                    description: t("toast.error.description"),
-                    variant: "destructive",
-                });
-            } finally {
-                setLoadingPlans(false);
-            }
-        } else {
-            setUpgradeModalOpen(true);
-        }
+    const handleViewPlans = () => {
+        setShowUpgradeButton(false);
+        setUpgradeModalOpen(true);
     };
 
     // Manual refresh function
@@ -249,9 +194,23 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         return value === -1 ? t("page.unlimited") : value.toLocaleString();
     };
 
+    const formatMetricUsage = (metricType: string, value: number) => {
+        if (metricType === "AI_CREDITS" || metricType === "AI_RESPONSES") {
+            return value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+        }
+        return value.toLocaleString();
+    };
+
     const getMetricIcon = (metricType: string) => {
         switch (metricType) {
+            case 'AI_CREDITS':
             case 'AI_RESPONSES':
+                return <MessageSquare className="h-4 w-4" />;
+            case 'SYNCED_NUMBERS':
+                return <Users className="h-4 w-4" />;
+            case 'MESSAGES_RECEIVED':
+            case 'MESSAGES_SENT':
+            case 'BOT_AUTO_REPLIES':
                 return <MessageSquare className="h-4 w-4" />;
             default:
                 return <BarChart3 className="h-4 w-4" />;
@@ -260,8 +219,17 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
 
     const getMetricLabel = (metricType: string) => {
         switch (metricType) {
+            case 'AI_CREDITS':
             case 'AI_RESPONSES':
-                return t("page.aiResponses");
+                return t("page.aiCredits");
+            case 'SYNCED_NUMBERS':
+                return t("page.syncedNumbers");
+            case 'MESSAGES_RECEIVED':
+                return t("page.messagesReceived");
+            case 'MESSAGES_SENT':
+                return t("page.messagesSent");
+            case 'BOT_AUTO_REPLIES':
+                return t("page.botAutoReplies");
             default:
                 return metricType;
         }
@@ -270,9 +238,9 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
     const getStatusBadge = (status: string) => {
         switch (status.toLowerCase()) {
             case 'active':
-                return <Badge variant="default" className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />{t("page.active")}</Badge>;
+                return <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" />{t("page.active")}</Badge>;
             case 'trialing':
-                return <Badge variant="secondary" className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />{t("page.trial")}</Badge>;
+                return <Badge variant="info"><Clock className="h-3 w-3 mr-1" />{t("page.trial")}</Badge>;
             case 'canceled':
                 return <Badge variant="destructive"><AlertTriangle className="h-3 w-3 mr-1" />{t("page.canceled")}</Badge>;
             default:
@@ -319,12 +287,12 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         <div className="space-y-6">
             {/* Upgrade Success Alert */}
             {showSuccessAlert && (
-                <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
-                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                    <AlertTitle className="text-green-900 dark:text-green-100">
+                <Alert variant="success">
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertTitle>
                         {t("page.upgradeSuccess.title")}
                     </AlertTitle>
-                    <AlertDescription className="text-green-800 dark:text-green-200">
+                    <AlertDescription>
                         {t("page.upgradeSuccess.description")}
                     </AlertDescription>
                 </Alert>
@@ -332,12 +300,12 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
 
             {/* Checkout Canceled Alert */}
             {showCheckoutCanceledAlert && (
-                <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
-                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    <AlertTitle className="text-blue-900 dark:text-blue-100">
+                <Alert variant="info">
+                    <Info className="h-4 w-4" />
+                    <AlertTitle>
                         {t("page.checkoutCanceled.title")}
                     </AlertTitle>
-                    <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <AlertDescription>
                         {t("page.checkoutCanceled.description")}
                     </AlertDescription>
                 </Alert>
@@ -365,40 +333,20 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 <Button
                                     onClick={handleViewPlans}
                                     variant="outline"
-                                    disabled={loadingPlans}
                                     className="flex "
                                 >
-                                    {loadingPlans ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            {t("page.loading")}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Eye className="mr-2 h-4 w-4" />
-                                            {t("page.viewPlans")}
-                                        </>
-                                    )}
+                                    <Eye className="mr-2 h-4 w-4" />
+                                    {t("page.viewPlans")}
                                 </Button>
                             )}
 
                             {isFreePlan && userHasPermission.isAdmin ? (
                                 <Button
                                     onClick={handleUpgradeClick}
-                                    disabled={loadingPlans}
-                                    className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                                    className="bg-warning hover:bg-warning/90 text-warning-foreground"
                                 >
-                                    {loadingPlans ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            {t("page.loading")}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Zap className="mr-2 h-4 w-4" />
-                                            {t("upgradeModal.upgradeNow")}
-                                        </>
-                                    )}
+                                    <Zap className="mr-2 h-4 w-4" />
+                                    {t("upgradeModal.upgradeNow")}
                                 </Button>
                             ) : (
                                 userHasPermission.isAdmin && (
@@ -461,7 +409,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                             {subscription.cancelAtPeriodEnd && (
                                 <div>
                                     <p className="text-sm font-medium text-muted-foreground">{t("page.cancellation")}</p>
-                                    <p className="text-sm text-orange-600">
+                                    <p className="text-sm text-warning">
                                         {t("page.willCancelAtPeriodEnd")}
                                     </p>
                                 </div>
@@ -494,13 +442,24 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                         </span>
                                     </div>
                                     <div className="text-right">
-                                        <span className="text-sm font-medium">
-                                            {metric.currentUsage.toLocaleString()} / {metric.limit === -1 ? t("page.unlimited") : metric.limit.toLocaleString()}
-                                        </span>
-                                        {metric.limit !== -1 && (
-                                            <span className="text-xs text-muted-foreground ml-2">
-                                                ({metric.percentageUsed.toFixed(1)}%)
+                                        {metric.metricType === "BOT_AUTO_REPLIES" ? (
+                                            <span className="text-sm font-medium">
+                                                {formatMetricUsage(metric.metricType, metric.currentUsage)}
+                                                <span className="text-xs text-muted-foreground font-normal ml-2">
+                                                    ({t("page.botAutoRepliesUsesCredits")})
+                                                </span>
                                             </span>
+                                        ) : (
+                                            <>
+                                                <span className="text-sm font-medium">
+                                                    {formatMetricUsage(metric.metricType, metric.currentUsage)} / {metric.limit === -1 ? t("page.unlimited") : formatMetricUsage(metric.metricType, metric.limit)}
+                                                </span>
+                                                {metric.limit !== -1 && (
+                                                    <span className="text-xs text-muted-foreground ml-2">
+                                                        ({metric.percentageUsed.toFixed(1)}%)
+                                                    </span>
+                                                )}
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -509,14 +468,14 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                     <div className="space-y-2">
                                         <Progress
                                             value={metric.percentageUsed}
-                                            className={`h-2 ${metric.isOverLimit ? '[&>div]:bg-red-500' : ''}`}
+                                            className={`h-2 ${metric.isOverLimit ? '[&>div]:bg-destructive' : ''}`}
                                         />
                                         <div className="flex justify-between text-xs text-muted-foreground">
                                             <span>
                                                 {metric.remaining > 0 ? `${metric.remaining.toLocaleString()} ${t("page.remaining")}` : t("page.limitReached")}
                                             </span>
                                             {metric.isOverLimit && (
-                                                <span className="text-red-600 font-medium">
+                                                <span className="text-destructive font-medium">
                                                     {t("page.overLimit")}
                                                 </span>
                                             )}
@@ -525,6 +484,50 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 )}
                             </div>
                         ))}
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Per-channel message usage */}
+            {usage?.channelUsage && usage.channelUsage.length > 0 && (
+                <Card className="elegant-card">
+                    <CardHeader>
+                        <CardTitle className="heading-secondary flex items-center gap-2">
+                            <MessageSquare className="h-5 w-5" />
+                            {t("page.channelUsage")}
+                        </CardTitle>
+                        <CardDescription className="body-secondary">
+                            {t("page.channelUsageDescription")}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b text-left text-muted-foreground">
+                                        <th className="py-2 pr-4 font-medium">{t("page.phoneNumber")}</th>
+                                        <th className="py-2 pr-4 font-medium">{t("page.messagesReceived")}</th>
+                                        <th className="py-2 pr-4 font-medium">{t("page.messagesSent")}</th>
+                                        <th className="py-2 font-medium">{t("page.botAutoReplies")}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {usage.channelUsage.map((channel: {
+                                        phoneNumber?: string
+                                        messagesReceived: number
+                                        messagesSent: number
+                                        botAutoReplies: number
+                                    }) => (
+                                        <tr key={channel.phoneNumber} className="border-b last:border-0">
+                                            <td className="py-2 pr-4 font-medium">{channel.phoneNumber}</td>
+                                            <td className="py-2 pr-4">{channel.messagesReceived.toLocaleString()}</td>
+                                            <td className="py-2 pr-4">{channel.messagesSent.toLocaleString()}</td>
+                                            <td className="py-2">{channel.botAutoReplies.toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </CardContent>
                 </Card>
             )}
@@ -539,62 +542,24 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-600" />
-                                    <span className="text-sm">
-                                        {t("page.maxAiResponses")}: {formatPlanLimit(subscription.plan.maxAiResponses)}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-600" />
-                                    <span className="text-sm">
-                                        {t("page.analytics")}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.removeBranding ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.removeBranding")}
-                                    </span>
-                                </div>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-success" />
+                                <span className="text-sm">
+                                    {t("page.maxSyncedNumbers")}: {formatPlanLimit(subscription.plan.maxSyncedNumbers)}
+                                </span>
                             </div>
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.allowExport ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.exports")}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.allowApiAccess ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.apis")}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.planType === PlanType.BUSINESS || subscription.plan.planType === PlanType.ENTERPRISE || subscription.plan.planType === PlanType.PRO ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.prioritySupport")}
-                                    </span>
-                                </div>
+                            <div className="flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-success" />
+                                <span className="text-sm">
+                                    {t("page.maxAiCredits")}: {formatPlanLimit(subscription.plan.maxAiCredits ?? subscription.plan.maxAiResponses)}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-success" />
+                                <span className="text-sm">
+                                    {t("page.analytics")}
+                                </span>
                             </div>
                         </div>
                     </CardContent>
@@ -605,7 +570,6 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
             <UpgradeModalPlans
                 open={upgradeModalOpen}
                 onOpenChange={setUpgradeModalOpen}
-                plans={availablePlans}
                 showUpgradeButton={showUpgradeButton}
             />
         </div>

@@ -2,84 +2,94 @@
 
 ## Purpose
 
-Document WhatsApp connectivity, session management, and message delivery.
+Document WhatsApp connectivity, session management, and message delivery via the linked-device (whatsmeow) worker.
 
 ## Status
 
-`stub` — No messaging provider is connected. Settings UI shows a placeholder; inbox stores messages in Firestore only.
+`partial` — Go worker + Redis orchestrator + QR pairing are implemented. Linked-device sessions can drop and require re-pair; see [23-whatsapp-inbound-reliability.md](23-whatsapp-inbound-reliability.md).
 
 ## Source of truth
 
-- [components/settings/settings-page.tsx](../../components/settings/settings-page.tsx)
-- [components/server-actions/inbox.ts](../../components/server-actions/inbox.ts)
-- [lib/firebase/ai/auto-reply.ts](../../lib/firebase/ai/auto-reply.ts)
+- [services/whatsapp-worker/](../../services/whatsapp-worker/) — whatsmeow client pool
+- [lib/whatsapp/orchestrator.ts](../../lib/whatsapp/orchestrator.ts) — session lifecycle, worker routing
+- [components/settings/settings-page.tsx](../../components/settings/settings-page.tsx) — QR pairing UI
+- [components/server-actions/whatsapp.ts](../../components/server-actions/whatsapp.ts)
+- [app/api/webhooks/whatsapp/inbound/route.ts](../../app/api/webhooks/whatsapp/inbound/route.ts)
+
+## Architecture
+
+```mermaid
+flowchart LR
+  Phone[Business phone QR pair] --> Worker[whatsapp-worker Docker]
+  Worker --> Redis[(Redis registry)]
+  Worker -->|POST webhook| NextJS[Next.js /api/webhooks/whatsapp/inbound]
+  NextJS --> Messaging[lib/messaging/messaging-service.ts]
+  Orchestrator[lib/whatsapp/orchestrator] --> Worker
+  Settings[Settings UI] --> Orchestrator
+```
 
 ## Current state
 
 | Capability | Status |
 |------------|--------|
-| WhatsApp Business connection | Not implemented |
-| QR pairing | Removed |
-| External controller / WebSocket | Removed |
-| Outbound message delivery | Not implemented |
-| Inbound message webhooks | Not implemented |
-| Auto-reply delivery | Generates text via Gemini but does not send |
+| WhatsApp linked-device connection | Implemented (whatsmeow) |
+| QR pairing | Settings → WhatsAppPairingDialog |
+| Session registry | Redis + Firestore `sessions` |
+| Outbound message delivery | `sendOutbound` → worker `SendText` |
+| Inbound message webhooks | Worker → `POST /api/webhooks/whatsapp/inbound` |
+| Auto-reply delivery | Gemini + `sendOutbound` when agent enabled |
+| Live session status in UI | `orchestrator.enrichAndPersist` (worker truth) |
+
+## Session states
+
+| Status | Meaning |
+|--------|---------|
+| `pending` | Session created, not yet connecting |
+| `qr_pending` | Waiting for QR scan |
+| `connected` | Linked and receiving messages |
+| `disconnected` | Websocket dropped; reconnect attempted |
+| `needs_qr` | Credentials invalid; user must re-pair |
 
 ## Settings UI
 
-The WhatsApp tab in Settings shows:
+- List connected numbers with live status from worker
+- Add number → QR pairing dialog
+- Re-pair banner when session is `qr_pending` / `needs_qr` / `disconnected`
+- Disconnect removes session from worker + Firestore
 
-- Placeholder card: "WhatsApp integration is not configured yet"
-- Auto-reply toggle (stored in Firestore `settings/default`)
-- SMS fallback toggle (stored but inactive — no provider)
+## Inbound flow
 
-Previously integrated providers (custom WhatsApp controller, Zavu) have been removed.
+1. Customer sends WhatsApp message to business number
+2. Worker `pool.handleEvent` → `OnMessage` callback
+3. Worker POSTs webhook to Next.js (retries ×3)
+4. `processInboundFromWebhook` → inbox message + optional auto-reply
 
-## Inbox behavior (without WhatsApp)
+## Outbound flow
 
-- Agents can create conversations and send messages — stored in Firestore
-- Messages do **not** reach customers on WhatsApp
-- Real-time UI updates via Firestore `onSnapshot` listeners ([hooks/use-inbox-realtime.ts](../../hooks/use-inbox-realtime.ts))
+1. Agent sends from inbox or auto-reply runs
+2. `sendOutbound` → `WhatsAppOrchestrator.sendMessage`
+3. Worker `SendText` (requires `IsLoggedIn()`)
 
-## Auto-reply (partial)
+## Environment
 
-When `CompanySettings.autoReply === true` and an inbound message would arrive:
+| Variable | Purpose |
+|----------|---------|
+| `WHATSAPP_WORKER_URL` | Worker HTTP base (dev: `http://localhost:8081`) |
+| `WHATSAPP_WEBHOOK_SECRET` | Webhook auth token |
+| `WEBHOOK_APP_URL` | Worker → Next.js URL (Docker: `http://host.docker.internal:3000`) |
+| `REDIS_URL` | Session/worker registry |
 
-1. [`generateAutoReplyText`](../../lib/firebase/ai/generate.ts) builds a Gemini reply using training context
-2. [`sendAutoReplyForInboundMessage`](../../lib/firebase/ai/auto-reply.ts) currently returns `{ sent: false, reason: "messaging provider not configured" }`
+Local dev: `npm run dev:infra` starts Redis + worker via [docker-compose.dev.yml](../../docker-compose.dev.yml).
 
-Auto-reply will send once a messaging provider is integrated.
+## Known limitations
 
-## Removed components
+- Linked-device (not Meta Cloud API) — sessions can unlink on websocket EOF
+- Group messages are skipped
+- Media inbound stored as placeholders (`[Image]`, etc.)
+- Worker must be running and session `connected` for inbound
 
-The following were removed from the codebase:
+## Related specs
 
-| Component | Was |
-|-----------|-----|
-| `WHATSAPP_CONTROLLER_URL`, `CONTROLLER_TOKEN` | Custom HTTP controller |
-| `WS_BACKEND`, WebSocket pairing | Real-time + QR flow |
-| `app/whatsapp/qr/page.tsx` | QR pairing page |
-| `SessionAssignment`, `Worker` models | DB session tracking |
-| `/api/whatsapp/connection-status` | Connection webhook |
-| Zavu SDK + `/api/webhooks/zavu` | Unified messaging (evaluated, removed) |
-
-## Target integration (TBD)
-
-See [future/03-messaging-and-email.md](future/03-messaging-and-email.md) for requirements when selecting a provider.
-
-Expected capabilities:
-
-- WhatsApp Business onboarding (Meta embedded signup or equivalent)
-- Outbound message send from `sendInboxMessageAction`
-- Inbound webhook → `recordInboundMessage` + optional auto-reply
-- Delivery status updates on `InboxMessage.status`
-- Optional SMS fallback per company setting
-
-## Edge cases
-
-- Inbox works as an internal CRM/thread tool without WhatsApp connected.
-- `smsFallbackEnabled` setting is persisted but has no effect.
-
-## Open questions
-
-- Which messaging API will be adopted? (Twilio, Meta Cloud API, MessageBird, etc.)
+- [11-inbox-and-messaging.md](11-inbox-and-messaging.md)
+- [23-whatsapp-inbound-reliability.md](23-whatsapp-inbound-reliability.md)
+- [24-whatsapp-session-store-persistence.md](24-whatsapp-session-store-persistence.md)

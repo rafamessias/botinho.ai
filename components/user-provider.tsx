@@ -17,6 +17,7 @@ export interface UserCompany {
         isAdmin: boolean
         canPost: boolean
         canApprove: boolean
+        canManageAgenda?: boolean
         isOwner: boolean
         status?: "invited" | "accepted" | "rejected"
     }>
@@ -52,7 +53,12 @@ interface UserContextType {
     error: string | null
     refreshUser: (companiesUpdate: boolean) => Promise<void>
     isAuthenticated: boolean
-    hasPermission: () => { isAdmin: boolean, canPost: boolean, canApprove: boolean }
+    hasPermission: () => {
+        isAdmin: boolean
+        canPost: boolean
+        canApprove: boolean
+        canManageAgenda: boolean
+    }
     usagePercentage: number
 }
 
@@ -144,12 +150,19 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
     const isAuthenticated = status === "authenticated" && !!user
 
-    const hasPermission = (): { isAdmin: boolean, canPost: boolean, canApprove: boolean } => {
-        if (!user) return { isAdmin: false, canPost: false, canApprove: false }
+    const hasPermission = (): {
+        isAdmin: boolean
+        canPost: boolean
+        canApprove: boolean
+        canManageAgenda: boolean
+    } => {
+        if (!user) {
+            return { isAdmin: false, canPost: false, canApprove: false, canManageAgenda: false }
+        }
 
         const company = user.companies?.find((c) => String(c.id) === String(user.defaultCompanyId))
         if (!company || !company.members || !Array.isArray(company.members)) {
-            return { isAdmin: false, canPost: false, canApprove: false }
+            return { isAdmin: false, canPost: false, canApprove: false, canManageAgenda: false }
         }
 
         const userCompanyMember = company.members.find(
@@ -159,6 +172,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
             isAdmin: userCompanyMember?.isAdmin || userCompanyMember?.isOwner || false,
             canPost: userCompanyMember?.canPost || false,
             canApprove: userCompanyMember?.canApprove || false,
+            canManageAgenda:
+                userCompanyMember?.canManageAgenda ||
+                userCompanyMember?.isAdmin ||
+                userCompanyMember?.isOwner ||
+                false,
         }
     }
 

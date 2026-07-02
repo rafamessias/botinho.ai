@@ -26,14 +26,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { IconChevronLeft, IconChevronRight, IconMenu2 } from "@tabler/icons-react"
-import { useEffect } from "react"
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state"
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+const SIDEBAR_STORAGE_KEY = "sidebar_state"
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+
+let cachedSidebarOpen: boolean | undefined
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
@@ -56,6 +56,40 @@ function useSidebar() {
   return context
 }
 
+function readSidebarOpenPreference(fallback: boolean): boolean {
+  if (typeof window === "undefined") {
+    return fallback
+  }
+
+  try {
+    const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY)
+    if (stored === "true") return true
+    if (stored === "false") return false
+  } catch {
+    // Ignore storage access errors (private browsing, etc.)
+  }
+
+  return fallback
+}
+
+function getInitialSidebarOpen(fallback: boolean): boolean {
+  if (cachedSidebarOpen !== undefined) {
+    return cachedSidebarOpen
+  }
+
+  return readSidebarOpenPreference(fallback)
+}
+
+function writeSidebarOpenPreference(open: boolean): void {
+  cachedSidebarOpen = open
+
+  try {
+    localStorage.setItem(SIDEBAR_STORAGE_KEY, String(open))
+  } catch {
+    // Ignore storage access errors (private browsing, etc.)
+  }
+}
+
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -74,8 +108,19 @@ function SidebarProvider({
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen)
+  const [_open, _setOpen] = React.useState(() => getInitialSidebarOpen(defaultOpen))
   const open = openProp ?? _open
+
+  React.useEffect(() => {
+    if (openProp !== undefined || cachedSidebarOpen !== undefined) {
+      return
+    }
+
+    const stored = readSidebarOpenPreference(defaultOpen)
+    writeSidebarOpenPreference(stored)
+    _setOpen(stored)
+  }, [defaultOpen, openProp])
+
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === "function" ? value(open) : value
@@ -85,8 +130,7 @@ function SidebarProvider({
         _setOpen(openState)
       }
 
-      // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      writeSidebarOpenPreference(openState)
     },
     [setOpenProp, open]
   )
@@ -334,7 +378,7 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
     >
       {/* Loading Spinner */}
       {isLoading && (
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/95 backdrop-blur-sm">
           <div className="flex flex-col items-center space-y-3">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
@@ -432,7 +476,7 @@ function SidebarGroupLabel({
       data-slot="sidebar-group-label"
       data-sidebar="group-label"
       className={cn(
-        "text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        "text-sidebar-foreground ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-muted-foreground outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
         "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
         className
       )}
@@ -507,7 +551,7 @@ const sidebarMenuButtonVariants = cva(
       variant: {
         default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         outline:
-          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
+          "bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_var(--sidebar-accent)]",
       },
       size: {
         default: "h-8 text-sm",

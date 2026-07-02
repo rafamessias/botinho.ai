@@ -1,0 +1,325 @@
+{
+  "terms": {
+    "meta": {
+      "title": "Terms of Service",
+      "description": "Terms and Conditions of Use for the botinho.ai platform — WhatsApp AI customer support automation."
+    },
+    "title": "Terms and Conditions of Use",
+    "intro": "These terms apply to the use of the botinho.ai platform (WhatsApp AI customer support automation, unified inbox, scheduling, human handoff, and related features), available at botinho.ai and the authenticated application environment. OBRA GURU SERVICOS DIGITAIS LTDA, a private legal entity registered under CNPJ No. 39.962.566/0001-30, hereinafter referred to as botinho.",
+    "effectiveDate": "Effective from June 1, 2026",
+    "lastUpdated": "Last updated: June 1, 2026",
+    "privacyLinkPrefix": "The Privacy Policy complements these terms.",
+    "privacyLinkLabel": "Privacy Policy",
+    "backHome": "Back to home",
+    "backHomeAria": "Back to botinho home",
+    "indexTitle": "Table of contents",
+    "contactLabel": "Questions about these terms:",
+    "index": [
+      { "id": "definicoes", "label": "Definitions" },
+      { "id": "objeto", "label": "Purpose of these terms" },
+      { "id": "funcionamento", "label": "How the botinho platform works" },
+      { "id": "direitos", "label": "User rights" },
+      { "id": "obrigacoes", "label": "User obligations" },
+      { "id": "isencao", "label": "Limitation of liability" },
+      { "id": "vedacoes", "label": "Prohibited conduct and sanctions" },
+      { "id": "dados", "label": "Data processing" },
+      { "id": "rescisao", "label": "Termination" },
+      { "id": "foro", "label": "Governing law and jurisdiction" },
+      { "id": "disposicoes", "label": "General provisions and contact" }
+    ],
+    "sections": [
+      {
+        "id": "definicoes",
+        "title": "1. Definitions",
+        "paragraphs": ["For the purposes of this agreement, the following terms have the meanings below:"],
+        "subsections": [
+          {
+            "title": "Platform",
+            "paragraphs": [
+              "software and associated services developed and operated by botinho, enabling Companies to connect WhatsApp numbers, centralize conversations, automate replies with AI, configure playbooks, schedule appointments, hand off to human agents, and use related features (such as AI suggestions, analytics, and integrations), according to the subscribed plan."
+            ]
+          },
+          {
+            "title": "Company",
+            "paragraphs": [
+              "individual or legal entity using botinho products, whether free or paid, on behalf of a business such as a restaurant, clinic, store, or support and sales team."
+            ]
+          },
+          {
+            "title": "Visitor",
+            "paragraphs": [
+              "internet user who only visits botinho.ai or related public pages without registering or using authenticated services."
+            ]
+          },
+          {
+            "title": "User",
+            "paragraphs": [
+              "person who uses the botinho website or application, whether as Company owner, team member, or Visitor, according to context and assigned permissions."
+            ]
+          },
+          {
+            "title": "Account / Inbox",
+            "paragraphs": [
+              "logical unit registered on the Platform to concentrate conversations, AI settings, team members, integrations, and communications with end customers."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "objeto",
+        "title": "2. Purpose of these terms",
+        "paragraphs": [
+          "By using our services, you agree to these terms. Use of our platform is conditioned on agreement with our privacy policy.",
+          "The botinho platform is intended for businesses that serve customers on WhatsApp and want to respond faster, automate repetitive tasks, and maintain brand tone with AI assistance.",
+          "These terms may be updated at any time and Users will be notified in advance when reasonably and technically possible, including by email or in-app notices."
+        ]
+      },
+      {
+        "id": "funcionamento",
+        "title": "3. How the botinho platform works",
+        "paragraphs": [
+          "Our platform is intended for businesses that want to automate and organize WhatsApp customer support. The Company must create an account and is responsible for access credentials and security.",
+          "Some services are paid and the Company must be aware of payment processor rules at checkout.",
+          "The user agrees to receive notices and messages from botinho and may review communication preferences when the Platform offers that option."
+        ],
+        "subsections": [
+          {
+            "title": "Our services",
+            "paragraphs": [
+              "botinho provides tools for WhatsApp conversation automation, unified inbox, AI training with knowledge bases, playbooks, scheduling, human handoff, analytics, and integrations, as shown in the product and subscribed plan.",
+              "Use may be free or paid. Free or trial use may limit synced numbers, AI credits, users, or other features."
+            ]
+          },
+          {
+            "title": "Costs and payment",
+            "paragraphs": [
+              "botinho offers monthly or annual plans when available. Payment is processed by a contracted payment processor (e.g., Stripe). botinho does not store full credit card data when payment is processed by the provider."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "direitos",
+        "title": "4. User rights",
+        "paragraphs": [
+          "botinho may use information submitted by the user to operate the Platform and improve the service, in compliance with applicable data protection law.",
+          "We may suspend or modify features at any time. Users who wish to delete their account should export data first when export is available on their plan."
+        ],
+        "subsections": [
+          {
+            "title": "Content license",
+            "paragraphs": [
+              "The Company is responsible for content submitted to the Platform (messages, knowledge bases, playbooks, training documents, and other materials) and grants botinho a non-exclusive license to host, process, display, and distribute such content as necessary to provide the service."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "obrigacoes",
+        "title": "5. User obligations",
+        "items": [
+          "Ensure the accuracy of registered information.",
+          "Use services only for lawful purposes compatible with customer support and authorized business operations.",
+          "Ensure messages and data respect third-party rights and applicable rules, including LGPD and WhatsApp/Meta regulations.",
+          "Inform team members and contacts about personal data processing when submitting third-party data to the Platform.",
+          "Review AI-generated replies before critical business decisions when applicable."
+        ]
+      },
+      {
+        "id": "isencao",
+        "title": "6. Limitation of liability",
+        "paragraphs": [
+          "botinho is not responsible for the content of messages sent or received by Users, nor for commercial, support, or sales outcomes from Platform use.",
+          "AI features are support tools. The Company must review suggested replies before sensitive commercial or support decisions.",
+          "botinho is not a party to contractual relationships between the Company and its end customers, except where law imposes different liability.",
+          "To the maximum extent permitted by law, botinho is not liable for indirect damages, lost profits, or data loss from use or inability to use the Platform."
+        ]
+      },
+      {
+        "id": "vedacoes",
+        "title": "7. Prohibited conduct and sanctions",
+        "paragraphs": ["Users may be warned, suspended, or removed for violation of these terms, including:"],
+        "items": [
+          "breach of these Terms and Conditions;",
+          "fraud, spam, or abusive WhatsApp use;",
+          "inability to verify identity or materially incorrect information;",
+          "conduct that causes or may cause harm to third parties or botinho;",
+          "use that overloads or compromises system security abusively."
+        ]
+      },
+      {
+        "id": "dados",
+        "title": "8. Data processing",
+        "paragraphs": [
+          "botinho processes personal data in compliance with applicable law. Details are in the Privacy Policy.",
+          "By using our services, the user agrees to processing described in the Privacy Policy."
+        ]
+      },
+      {
+        "id": "rescisao",
+        "title": "9. Termination",
+        "paragraphs": [
+          "These terms may be terminated by the User at any time, subject to any paid period already contracted.",
+          "For paid plans, after cancellation is confirmed, access to paid features typically remains until the last day of the paid period.",
+          "We recommend exporting data before permanent account deletion."
+        ]
+      },
+      {
+        "id": "foro",
+        "title": "10. Governing law and jurisdiction",
+        "paragraphs": [
+          "The courts of the Central District of the City of São Paulo, State of São Paulo, Brazil are elected to resolve disputes arising from these terms, except where consumer law or mandatory rules establish different jurisdiction.",
+          "Although the Platform may be accessed from other countries, the user acknowledges that the relevant legal relationship is governed by the laws of Brazil, to the extent applicable."
+        ]
+      },
+      {
+        "id": "disposicoes",
+        "title": "11. General provisions and contact",
+        "paragraphs": [
+          "Questions about botinho services may be sent to hello@botinho.ai or through contact channels available on the website.",
+          "Acceptance of these terms may be recorded via check-box, confirmation click, or equivalent flow on the Platform when available."
+        ]
+      }
+    ]
+  },
+  "privacy": {
+    "meta": {
+      "title": "Privacy Policy",
+      "description": "Privacy Policy for botinho.ai — how we process personal data in WhatsApp AI customer support."
+    },
+    "title": "Privacy Policy",
+    "intro": "OBRA GURU SERVICOS DIGITAIS LTDA, registered under CNPJ No. 39.962.566/0001-30, hereinafter referred to as botinho, values the security of user data. This policy defines rules for processing personal data of visitors and users of our WhatsApp AI customer support automation services.",
+    "effectiveDate": "Effective from June 1, 2026",
+    "lastUpdated": "Last updated: June 1, 2026",
+    "termsLinkPrefix": "This policy complements the",
+    "termsLinkLabel": "Terms of Service",
+    "backHome": "Back to home",
+    "backHomeAria": "Back to botinho home",
+    "indexTitle": "Table of contents",
+    "contactLabel": "To exercise your rights or ask questions:",
+    "index": [
+      { "id": "definicoes", "label": "Definitions" },
+      { "id": "dados", "label": "Data we collect" },
+      { "id": "como-coletamos", "label": "How we collect your data" },
+      { "id": "finalidades", "label": "Why we collect data" },
+      { "id": "compartilhamento", "label": "Information sharing" },
+      { "id": "retencao", "label": "How long we store your data" },
+      { "id": "direitos", "label": "User rights" },
+      { "id": "seguranca", "label": "Security and hosting" },
+      { "id": "exercicio", "label": "How to exercise your rights" },
+      { "id": "revisoes", "label": "Revisions to this policy" }
+    ],
+    "sections": [
+      {
+        "id": "definicoes",
+        "title": "1. Definitions",
+        "items": [
+          "User: persons who use or visit botinho.ai and the authenticated application, aged 18 or older.",
+          "Personal Data: information that identifies or allows identification of a natural person under Brazilian Law No. 13.709/2018.",
+          "Data Subject: the natural person to whom personal data refers.",
+          "Data Controller: OBRA GURU SERVICOS DIGITAIS LTDA, CNPJ 39.962.566/0001-30, operator of the botinho platform.",
+          "Consent: express authorization of the data subject when required by applicable legal basis."
+        ]
+      },
+      {
+        "id": "dados",
+        "title": "2. Data we collect",
+        "paragraphs": [
+          "We collect personal data during access to the website and application and after registration for WhatsApp automation, inbox, AI training, scheduling, and integration services."
+        ],
+        "subsections": [
+          {
+            "title": "Registration and identity",
+            "paragraphs": ["We may collect name, email, phone, company name, role, and other data necessary for secure use of the services."]
+          },
+          {
+            "title": "Support operations data",
+            "paragraphs": [
+              "During use, you may submit messages, contacts, conversation history, knowledge bases, playbooks, training documents, and other information linked to your account."
+            ]
+          },
+          {
+            "title": "Payment",
+            "paragraphs": [
+              "For paid plans, billing data may be collected and processed by the payment processor (e.g., Stripe) under its own policy."
+            ]
+          },
+          {
+            "title": "Navigation and cookies",
+            "paragraphs": [
+              "We may collect IP address, pages visited, session duration, and technical data via cookies and similar technologies."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "como-coletamos",
+        "title": "3. How we collect your data",
+        "paragraphs": [
+          "We collect data when Users access the platform, register, connect integrations (such as WhatsApp Business), or submit contact forms.",
+          "We collect only information essential to service operation. Additional or sensitive data, when requested, is optional unless legally required."
+        ]
+      },
+      {
+        "id": "finalidades",
+        "title": "4. Why we collect data",
+        "items": [
+          "Comply with applicable law;",
+          "Enable access and operation of the botinho platform;",
+          "Provide WhatsApp automation, inbox, AI, and integration services;",
+          "Process subscriptions, billing, and support;",
+          "Send operational communications and, when permitted, marketing;",
+          "Investigate and prevent unlawful or abusive activity;",
+          "Maintain infrastructure security."
+        ]
+      },
+      {
+        "id": "compartilhamento",
+        "title": "5. Information sharing",
+        "paragraphs": [
+          "Personal data may be shared with hosting, authentication, payment, analytics, AI, WhatsApp/Meta, and support providers in Brazil or abroad, in compliance with LGPD.",
+          "Data submitted to an account may be visible to other users invited by the Company, according to configured permissions.",
+          "In case of merger, acquisition, or restructuring, data may be transferred with prior notice when applicable."
+        ]
+      },
+      {
+        "id": "retencao",
+        "title": "6. How long we store your data",
+        "paragraphs": [
+          "Data is stored for as long as necessary to fulfill collection purposes and legal obligations.",
+          "After account closure, storage may continue for applicable legal periods unless a different period is required by law or authority."
+        ]
+      },
+      {
+        "id": "direitos",
+        "title": "7. User rights",
+        "paragraphs": [
+          "botinho ensures data subject rights under Article 18 of the Brazilian General Data Protection Law, including confirmation of processing, access, correction, and consent withdrawal when applicable."
+        ]
+      },
+      {
+        "id": "seguranca",
+        "title": "8. Security and hosting",
+        "paragraphs": [
+          "Personal Data may be stored on cloud infrastructure of contracted providers (e.g., Google Cloud / Firebase and related services), in compliance with applicable law.",
+          "We adopt security procedures to protect confidentiality, integrity, and availability. There is no absolute guarantee against unauthorized access in case of protection breaches."
+        ]
+      },
+      {
+        "id": "exercicio",
+        "title": "9. How to exercise your rights",
+        "paragraphs": [
+          "To exercise rights under this policy or clarify data processing questions, Users may contact the Data Protection Officer, Rafael Messias, at hello@botinho.ai."
+        ]
+      },
+      {
+        "id": "revisoes",
+        "title": "10. Revisions to this policy",
+        "paragraphs": [
+          "botinho may revise this Privacy Policy at any time. Relevant changes will be published on botinho.ai.",
+          "When appropriate, email notification will be sent at least 30 days before material changes take effect."
+        ]
+      }
+    ]
+  }
+}

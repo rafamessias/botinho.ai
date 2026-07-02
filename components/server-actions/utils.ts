@@ -15,6 +15,7 @@ export type CompanyMembershipGuardOptions = {
   companyId?: string
   requireAdmin?: boolean
   requireCanPost?: boolean
+  requireCanManageAgenda?: boolean
 }
 
 export { resolveCompanyContext }

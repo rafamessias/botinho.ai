@@ -57,10 +57,23 @@ Path prefix: `companies/{companyId}/`
 | `knowledge` | Auto | AI knowledge items |
 | `quickAnswers` | Auto | Canned Q/A pairs |
 | `templates` | Auto | Message templates (options embedded) |
+| `surveys` | Auto | Customer surveys |
+| `surveyResponses` | Auto | Survey response records |
+| `campaigns` | Auto | Outbound message campaigns |
+| `campaignDeliveries` | Auto | Per-recipient campaign send tracking |
 | `customers` | Auto | Inbox CRM customers |
 | `conversations` | Auto | Inbox threads |
 | `subscription` | `current` | Active Stripe subscription |
 | `usage` | `YYYY-MM` | Monthly usage counters |
+| `scheduleServices` | Auto | Bookable services |
+| `agendaProfiles` | Member `uid` | Per-member agenda settings |
+| `scheduleBlocks` | Auto | Blocked/unavailable time |
+| `scheduleReservations` | Auto | Appointments |
+| `scheduleCounters` | `_company` | Reservation number sequence |
+
+Settings doc: `companies/{companyId}/settings/schedule` — company scheduling rules.
+
+See [28-schedule-reservations.md](28-schedule-reservations.md).
 
 Message subcollection: `companies/{companyId}/conversations/{conversationId}/messages/{messageId}`
 
@@ -100,6 +113,7 @@ Message subcollection: `companies/{companyId}/conversations/{conversationId}/mes
 | isAdmin | boolean | |
 | canPost | boolean | |
 | canApprove | boolean | |
+| canManageAgenda | boolean | Schedule/agenda management |
 | status | `invited` \| `accepted` \| `rejected` | |
 | email | string? | Invite placeholder users |
 | inviteToken | string? | Cleared on accept |
@@ -156,6 +170,7 @@ Unique by phone per company (enforced in service layer).
 | satisfactionScore | number? |
 | tags | string[] |
 | assignedToId | string? |
+| activeSurveyResponseId | string? | Inline survey state |
 | isArchived | boolean |
 | archivedAt | Timestamp? |
 

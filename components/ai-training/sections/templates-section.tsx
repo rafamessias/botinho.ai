@@ -7,7 +7,7 @@ import { Copy, Edit, Loader2, MessageSquare, MousePointerClick, Tag, Trash2 } fr
 import { EmptyState } from "../components/empty-state"
 import { ErrorState } from "../components/error-state"
 import { TemplateDialog } from "../dialogs/template-dialog"
-import type { TemplateOptionView, TemplateView, TranslationFn } from "../types"
+import type { TemplateView, TranslationFn } from "../types"
 
 type TemplatesSectionProps = {
     t: TranslationFn
@@ -31,10 +31,6 @@ type TemplatesSectionProps = {
         onContentChange: (value: string) => void
         newTemplateCategory: TemplateView["category"]
         onCategoryChange: (value: TemplateView["category"]) => void
-        newTemplateOptions: TemplateOptionView[]
-        onAddOption: () => void
-        onUpdateOption: (id: string, field: "label" | "value", value: string) => void
-        onRemoveOption: (id: string) => void
         onCancel: () => void
         onSubmit: () => void
     }
@@ -83,10 +79,6 @@ export const TemplatesSection = ({
                 onContentChange={dialog.onContentChange}
                 newTemplateCategory={dialog.newTemplateCategory}
                 onCategoryChange={dialog.onCategoryChange}
-                newTemplateOptions={dialog.newTemplateOptions}
-                onAddOption={dialog.onAddOption}
-                onUpdateOption={dialog.onUpdateOption}
-                onRemoveOption={dialog.onRemoveOption}
                 onCancel={dialog.onCancel}
                 onSubmit={dialog.onSubmit}
             />
@@ -117,7 +109,7 @@ export const TemplatesSection = ({
                     {items.map((template) => (
                         <div
                             key={template.id}
-                            className="refined-card rounded-xl border border-primary/10 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5"
+                            className="refined-card rounded-xl border border-border p-4 transition-colors duration-200 hover:border-primary/40 hover:bg-muted"
                         >
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-start justify-between gap-2">
@@ -153,9 +145,11 @@ export const TemplatesSection = ({
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Button
+                                            type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="text-primary hover:bg-primary/10 hover:text-primary/80"
+                                            className="text-primary hover:bg-muted hover:text-primary"
+                                            aria-label={t("buttons.copyTemplate")}
                                             onClick={() => onCopy(template.content)}
                                         >
                                             <Copy className="h-4 w-4" />

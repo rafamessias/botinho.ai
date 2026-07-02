@@ -1,11 +1,14 @@
 import createNextIntlPlugin from 'next-intl/plugin';
-import { withBotId } from 'botid/next/config';
-
 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "7mb",
+    },
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -17,4 +20,4 @@ const nextConfig = {
   },
 }
 
-export default withNextIntl(withBotId(nextConfig))
+export default withNextIntl(nextConfig)

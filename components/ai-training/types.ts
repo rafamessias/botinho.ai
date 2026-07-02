@@ -1,9 +1,11 @@
 import { AiTemplateCategory } from "@/lib/types/enums"
 export type TranslationFn = (...args: any[]) => string
 
+export type KnowledgeTab = "text" | "url" | "pdf"
+
 export interface KnowledgeItemView {
     id: string
-    type: "text" | "url"
+    type: KnowledgeTab
     title: string
     content: string
     createdAt: string

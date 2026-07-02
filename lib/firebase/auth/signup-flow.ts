@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs"
 import { FieldValue } from "firebase-admin/firestore"
 import { adminAuth, adminDb } from "@/lib/firebase/admin"
 import { collections } from "@/lib/firebase/collections"
-import { createCompanyForUser } from "@/lib/firebase/services/company-service"
 import { createUserProfile } from "@/lib/firebase/services/user-service"
 import type { UserLanguage } from "@/lib/firebase/types"
 import { sendTransactionalEmail } from "@/lib/email/send-transactional-email"
@@ -125,11 +124,9 @@ export const verifyPendingSignupOtp = async (params: {
     lastName: pending.lastName ?? undefined,
     phone: pending.phone ?? undefined,
     language: pending.language,
-  })
-
-  await createCompanyForUser({
-    uid,
-    firstName: pending.firstName,
+    onboardingStatus: "pending",
+    onboardingStep: 1,
+    preferredPlanType: pending.planType ?? null,
   })
 
   await pendingRef.update({ verified: true })
@@ -241,11 +238,8 @@ export const ensureGoogleUserProvisioned = async (params: {
     lastName: params.lastName,
     language: params.language,
     avatarUrl: params.avatarUrl,
-  })
-
-  await createCompanyForUser({
-    uid: params.uid,
-    firstName: params.firstName,
+    onboardingStatus: "pending",
+    onboardingStep: 1,
   })
 
   const locale = params.language === "pt_BR" ? "pt-BR" : "en"

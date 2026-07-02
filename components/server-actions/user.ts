@@ -75,26 +75,57 @@ export const updateUserProfileAction = async (profileData: z.infer<typeof update
 }
 
 export const updateUserLanguageAction = async (language: "en" | "pt-BR") => {
+  const result = await setLocalePreferenceAction(language)
+  if (!result.success) {
+    return result
+  }
+
+  return {
+    success: true,
+    message: "Language updated successfully",
+    locale: result.locale,
+  }
+}
+
+export const setLocalePreferenceAction = async (language: "en" | "pt-BR") => {
   const t = await getTranslations("AuthErrors")
   try {
     const validatedData = updateLanguageSchema.parse({ language })
-    const session = await requireSession()
-    const dbLanguage = validatedData.language === "pt-BR" ? "pt_BR" : "en"
-    await updateUserProfile(session.uid, { language: dbLanguage })
     const cookieStore = await cookies()
-    cookieStore.set("user-language", dbLanguage, {
+
+    cookieStore.set("NEXT_LOCALE", validatedData.language, {
+      path: "/",
       httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 30 * 24 * 60 * 60,
+      maxAge: 365 * 24 * 60 * 60,
     })
-    return { success: true, message: "Language updated successfully", locale: validatedData.language }
-  } catch (error) {
-    console.error("Update language error:", error)
-    if (error instanceof z.ZodError) {
-      return { success: false, error: error.errors[0].message }
+
+    const session = await getServerAuthSession()
+    if (session?.uid) {
+      const dbLanguage = validatedData.language === "pt-BR" ? "pt_BR" : "en"
+      cookieStore.set("user-language", dbLanguage, {
+        path: "/",
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 30 * 24 * 60 * 60,
+      })
+
+      try {
+        await updateUserProfile(session.uid, { language: dbLanguage })
+      } catch (profileError) {
+        console.error("Failed to persist language to profile:", profileError)
+      }
     }
-    return { success: false, error: t("unexpectedError") }
+
+    return { success: true as const, locale: validatedData.language }
+  } catch (error) {
+    console.error("Set locale preference error:", error)
+    if (error instanceof z.ZodError) {
+      return { success: false as const, error: error.errors[0].message }
+    }
+    return { success: false as const, error: t("unexpectedError") }
   }
 }
 

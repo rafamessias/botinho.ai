@@ -24,9 +24,25 @@ const mapMemberForClient = (
   isAdmin: member.isAdmin,
   canPost: member.canPost,
   canApprove: member.canApprove,
+  canManageAgenda: member.canManageAgenda ?? member.isAdmin ?? member.isOwner ?? false,
   companyMemberStatus: member.status,
   status: member.status,
   user,
+})
+
+const mapCompanyFields = (data: FirebaseFirestore.DocumentData) => ({
+  slug: data.slug as string,
+  name: data.name as string,
+  description: (data.description as string | undefined) ?? null,
+  country: (data.country as string | undefined) ?? null,
+  documentType: (data.documentType as "cpf" | "cnpj" | undefined) ?? null,
+  document: (data.document as string | undefined) ?? null,
+  address: (data.address as string | undefined) ?? null,
+  addressNumber: (data.addressNumber as string | undefined) ?? null,
+  zipCode: (data.zipCode as string | undefined) ?? null,
+  complement: (data.complement as string | undefined) ?? null,
+  city: (data.city as string | undefined) ?? null,
+  state: (data.state as string | undefined) ?? null,
 })
 
 const mapCompanyForClient = (
@@ -35,9 +51,7 @@ const mapCompanyForClient = (
   members: ReturnType<typeof mapMemberForClient>[],
 ) => ({
   id: companyId,
-  slug: data.slug as string,
-  name: data.name as string,
-  description: (data.description as string | undefined) ?? null,
+  ...mapCompanyFields(data),
   members,
 })
 
@@ -49,10 +63,8 @@ export const getCompanyById = async (companyId: string) => {
   const data = snap.data()!
   return {
     id: snap.id,
-    name: data.name as string,
-    description: (data.description as string | undefined) ?? null,
+    ...mapCompanyFields(data),
     tokenApi: (data.tokenApi as string | undefined) ?? null,
-    slug: data.slug as string | undefined,
   }
 }
 
@@ -88,7 +100,21 @@ export const assertCompanyMember = async (companyId: string, uid: string) => {
   return member
 }
 
-export const updateCompany = async (companyId: string, data: { name?: string; description?: string }) => {
+export type CompanyUpdateData = {
+  name?: string
+  description?: string
+  country?: string
+  documentType?: "cpf" | "cnpj"
+  document?: string
+  address?: string
+  addressNumber?: string
+  zipCode?: string
+  complement?: string
+  city?: string
+  state?: string
+}
+
+export const updateCompany = async (companyId: string, data: CompanyUpdateData) => {
   await companyRef(companyId).set(
     {
       ...data,
@@ -161,7 +187,7 @@ export const getUserCompanies = async (uid: string, onlyAccepted = false) => {
 export const updateMemberPermissions = async (
   companyId: string,
   memberUid: string,
-  permissions: { isAdmin: boolean; canPost: boolean; canApprove: boolean },
+  permissions: { isAdmin: boolean; canPost: boolean; canApprove: boolean; canManageAgenda: boolean },
 ) => {
   await companyRef(companyId)
     .collection(companySubcollections.members)
@@ -171,10 +197,16 @@ export const updateMemberPermissions = async (
         isAdmin: permissions.isAdmin,
         canPost: permissions.isAdmin ? true : permissions.canPost,
         canApprove: permissions.isAdmin ? true : permissions.canApprove,
+        canManageAgenda: permissions.isAdmin ? true : permissions.canManageAgenda,
         updatedAt: FieldValue.serverTimestamp(),
       },
       { merge: true },
     )
+
+  if (permissions.isAdmin || permissions.canManageAgenda) {
+    const { upsertAgendaProfile } = await import("@/lib/firebase/services/schedule-service")
+    await upsertAgendaProfile(companyId, { memberUid, enabled: true })
+  }
 }
 
 export const removeMember = async (companyId: string, memberUid: string) => {
@@ -194,6 +226,7 @@ export const inviteMemberByEmail = async (params: {
   isAdmin: boolean
   canPost: boolean
   canApprove: boolean
+  canManageAgenda: boolean
   inviterEmail: string
   locale: string
   confirmationToken: string
@@ -250,6 +283,7 @@ export const inviteMemberByEmail = async (params: {
     isAdmin: params.isAdmin,
     canPost: params.isAdmin ? true : params.canPost,
     canApprove: params.isAdmin ? true : params.canApprove,
+    canManageAgenda: params.isAdmin ? true : params.canManageAgenda,
     status: "invited" as MemberStatus,
     inviteToken: params.confirmationToken,
     createdAt: FieldValue.serverTimestamp(),
